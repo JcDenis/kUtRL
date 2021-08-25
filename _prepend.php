@@ -10,69 +10,72 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # -- END LICENSE BLOCK ------------------------------------
 
-if (!defined('DC_RC_PATH')) return;
-if (version_compare(str_replace("-r","-p",DC_VERSION),'2.2-alpha','<')){return;}
+if (!defined('DC_RC_PATH')) {
+    return;
+}
+if (version_compare(str_replace("-r", "-p", DC_VERSION), '2.2-alpha', '<')) {
+    return;
+}
 
 global $__autoload, $core;
 
 # Set a URL shortener for quick get request
 if (!defined('SHORTEN_SERVICE_NAME')) {
-	define('SHORTEN_SERVICE_NAME','Is.gd');
+    define('SHORTEN_SERVICE_NAME', 'Is.gd');
 }
 if (!defined('SHORTEN_SERVICE_API')) {
-	define('SHORTEN_SERVICE_API','http://is.gd/api.php?');
+    define('SHORTEN_SERVICE_API', 'http://is.gd/api.php?');
 }
 if (!defined('SHORTEN_SERVICE_BASE')) {
-	define('SHORTEN_SERVICE_BASE','http://is.gd/');
+    define('SHORTEN_SERVICE_BASE', 'http://is.gd/');
 }
 if (!defined('SHORTEN_SERVICE_PARAM')) {
-	define('SHORTEN_SERVICE_PARAM','longurl');
+    define('SHORTEN_SERVICE_PARAM', 'longurl');
 }
 if (!defined('SHORTEN_SERVICE_ENCODE')) {
-	define('SHORTEN_SERVICE_ENCODE',false);
+    define('SHORTEN_SERVICE_ENCODE', false);
 }
 
 # Main class
-$__autoload['kutrl'] = dirname(__FILE__).'/inc/class.kutrl.php';
-$__autoload['kutrlService'] = dirname(__FILE__).'/inc/lib.kutrl.srv.php';
-$__autoload['kutrlLog'] = dirname(__FILE__).'/inc/lib.kutrl.log.php';
+$d = dirname(__FILE__) . '/inc/';
+$__autoload['kutrl'] = $d . 'class.kutrl.php';
+$__autoload['kutrlService'] = $d . 'lib.kutrl.srv.php';
+$__autoload['kutrlLog'] = $d . 'lib.kutrl.log.php';
 
 # Services
-$__autoload['bilbolinksKutrlService'] = dirname(__FILE__).'/inc/services/class.bilbolinks.service.php';
-$core->addBehavior('kutrlService', function() { return array("bilbolinks","bilbolinksKutrlService"); } );
-$__autoload['bitlyKutrlService'] = dirname(__FILE__).'/inc/services/class.bitly.service.php';
-$core->addBehavior('kutrlService', function() { return array("bitly","bitlyKutrlService"); } );
-$__autoload['customKutrlService'] = dirname(__FILE__).'/inc/services/class.custom.service.php';
-$core->addBehavior('kutrlService', function() { return array("custom","customKutrlService"); } );
-$__autoload['defaultKutrlService'] = dirname(__FILE__).'/inc/services/class.default.service.php';
-$core->addBehavior('kutrlService', function() { return array("default","defaultKutrlService"); } );
-$__autoload['googlKutrlService'] = dirname(__FILE__).'/inc/services/class.googl.service.php';
-$core->addBehavior('kutrlService', function() { return array("googl","googlKutrlService"); } );
-$__autoload['isgdKutrlService'] = dirname(__FILE__).'/inc/services/class.isgd.service.php';
-$core->addBehavior('kutrlService', function() { return array("isgd","isgdKutrlService"); } );
-$__autoload['localKutrlService'] = dirname(__FILE__).'/inc/services/class.local.service.php';
-$core->addBehavior('kutrlService', function() { return array("local","localKutrlService"); } );
-$__autoload['shorttoKutrlService'] = dirname(__FILE__).'/inc/services/class.shortto.service.php';
-$core->addBehavior('kutrlService', function() { return array("shortto","shorttoKutrlService"); } );
-$__autoload['trimKutrlService'] = dirname(__FILE__).'/inc/services/class.trim.service.php';
-$core->addBehavior('kutrlService', function() { return array("trim","trimKutrlService"); } );
-$__autoload['yourlsKutrlService'] = dirname(__FILE__).'/inc/services/class.yourls.service.php';
-$core->addBehavior('kutrlService', function() { return array("yourls","yourlsKutrlService"); } );
-$__autoload['suprKutrlService'] = dirname(__FILE__).'/inc/services/class.supr.service.php';
-$core->addBehavior('kutrlService', function() { return array("supr","suprKutrlService"); } );
+$__autoload['bilbolinksKutrlService'] = $d . 'services/class.bilbolinks.service.php';
+$core->addBehavior('kutrlService', function() { return ["bilbolinks","bilbolinksKutrlService"]; } );
+$__autoload['bitlyKutrlService'] = $d . 'services/class.bitly.service.php';
+$core->addBehavior('kutrlService', function() { return ["bitly","bitlyKutrlService"]; } );
+$__autoload['customKutrlService'] = $d . 'services/class.custom.service.php';
+$core->addBehavior('kutrlService', function() { return ["custom","customKutrlService"]; } );
+$__autoload['defaultKutrlService'] = $d . 'services/class.default.service.php';
+$core->addBehavior('kutrlService', function() { return ["default","defaultKutrlService"]; } );
+$__autoload['googlKutrlService'] = $d . 'services/class.googl.service.php';
+$core->addBehavior('kutrlService', function() { return ["googl","googlKutrlService"]; } );
+$__autoload['isgdKutrlService'] = $d . 'services/class.isgd.service.php';
+$core->addBehavior('kutrlService', function() { return ["isgd","isgdKutrlService"]; } );
+$__autoload['localKutrlService'] = $d . 'services/class.local.service.php';
+$core->addBehavior('kutrlService', function() { return ["local","localKutrlService"]; } );
+$__autoload['shorttoKutrlService'] = $d . 'services/class.shortto.service.php';
+$core->addBehavior('kutrlService', function() { return ["shortto","shorttoKutrlService"]; } );
+$__autoload['trimKutrlService'] = $d . 'services/class.trim.service.php';
+$core->addBehavior('kutrlService', function() { return ["trim","trimKutrlService"]; } );
+$__autoload['yourlsKutrlService'] = $d . 'services/class.yourls.service.php';
+$core->addBehavior('kutrlService', function() { return ["yourls","yourlsKutrlService"]; } );
+$__autoload['suprKutrlService'] = $d . 'services/class.supr.service.php';
+$core->addBehavior('kutrlService', function() { return ["supr","suprKutrlService"]; } );
 
 # Shorten url passed through wiki functions
-$__autoload['kutrlWiki'] = dirname(__FILE__).'/inc/lib.wiki.kutrl.php';
-$core->addBehavior('coreInitWikiPost',array('kutrlWiki','coreInitWiki'));
-$core->addBehavior('coreInitWikiComment',array('kutrlWiki','coreInitWiki'));
-$core->addBehavior('coreInitWikiSimpleComment',array('kutrlWiki','coreInitWiki'));
+$__autoload['kutrlWiki'] = $d . 'lib.wiki.kutrl.php';
+$core->addBehavior('coreInitWikiPost',['kutrlWiki','coreInitWiki']);
+$core->addBehavior('coreInitWikiComment',['kutrlWiki','coreInitWiki']);
+$core->addBehavior('coreInitWikiSimpleComment',['kutrlWiki','coreInitWiki']);
 
 # Public page
-$core->url->register('kutrl','go','^go(/(.*?)|)$',array('urlKutrl','redirectUrl'));
+$core->url->register('kutrl', 'go', '^go(/(.*?)|)$', ['urlKutrl', 'redirectUrl']);
 
 # Add kUtRL events on plugin activityReport
-if (defined('ACTIVITY_REPORT'))
-{
-	require_once dirname(__FILE__).'/inc/lib.kutrl.activityreport.php';
+if (defined('ACTIVITY_REPORT')) {
+    require_once $d . 'lib.kutrl.activityreport.php';
 }
-?>
