@@ -1,6 +1,13 @@
 todo
  - Added public page of the list of know urls and in/visible status
  - Added passworded links
+ - clean PSR-2 codding style and short array
+ - fix compatibility with Dotclear 2.19
+ - fix widgets rendering
+ - move setting to config file
+ - fix dashboard rendering
+ - fix deprecated external service
+ - create readme file
 
 2011.04.01
  * Changed version numbering
