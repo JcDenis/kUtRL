@@ -100,7 +100,8 @@ class localKutrlService extends kutrlService
 
 	public function testService()
 	{
-		if (!empty($this->allow_protocols))
+		$ap = $this->allow_protocols;
+		if (!empty($ap))
 		{
 			return true;
 		}

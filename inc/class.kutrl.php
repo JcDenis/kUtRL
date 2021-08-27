@@ -25,7 +25,7 @@ class kUtRL
         if (empty($list)) {
             return [];
         }
-        $service = [];  
+        $services = [];  
         foreach($list as $k => $callback) {
             try {
                 list($service_id,$service_class) = call_user_func($callback);

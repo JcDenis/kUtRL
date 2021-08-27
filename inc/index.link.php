@@ -118,7 +118,7 @@ if (null === $kut) {
         form::field('custom', 50, 32, '') . '</label></p>' . 
         '<p class="form-note">' . __('Only if you want a custom short link.') . '</p>';
 
-        if ($s_admin_service == 'local') {
+        if ($kut->admin_service == 'local') {
             echo '<p class="form-note">' . 
             __('You can use "bob!!" if you want a semi-custom link, it starts with "bob" and "!!" will be replaced by an increment value.') . 
             '</p>';

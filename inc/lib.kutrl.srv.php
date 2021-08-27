@@ -58,6 +58,12 @@ class kutrlService
     # Magic get for config values
     public function __get($k)
     {
+        return $this->get($k);
+    }
+
+    # get config value
+    public function get($k)
+    {
         return isset($this->config[$k]) ? $this->config[$k] : null;
     }
 
@@ -103,7 +109,7 @@ class kutrlService
     # Test if an url is long enoutgh
     public function isLongerUrl($url)
     {
-        return ((integer) $this->url_min_len >= $url);
+        return (strlen($url) >= (integer) $this->url_min_len);
     }
 
     # Test if an url protocol (eg: http://) is allowed
