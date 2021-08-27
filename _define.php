@@ -18,13 +18,13 @@ $this->registerModule(
     'kUtRL',
     'Use, create and serve short url on your blog',
     'Jean-Christian Denis and contributors',
-    '2011.03.24',
+    '2021.08.27',
     [
         'permissions' => 'admin',
         'type' => 'plugin',
         'dc_min' => '2.19',
         'support' => 'https://github.com/JcDenis/kUtRL',
         'details' => 'http://plugins.dotaddict.org/dc2/details/kUtRL',
-        'repository' => 'https://raw.githubusercontent.com/JcDenis/kUtRL/master/repository.xml'
+        'repository' => 'https://raw.githubusercontent.com/JcDenis/kUtRL/master/dcstore.xml'
     ]
 );
