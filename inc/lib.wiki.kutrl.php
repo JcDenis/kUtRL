@@ -12,69 +12,66 @@
 
 # This file contents class to shorten url pass through wiki
 
-if (!defined('DC_RC_PATH')){return;}
+if (!defined('DC_RC_PATH')) {
+    return null;
+}
 
 class kutrlWiki
 {
-	public static function coreInitWiki($wiki2xhtml)
-	{
-		global $core;
-		$s = $core->blog->settings->kUtRL;
+    public static function coreInitWiki($wiki2xhtml)
+    {
+        global $core;
+        $s = $core->blog->settings->kUtRL;
 
-		# Do nothing on comment preview and post preview
-		if (!empty($_POST['preview']) 
-		 || !empty($GLOBALS['_ctx']) && $GLOBALS['_ctx']->preview
-		 || !$s->kutrl_active) return;
-		
-		if (null === ($kut = kutrl::quickPlace('wiki'))) return;
-		
-		foreach($kut->allow_protocols as $protocol)
-		{
-			$wiki2xhtml->registerFunction(
-				'url:'.$protocol,
-				array('kutrlWiki','transform')
-			);
-		}
-	}
-	
-	public static function transform($url,$content)
-	{
-		global $core;
-		$s = $core->blog->settings->kUtRL;
-		
-		if (!$s->kutrl_active) return;
-		
-		if (null === ($kut = kutrl::quickPlace('wiki'))) return array();
-		
-		# Test if long url exists
-		$is_new = false;
-		$rs = $kut->isKnowUrl($url);
-		if (!$rs)
-		{
-			$is_new = true;
-			$rs = $kut->hash($url);
-		}
+        # Do nothing on comment preview and post preview
+        if (!empty($_POST['preview']) 
+         || !empty($GLOBALS['_ctx']) && $GLOBALS['_ctx']->preview
+         || !$s->kutrl_active) {
+            return null;
+        }
+        if (null === ($kut = kutrl::quickPlace('wiki'))) {
+            return null;
+        }
+        foreach($kut->allow_protocols as $protocol) {
+            $wiki2xhtml->registerFunction(
+                'url:' . $protocol,
+                ['kutrlWiki', 'transform']
+            );
+        }
+    }
 
-		if (!$rs)
-		{
-			return array();
-		}
-		else
-		{
-			$res = array();
-			$testurl = strlen($rs->url) > 35 ? substr($rs->url,0,35).'...' : $rs->url;
-			$res['url'] = $kut->url_base.$rs->hash;
-			$res['title'] = sprintf(__('%s (Shorten with %s)'),$rs->url,__($kut->name));
-			if ($testurl == $content) $res['content'] = $res['url'];
-			
-			# ex: Send new url to messengers
-			if (!empty($rs))
-			{
-				$core->callBehavior('wikiAfterKutrlCreate',$core,$rs,__('New short URL'));
-			}
-			
-			return $res;
-		}
-	}
+    public static function transform($url, $content)
+    {
+        global $core;
+        $s = $core->blog->settings->kUtRL;
+
+        if (!$s->kutrl_active) {
+            return null;
+        }
+        if (null === ($kut = kutrl::quickPlace('wiki'))) {
+            return [];
+        }
+        # Test if long url exists
+        $is_new = false;
+        $rs = $kut->isKnowUrl($url);
+        if (!$rs) {
+            $is_new = true;
+            $rs = $kut->hash($url);
+        }
+        if (!$rs) {
+            return [];
+        } else {
+            $res = [];
+            $testurl = strlen($rs->url) > 35 ? substr($rs->url, 0, 35) . '...' : $rs->url;
+            $res['url'] = $kut->url_base . $rs->hash;
+            $res['title'] = sprintf(__('%s (Shorten with %s)'), $rs->url, __($kut->name));
+            if ($testurl == $content) $res['content'] = $res['url'];
+
+            # ex: Send new url to messengers
+            if (!empty($rs)) {
+                $core->callBehavior('wikiAfterKutrlCreate', $core, $rs, __('New short URL'));
+            }
+            return $res;
+        }
+    }
 }
-?>
