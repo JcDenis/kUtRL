@@ -45,26 +45,26 @@ $__autoload['kutrlLog'] = $d . 'lib.kutrl.log.php';
 # Services
 $__autoload['bilbolinksKutrlService'] = $d . 'services/class.bilbolinks.service.php';
 $core->addBehavior('kutrlService', function() { return ["bilbolinks","bilbolinksKutrlService"]; } );
-$__autoload['bitlyKutrlService'] = $d . 'services/class.bitly.service.php';
-$core->addBehavior('kutrlService', function() { return ["bitly","bitlyKutrlService"]; } );
+//$__autoload['bitlyKutrlService'] = $d . 'services/class.bitly.service.php';
+//$core->addBehavior('kutrlService', function() { return ["bitly","bitlyKutrlService"]; } );
 $__autoload['customKutrlService'] = $d . 'services/class.custom.service.php';
 $core->addBehavior('kutrlService', function() { return ["custom","customKutrlService"]; } );
 $__autoload['defaultKutrlService'] = $d . 'services/class.default.service.php';
 $core->addBehavior('kutrlService', function() { return ["default","defaultKutrlService"]; } );
-$__autoload['googlKutrlService'] = $d . 'services/class.googl.service.php';
-$core->addBehavior('kutrlService', function() { return ["googl","googlKutrlService"]; } );
+//$__autoload['googlKutrlService'] = $d . 'services/class.googl.service.php';
+//$core->addBehavior('kutrlService', function() { return ["googl","googlKutrlService"]; } );
 $__autoload['isgdKutrlService'] = $d . 'services/class.isgd.service.php';
 $core->addBehavior('kutrlService', function() { return ["isgd","isgdKutrlService"]; } );
 $__autoload['localKutrlService'] = $d . 'services/class.local.service.php';
 $core->addBehavior('kutrlService', function() { return ["local","localKutrlService"]; } );
-$__autoload['shorttoKutrlService'] = $d . 'services/class.shortto.service.php';
-$core->addBehavior('kutrlService', function() { return ["shortto","shorttoKutrlService"]; } );
-$__autoload['trimKutrlService'] = $d . 'services/class.trim.service.php';
-$core->addBehavior('kutrlService', function() { return ["trim","trimKutrlService"]; } );
+//$__autoload['shorttoKutrlService'] = $d . 'services/class.shortto.service.php';
+//$core->addBehavior('kutrlService', function() { return ["shortto","shorttoKutrlService"]; } );
+//$__autoload['trimKutrlService'] = $d . 'services/class.trim.service.php';
+//$core->addBehavior('kutrlService', function() { return ["trim","trimKutrlService"]; } );
 $__autoload['yourlsKutrlService'] = $d . 'services/class.yourls.service.php';
 $core->addBehavior('kutrlService', function() { return ["yourls","yourlsKutrlService"]; } );
-$__autoload['suprKutrlService'] = $d . 'services/class.supr.service.php';
-$core->addBehavior('kutrlService', function() { return ["supr","suprKutrlService"]; } );
+//$__autoload['suprKutrlService'] = $d . 'services/class.supr.service.php';
+//$core->addBehavior('kutrlService', function() { return ["supr","suprKutrlService"]; } );
 
 # Shorten url passed through wiki functions
 $__autoload['kutrlWiki'] = $d . 'lib.wiki.kutrl.php';
