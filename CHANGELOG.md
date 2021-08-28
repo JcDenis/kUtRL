@@ -4,7 +4,7 @@ todo
 - fix deprecated external service
 - update pager (see posts list)
 
-2021.08.28 - ready for next release
+2021.08.28 - pre release
 - add dashboard icon
 - clean PSR-2 codding style and short array
 - fix php 7.3+ and php 8.0.x compatibility
@@ -14,6 +14,7 @@ todo
 - remove custom js
 - fix widgets rendering
 - fix public template now based on dotty
+- fix translation
 
 2011.04.01
 - Changed version numbering
