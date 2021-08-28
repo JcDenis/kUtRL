@@ -42,6 +42,7 @@ $d = dirname(__FILE__) . '/inc/';
 $__autoload['kutrl'] = $d . 'class.kutrl.php';
 $__autoload['kutrlService'] = $d . 'lib.kutrl.srv.php';
 $__autoload['kutrlLog'] = $d . 'lib.kutrl.log.php';
+$__autoload['kutrlLinksList'] = $d . 'lib.kutrl.lst.php';
 
 # Services
 $__autoload['bilbolinksKutrlService'] = $d . 'services/class.bilbolinks.service.php';

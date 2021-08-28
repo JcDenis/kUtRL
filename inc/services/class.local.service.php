@@ -97,7 +97,7 @@ class localKutrlService extends kutrlService
         '<p>' . __('There are two templates delivered with kUtRL, if you do not use default theme, you may adapt them to yours.') . '<br />' . 
         __('Files are in plugin directory /default-templates, just copy them into your theme and edit them.') . '</p>' . 
         
-        '</div></div>';
+        '</div></div><br class="clear"/>';
     }
 
     public function testService()

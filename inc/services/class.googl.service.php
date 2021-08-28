@@ -24,7 +24,7 @@ class googlKutrlService extends kutrlService
     private $url_api = 'https://www.googleapis.com/urlshortener/v1/url';
     private $url_test = 'http://dotclear.jcdenis.com/go/kUtRL';
     private $args = [
-        'key' => 'AIzaSyDE1WfOMdnrnX8p51jSmVodenaNk385asc'
+        'key' => ''
     ];
     private $headers = array('Content-Type: application/json');
     
