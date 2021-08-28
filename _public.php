@@ -388,7 +388,7 @@ class tplKutrl
 
     public static function humanField($attr)
     {
-        return "<?php echo sprintf(__('Rewrite \"%s\" in next field to show that you are not a robot:'),\$_ctx->kutrl_hmf); ?>";
+        return "<?php echo sprintf(__('Confirm by writing \"%s\" in next field:'),\$_ctx->kutrl_hmf); ?>";
     }
 
     public static function humanFieldProtect($attr)

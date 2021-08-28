@@ -2,8 +2,9 @@ todo
 - Added public page of the list of know urls and in/visible status
 - Added passworded links
 - fix deprecated external service
+- update pager (see posts list)
 
-2021.08.28 | ready for next release
+2021.08.28 - ready for next release
 - add dashboard icon
 - clean PSR-2 codding style and short array
 - fix php 7.3+ and php 8.0.x compatibility
