@@ -19,7 +19,7 @@ $this->registerModule(
     'kUtRL',
     'Use, create and serve short url on your blog',
     'Jean-Christian Denis and contributors',
-    '2021.08.27',
+    '2021.08.28',
     [
         'permissions' => 'admin',
         'type' => 'plugin',

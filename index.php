@@ -411,7 +411,7 @@ if ($part == 'service') {
     dcPage::notices() .
 
     '<h3>' . __('Services configuration') . '</h3>' .
-    '<p><a class="back" href="' . $p_url . '">' . __('Back to links list') . '</a></p>';
+    '<p><a class="back" href="' . $p_url . '">' . __('Back to links list') . '</a></p>' .
     '<form id="service-form" method="post" action="' . $p_url . '">';
 
     foreach(kutrl::getServices($core) as $service_id => $service) {
@@ -429,7 +429,7 @@ if ($part == 'service') {
                 echo $o->error->toHTML();
             //}
         }
-        if (!empty($o->home)) {
+        if ($o->home != '') {
             echo '<p><a title="' . __('homepage') . '" href="' . $o->home . '">' . sprintf(__('Learn more about %s.'), $o->name) . '</a></p>';
         }
         $o->settingsForm();
