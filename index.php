@@ -237,14 +237,6 @@ if ($part == 'links') {
         $show_filters = true;
     }
 
-    $pager_base_url = 
-        $p_url .
-        '&amp;urlsrv=' . $urlsrv .
-        '&amp;sortby=' . $sortby .
-        '&amp;order=' . $order .
-        '&amp;nb=' . $nb_per_page .
-        '&amp;page=%s';
-
     try {
         $list_all = $log->getLogs($params);
         $list_counter = $log->getLogs($params, true)->f(0);
@@ -532,30 +524,34 @@ if ($part == 'links') {
 
     <p><input type="submit" value="' . __('Apply filters and display options') . '" />
     <br class="clear" /></p>
-    </form>
-   
-    <form action="' . $p_url . '&amp;part=links" method="post" id="form-actions">';
-
-    $list_current->display($page, $nb_per_page, $pager_base_url);
-
-    echo '
-    <div class="two-cols">
-    <p class="col checkboxes-helpers"></p>
-    <p class="col right">
-    <input type="submit" value="' . __('Delete selected short links') . '" />' . 
-    form::hidden(['deletelinks'], 1) . 
-    form::hidden(['urlsrv'], $urlsrv) . 
-    form::hidden(['sortby'], $sortby) . 
-    form::hidden(['order'], $order) . 
-    form::hidden(['page'], $page) . 
-    form::hidden(['nb'], $nb_per_page) . 
-    form::hidden(['part'], 'links') . 
-    $core->formNonce() . '
-    </p>
-    </div>
     </form>';
 
+    $list_current->display(
+        $page,
+        $nb_per_page, 
+        '<form action="' . $p_url . '&amp;part=links" method="post" id="form-actions">
+
+        %s
+
+        <div class="two-cols">
+        <p class="col checkboxes-helpers"></p>
+        <p class="col right">
+        <input type="submit" value="' . __('Delete selected short links') . '" />' . 
+        form::hidden(['deletelinks'], 1) . 
+        form::hidden(['urlsrv'], $urlsrv) . 
+        form::hidden(['sortby'], $sortby) . 
+        form::hidden(['order'], $order) . 
+        form::hidden(['page'], $page) . 
+        form::hidden(['nb'], $nb_per_page) . 
+        form::hidden(['part'], 'links') . 
+        $core->formNonce() . '
+        </p>
+        </div>
+        </form>',
+        $show_filters
+    );
 }
+
 # display footer
 dcPage::helpBlock('kUtRL');
 

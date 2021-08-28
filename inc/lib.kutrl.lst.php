@@ -11,79 +11,86 @@
 #
 # -- END LICENSE BLOCK ------------------------------------
 
-class kutrlLinkslist extends adminGenericList
+class kutrlLinkslist
 {
-    public function display($page, $nb_per_page, $url)
+    protected $core;
+    protected $rs;
+    protected $rs_count;
+    protected $html_prev;
+    protected $html_next;
+
+    public function __construct(dcCore $core, $rs, $rs_count)
     {
-        if ($this->rs->isEmpty()) {
-            echo '<p><strong>' . __('No short link') . '</strong></p>';
-        } else {
-            $pager = new pager($page, $this->rs_count, $nb_per_page, 10);
-
-            $pager->base_url = $url;
-
-            $html_block =
-                '<table class="clear">' .
-                '<thead>' .
-                '<tr>' .
-                '<th class="nowrap" colspan="2">' . __('Hash') . '</th>' .
-                '<th class="maximal">' . __('Link') . '</th>' .
-                '<th class="nowrap">' . __('Date') . '</th>' .
-                '<th class="nowrap">' . __('Service') . '</th>' .
-                '</tr>' .
-                '</thead>' .
-                '<tbody>%s</tbody>' .
-                '</table>';
-
-            echo '<p>' . __('Page(s)') . ' : ' . $pager->getLinks() . '</p>';
-            $blocks = explode('%s', $html_block);
-            echo $blocks[0];
-
-            $this->rs->index(((integer)$page - 1) * $nb_per_page);
-            $iter = 0;
-            while ($iter < $nb_per_page) {
-            
-                echo $this->line($url,$iter);
-                
-                if ($this->rs->isEnd()) {
-                    break;
-                } else {
-                    $this->rs->moveNext();
-                }
-                $iter++;
-            }
-            echo $blocks[1];
-            echo '<p>' . __('Page(s)') . ' : ' . $pager->getLinks() . '</p>';
-        }
+        $this->core      = &$core;
+        $this->rs        = &$rs;
+        $this->rs_count  = $rs_count;
+        $this->html_prev = __('&#171; prev.');
+        $this->html_next = __('next &#187;');
     }
 
-    private function line($url, $loop)
+    public function display($page, $nb_per_page, $enclose_block, $filter = false)
     {
-        $type = $this->rs->kut_type;
-        $hash = $this->rs->kut_hash;
+        if ($this->rs->isEmpty()) {
+            if ($filter) {
+                echo '<p><strong>' . __('No short link matches the filter') . '</strong></p>';
+            } else {
+                echo '<p><strong>' . __('No short link') . '</strong></p>';
+            }
+        } else {
+            $pager   = new dcPager($page, $this->rs_count, $nb_per_page, 10);
+            $entries = [];
+            if (isset($_REQUEST['entries'])) {
+                foreach ($_REQUEST['entries'] as $v) {
+                    $entries[(integer) $v] = true;
+                }
+            }
 
-        if (null !== ($o = kutrl::quickService($this->rs->kut_type))) {
-            $type = '<a href="' . $o->home . '" title="' . $o->name . '">' . $o->name . '</a>';
-            $hash = '<a href="' . $o->url_base . $hash . '" title="' . $o->url_base . $hash . '">' . $hash . '</a>';
+            $blocks = explode('%s', sprintf($enclose_block, 
+                '<div class="table-outer"><table>' .
+                ($filter ?
+                    '<caption>' . sprintf(__('List of %s links matching the filter.'), $this->rs_count) . '</caption>' :
+                    '<caption>' . sprintf(__('List of links (%s)'), $this->rs_count) . '</caption>'
+                ) .
+                '<tr>' . 
+                '<th colspan="2" class="first">' . __('Hash') . '</th>' .
+                '<th scope="col">' . __('Link') . '</th>' .
+                '<th scope="col">' . __('Date') . '</th>' .
+                '<th scope="col">' . __('Service') . '</th>' . 
+                '</tr>%s</table>%s</div>'
+            ));
+
+            echo $pager->getLinks().$blocks[0];
+
+            while ($this->rs->fetch()) {
+                $type = $this->rs->kut_type;
+                $hash = $this->rs->kut_hash;
+
+                if (null !== ($o = kutrl::quickService($type))) {
+                    $type = '<a href="' . $o->home . '" title="' . $o->name . '">' . $o->name . '</a>';
+                    $hash = '<a href="' . $o->url_base . $hash . '" title="' . $o->url_base . $hash . '">' . $hash . '</a>';
+                }
+
+                echo
+                '<tr class="line">' . 
+                '<td class="nowrap">' .
+                    form::checkbox(['entries[]'], $this->rs->kut_id, ['checked'  => isset($entries[$this->rs->kut_id])]) .
+                '</td>' .
+                '<td class="nowrap">' .
+                    $hash .
+                '</td>' .
+                '<td class="maximal" scope="row">' .
+                '<a href="' . $this->rs->kut_url . '">' . $this->rs->kut_url . '</a>' .
+                '</td>' .
+                '<td class="nowrap count">' .
+                    dt::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, $this->core->auth->getInfo('user_tz')) .
+                '</td>' .
+                '<td class="nowrap">' .
+                    $type .
+                '</td>' .
+                '</tr>';
+            }
+
+            echo $blocks[1].$blocks[2].$pager->getLinks();
         }
-
-        return
-        '<tr class="line">' . "\n" .
-        '<td class="nowrap">' .
-            form::checkbox(['entries[' . $loop . ']'], $this->rs->kut_id, 0) .
-        '</td>' .
-        '<td class="nowrap">' .
-            $hash .
-        "</td>\n" .
-        '<td class="maximal">' .
-        '<a href="' . $this->rs->kut_url . '">' . $this->rs->kut_url . '</a>' .
-        "</td>\n" .
-        '<td class="nowrap">' .
-            dt::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, $this->core->auth->getInfo('user_tz')) .
-        "</td>\n" .
-        '<td class="nowrap">' .
-            $type .
-        "</td>\n" .
-        '</tr>' . "\n";
     }
 }
