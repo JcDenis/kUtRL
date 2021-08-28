@@ -1,87 +1,50 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{tpl:BlogLanguage}}" lang="{{tpl:BlogLanguage}}">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="MSSmartTagsPreventParsing" content="TRUE" />
-  <meta name="ROBOTS" content="{{tpl:BlogMetaRobots}}" />
-  
-  <title>{{tpl:BlogName encode_html="1"}}<tpl:PaginationIf start="0"> - {{tpl:lang page}} {{tpl:PaginationCurrent}}</tpl:PaginationIf></title>
-  <meta name="description" lang="{{tpl:BlogLanguage}}" content="{{tpl:BlogDescription cut_string="180" encode_html="1"}}" />
-  <meta name="copyright" content="{{tpl:BlogCopyrightNotice encode_html="1"}}" />
-  <meta name="author" content="{{tpl:BlogEditor encode_html="1"}}" />
-  <meta name="date" scheme="W3CDTF" content="{{tpl:BlogUpdateDate iso8601="1"}}" />
-  
-  <link rel="schema.dc" href="http://purl.org/dc/elements/1.1/" />
-  <meta name="dc.title" lang="{{tpl:BlogLanguage}}" content="{{tpl:BlogName encode_html="1"}}<tpl:PaginationIf start="0"> - {{tpl:lang page}} {{tpl:PaginationCurrent}}</tpl:PaginationIf>" />
-  <meta name="dc.description" lang="{{tpl:BlogLanguage}}" content="{{tpl:BlogDescription encode_html="1"}}" />
-  <meta name="dc.language" content="{{tpl:BlogLanguage}}" />
-  <meta name="dc.publisher" content="{{tpl:BlogEditor encode_html="1"}}" />
-  <meta name="dc.rights" content="{{tpl:BlogCopyrightNotice encode_html="1"}}" />
-  <meta name="dc.date" scheme="W3CDTF" content="{{tpl:BlogUpdateDate iso8601="1"}}" />
-  <meta name="dc.type" content="text" />
-  <meta name="dc.format" content="text/html" />
-  
-  <link rel="contents" title="{{tpl:lang Archives}}" href="{{tpl:BlogArchiveURL}}" />
-  <tpl:Categories>
-  <link rel="section" href="{{tpl:CategoryURL}}" title="{{tpl:CategoryTitle encode_html="1"}}" />
-  </tpl:Categories>
-  
-  <link rel="alternate" type="application/atom+xml" title="Atom 1.0" href="{{tpl:BlogFeedURL type="atom"}}" />
-  <link rel="EditURI" type="application/rsd+xml" title="RSD" href="{{tpl:BlogRSDURL}}" />
-  <link rel="meta" type="application/xbel+xml" title="Blogroll" href="{{tpl:BlogrollXbelLink}}" />
-  
-  {{tpl:include src="_head.html"}}
-</head>
+{{tpl:extends parent="__layout.html"}}
+<tpl:Block name="head-title">
+  <title>{{tpl:lang Links shortener}}} - {{tpl:BlogName encode_html="1"}}</title>
+</tpl:Block>
+<tpl:Block name="html-head">
+  {{tpl:parent}}
+</tpl:Block>
 
-<body class="dc-kutrl">
-<div id="page">
+<tpl:Block name="body-tag">
+  <body class="dc-kutrl">
+</tpl:Block>
 
-{{tpl:include src="_top.html"}}
-
-<div id="wrapper">
-
-<div id="main">
-  <div id="content">
-  
-  <div id="p0" class="post">
-    <h2 class="post-title">{{tpl:lang Links shortener}}</h2>
-	<tpl:kutrlMsgIf has_message"1">
-	 <p><strong>{{tpl:kutrlMsg}}</strong></p>
-	</tpl:kutrlMsgIf>
- 
-	<tpl:kutrlPageIf is_active="1">
-	 <form name="dokutrl" method="post" action="{{tpl:kutrlPageURL}}">
-	 <p><label>{{tpl:lang Long link:}}<br />
-	  <input type="text" size="60" name="longurl" id="longurl" maxlength="255" value="" />
-	 </label></p>
-	 <p><label>{{tpl:kutrlHumanField}}<br />
-	  <input type="text" size="60" name="hmf" id="hmf" maxlength="255" value="" />
-	 </label></p>
-	 <p>
-	  <input class="submit" type="submit" name="submiturl" value="{{tpl:lang Create}}" />
-	  {{tpl:kutrlHumanFieldProtect}}
-	 </p>
-	 </form>
-	</tpl:kutrlPageIf>
-  </div>
-  
-  </div>
-</div> <!-- End #main -->
-
-<div id="sidebar">
-  <div id="blognav">
-    {{tpl:Widgets type="nav"}}
-  </div> <!-- End #blognav -->
-  
-  <div id="blogextra">
-    {{tpl:Widgets type="extra"}}
-  </div> <!-- End #blogextra -->
-</div>
-
-</div> <!-- End #wrapper -->
-
-{{tpl:include src="_footer.html"}}
-</div> <!-- End #page -->
-</body>
-</html>
+<tpl:Block name="main-content">
+  <tpl:Block name="main-content-before"></tpl:Block>
+  <tpl:Block name="content-info-header">
+    <header id="content-info">
+      <tpl:Block name="content-info-header-title">
+        <h2>{{tpl:lang Links shortener}}</h2>
+      </tpl:Block>
+      <tpl:Block name="content-info-header-content">
+        <tpl:kutrlMsgIf has_message="1">
+          <p>{{tpl:kutrlMsg}}</p>
+        </tpl:kutrlMsgIf>
+      </tpl:Block>
+    </header>
+  </tpl:Block>
+  <tpl:Block name="content-inner">
+    <tpl:Block name="content-inner-before"></tpl:Block>
+    <div class="content-inner">
+      <tpl:Block name="content-inner-content">
+        <tpl:kutrlPageIf is_active="1">
+         <form name="dokutrl" method="post" action="{{tpl:kutrlPageURL}}">
+           <p><label>{{tpl:lang Long link:}}<br />
+            <input type="text" size="60" name="longurl" id="longurl" maxlength="255" value="" />
+           </label></p>
+           <p><label>{{tpl:kutrlHumanField}}<br />
+            <input type="text" size="60" name="hmf" id="hmf" maxlength="255" value="" />
+           </label></p>
+           <p>
+            <input class="submit" type="submit" name="submiturl" value="{{tpl:lang Create}}" />
+            {{tpl:kutrlHumanFieldProtect}}
+           </p>
+         </form>
+        </tpl:kutrlPageIf>
+      </tpl:Block>
+    </div> <!-- # End #content-inner -->
+    <tpl:Block name="content-inner-after"></tpl:Block>
+  </tpl:Block>
+  <tpl:Block name="main-content-after"></tpl:Block>
+</tpl:Block>

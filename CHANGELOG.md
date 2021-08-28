@@ -3,7 +3,7 @@ todo
 - Added passworded links
 - fix deprecated external service
 
-2021.08.28
+2021.08.28 | ready for next release
 - add dashboard icon
 - clean PSR-2 codding style and short array
 - fix php 7.3+ and php 8.0.x compatibility
@@ -12,6 +12,7 @@ todo
 - merge index file sub parts
 - remove custom js
 - fix widgets rendering
+- fix public template now based on dotty
 
 2011.04.01
 - Changed version numbering
