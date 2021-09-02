@@ -21,9 +21,9 @@ $this->registerModule(
     'Jean-Christian Denis and contributors',
     '2021.08.28',
     [
+        'requires' => [['core', '2.19']],
         'permissions' => 'admin',
         'type' => 'plugin',
-        'dc_min' => '2.19',
         'support' => 'https://github.com/JcDenis/kUtRL',
         'details' => 'http://plugins.dotaddict.org/dc2/details/kUtRL',
         'repository' => 'https://raw.githubusercontent.com/JcDenis/kUtRL/master/dcstore.xml'

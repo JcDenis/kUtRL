@@ -1,8 +1,9 @@
-todo
-- Added public page of the list of know urls and in/visible status
-- Added passworded links
-- fix deprecated external service
-- update pager (see posts list)
+xxx.xx.xx
+- [ ] Add public page of the list of know urls and in/visible status
+- [ ] Add passworded links
+- [ ] fix deprecated external service
+- [ ] update php header to phpdoc style
+- [x] fix post page options display
 
 2021.08.28 - pre release
 - add dashboard icon
@@ -11,6 +12,7 @@ todo
 - fix compatibility with Dotclear 2.19
 - create readme file
 - merge index file sub parts
+- update admin pager for links list
 - remove custom js
 - fix widgets rendering
 - fix public template now based on dotty

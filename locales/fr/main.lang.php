@@ -1,52 +1,50 @@
 <?php
 // Language: Français 
 // Module: kUtRL - 2021.08.28
-// Date: 2021-08-28 19:47:06 
+// Date: 2021-09-02 12:25:32 
 // Translated with dcTranslater - 2021.08.18 
 
-#_admin.php:22
-#_admin.php:55
+#_admin.php:24
+#_admin.php:57
 #_widgets.php:28
 #default-templates/kutrl.html:3
 #default-templates/kutrl.html:18
 #default-templates/kutrl404.html:9
 #default-templates/kutrl_old.html:48
-#index.php:284
-#index.php:308
-#index.php:405
-#index.php:454
-#index.php:499
+#index.php:276
+#index.php:300
+#index.php:397
+#index.php:446
+#index.php:491
 $GLOBALS['__l10n']['Links shortener'] = 'Réducteur de liens';
 
-#_admin.php:90
+#_admin.php:92
 #index.php:196
 $GLOBALS['__l10n']['Short link'] = 'Lien court';
 
-#_admin.php:103
+#_admin.php:104
+#_admin.php:245
 $GLOBALS['__l10n']['Create short link'] = 'Créer un lien court';
 
-#_admin.php:108
-#index.php:475
+#_admin.php:109
+#index.php:467
 $GLOBALS['__l10n']['Custom short link:'] = 'Lien court personnalisé :';
 
-#_admin.php:115
+#_admin.php:116
 #_widgets.php:212
 $GLOBALS['__l10n']['never followed'] = 'jamais suivi';
 
-#_admin.php:117
+#_admin.php:118
 #_widgets.php:214
 $GLOBALS['__l10n']['followed one time'] = 'suivi une fois';
 
-#_admin.php:119
+#_admin.php:120
 #_widgets.php:216
 $GLOBALS['__l10n']['followed %s times'] = 'suivi %s fois';
 
-#_admin.php:126
-#_admin.php:243
-$GLOBALS['__l10n']['delete short link'] = 'effacer un lien court';
-
-#_admin.php:242
-$GLOBALS['__l10n']['create short link'] = 'créer un lien court';
+#_admin.php:127
+#_admin.php:246
+$GLOBALS['__l10n']['Delete short link'] = 'Effacer un lien court';
 
 #_public.php:133
 $GLOBALS['__l10n']['Failed to verify protected field.'] = 'Impossible de vérifier le champs de protection.';
@@ -132,7 +130,7 @@ $GLOBALS['__l10n']['Sort by:'] = 'Trier par :';
 $GLOBALS['__l10n']['Rank'] = 'Rang';
 
 #_widgets.php:84
-#inc/lib.kutrl.lst.php:18
+#inc/lib.kutrl.lst.php:55
 $GLOBALS['__l10n']['Hash'] = 'Hash';
 
 #_widgets.php:99
@@ -144,7 +142,7 @@ $GLOBALS['__l10n']['Hide no followed links'] = 'Cacher les liens non suivis';
 #_widgets.php:138
 #default-templates/kutrl.html:33
 #default-templates/kutrl_old.html:55
-#index.php:470
+#index.php:462
 $GLOBALS['__l10n']['Long link:'] = 'Lien long :';
 
 #_widgets.php:142
@@ -176,10 +174,10 @@ $GLOBALS['__l10n']['Short link creation'] = 'Création de lien court';
 #inc/lib.kutrl.activityreport.php:27
 $GLOBALS['__l10n']['New short link of type "%s" and hash "%s" was created.'] = 'Un nouveau lien court de type "%s" et de hash "%s" a été créé.';
 
-#inc/lib.kutrl.lst.php:8
+#inc/lib.kutrl.lst.php:37
 $GLOBALS['__l10n']['No short link'] = 'Pas de lien court';
 
-#inc/lib.kutrl.lst.php:21
+#inc/lib.kutrl.lst.php:58
 $GLOBALS['__l10n']['Service'] = 'Service';
 
 #inc/lib.kutrl.srv.php:88
@@ -412,113 +410,113 @@ $GLOBALS['__l10n']['Failed to create short link. This could be caused by a servi
 #index.php:195
 $GLOBALS['__l10n']['Long link'] = 'Lien long';
 
-#index.php:272
+#index.php:264
 $GLOBALS['__l10n']['Links successfully deleted'] = 'Liens supprimés avec succès';
 
-#index.php:310
-#index.php:407
-#index.php:413
-#index.php:565
+#index.php:302
+#index.php:399
+#index.php:405
+#index.php:561
 $GLOBALS['__l10n']['Services configuration'] = 'Configuration des services';
 
-#index.php:317
-#index.php:414
+#index.php:309
+#index.php:406
 $GLOBALS['__l10n']['Back to links list'] = 'Retour à la liste des liens';
 
-#index.php:322
+#index.php:314
 $GLOBALS['__l10n']['Plugin activation'] = 'Activation';
 
-#index.php:325
+#index.php:317
 $GLOBALS['__l10n']['Enable plugin'] = 'Activer le plugin';
 
-#index.php:329
+#index.php:321
 $GLOBALS['__l10n']['Behaviors'] = 'Comportements';
 
-#index.php:332
+#index.php:324
 $GLOBALS['__l10n']['Allow short link for external URL'] = 'Autoriser les liens court sur des URLs externes';
 
-#index.php:333
+#index.php:325
 $GLOBALS['__l10n']['Not only link started with this blog URL could be shortened.'] = 'Ne pas limiter la création de liens courts aux liens commençant par l\'URL du blog.';
 
-#index.php:336
+#index.php:328
 $GLOBALS['__l10n']['Passive mode'] = 'Mode passif';
 
-#index.php:337
+#index.php:329
 $GLOBALS['__l10n']['If this extension is disabled and the passive mode is enabled, "kutrl" tags (like EntryKurl) will display long urls instead of nothing on templates.'] = 'Si cette extension est désactivée et que le mode passif est activé, les balises "kutrl" (comme EntryKutrl) afficheront les liens longs au lieu de rien.';
 
-#index.php:340
+#index.php:332
 $GLOBALS['__l10n']['Active mode'] = 'Mode actif';
 
-#index.php:341
+#index.php:333
 $GLOBALS['__l10n']['If the active mode is enabled, all know default template tags (like EntryURL) will display short urls instead of long ones on templates.'] = 'Si le mode actif est acitvé, les balises de thème (comme EntryURL) afficheront les liens court au lieu des longs.';
 
-#index.php:342
+#index.php:334
 $GLOBALS['__l10n']['You can disable URL shortening for a specific template tag by adding attribute disable_kutrl="1" to it .'] = 'Vous pouvez désactiver le raccourcissement pour un tag de template spécifique en lui ajoutant l\'attribue disable_kutrl="1"';
 
-#index.php:345
+#index.php:337
 $GLOBALS['__l10n']['Create short link for new entries'] = 'Créer un lien court pour les nouveaux billets';
 
-#index.php:346
+#index.php:338
 $GLOBALS['__l10n']['This can be changed on page of creation/edition of an entry.'] = 'Ceci peut être changé sur la page d\'édition / création d\'un billet.';
 
-#index.php:350
+#index.php:342
 $GLOBALS['__l10n']['Default services'] = 'Services par défaut';
 
-#index.php:357
+#index.php:349
 $GLOBALS['__l10n']['Administration:'] = 'Administration :';
 
-#index.php:360
+#index.php:352
 $GLOBALS['__l10n']['Service to use in this admin page and on edit page of an entry.'] = 'Service à utiliser sur cette page d\'administration ou sur la page d\'édition d\'un billet.';
 
-#index.php:367
+#index.php:359
 $GLOBALS['__l10n']['Extensions:'] = 'Extensions :';
 
-#index.php:370
+#index.php:362
 $GLOBALS['__l10n']['Service to use on third part plugins.'] = 'Service à utiliser par les plugins tiers';
 
-#index.php:377
+#index.php:369
 $GLOBALS['__l10n']['Templates:'] = 'Templates :';
 
-#index.php:380
+#index.php:372
 $GLOBALS['__l10n']['Shorten links automatically when using template value like "EntryKutrl".'] = 'Réduit automatiquement les liens des templates utilisant les balises telles que "EntryKutrl".';
 
-#index.php:387
+#index.php:379
 $GLOBALS['__l10n']['Contents:'] = 'Contenus :';
 
-#index.php:390
+#index.php:382
 $GLOBALS['__l10n']['Shorten links automatically found in contents using wiki synthax.'] = 'Réduit automatiquement les liens des contenus utilisant la syntax wiki.';
 
-#index.php:425
+#index.php:417
 $GLOBALS['__l10n']['%s API is well configured and runing.'] = 'L\'API %s est correctement configurée et est fonctionnelle.';
 
-#index.php:426
+#index.php:418
 $GLOBALS['__l10n']['Failed to test %s API.'] = 'Impossible de tester l\'API %s.';
 
-#index.php:433
+#index.php:425
 $GLOBALS['__l10n']['homepage'] = 'page d\'accueil';
 
-#index.php:433
+#index.php:425
 $GLOBALS['__l10n']['Learn more about %s.'] = 'En savoir plus à propos de %s.';
 
-#index.php:456
-#index.php:501
+#index.php:448
+#index.php:493
 $GLOBALS['__l10n']['New link'] = 'Nouveau lien';
 
-#index.php:463
+#index.php:455
 $GLOBALS['__l10n']['You must set an admin service.'] = 'Vous devez définir un service admin.';
 
-#index.php:467
+#index.php:459
 $GLOBALS['__l10n']['Shorten link using service "%s"'] = 'Raccourcir un lien en utilisant le service "%s"';
 
-#index.php:477
+#index.php:469
 $GLOBALS['__l10n']['Only if you want a custom short link.'] = 'Uniquement si vous souhaitez un lien court personnalisé.';
 
-#index.php:481
+#index.php:473
 $GLOBALS['__l10n']['You can use "bob!!" if you want a semi-custom link, it starts with "bob" and "!!" will be replaced by an increment value.'] = 'Vous pouvez utiliser "bob!!" si vous souhaitez un lien semi-personnalisé, il commencera par "bob" et "!!" sera remplacé par une valeur incrémentale.';
 
-#index.php:513
+#index.php:505
 $GLOBALS['__l10n']['Service:'] = 'Service :';
 
-#index.php:545
+#index.php:539
 $GLOBALS['__l10n']['Delete selected short links'] = 'Effacer les liens sélectionnés';
 

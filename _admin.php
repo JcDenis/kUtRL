@@ -15,6 +15,8 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
 
+$core->blog->settings->addNamespace('kUtRL');
+
 require_once dirname(__FILE__) . '/_widgets.php';
 
 # Plugin menu
@@ -29,7 +31,7 @@ $_menu['Plugins']->addItem(
 if ($core->blog->settings->kUtRL->kutrl_active) {
     $core->addBehavior('adminDashboardFavorites', ['adminKutrl', 'antispamDashboardFavorites']);
     $core->addBehavior('adminPostHeaders', ['adminKutrl', 'adminPostHeaders']);
-    $core->addBehavior('adminPostFormSidebar', ['adminKutrl', 'adminPostFormSidebar']);
+    $core->addBehavior('adminPostFormItems', ['adminKutrl', 'adminPostFormItems']);
     $core->addBehavior('adminAfterPostUpdate', ['adminKutrl', 'adminAfterPostUpdate']); // update existing short url
     $core->addBehavior('adminAfterPostUpdate', ['adminKutrl', 'adminAfterPostCreate']); // create new short url
     $core->addBehavior('adminAfterPostCreate', ['adminKutrl', 'adminAfterPostCreate']);
@@ -66,7 +68,7 @@ class adminKutrl
         return dcPage::jsLoad('index.php?pf=kUtRL/js/admin.js');
     }
 
-    public static function adminPostFormSidebar($post)
+    public static function adminPostFormItems($main_items, $sidebar_items, $post)
     {
         global $core;
         $s = $core->blog->settings->kUtRL;
@@ -86,9 +88,8 @@ class adminKutrl
             $rs = false;
         }
 
-        echo 
-        '<h3 id="kutrl-form-title" class="clear">' . __('Short link') . '</h3>' .
-        '<div id="kutrl-form-content">' .
+        $ret =  
+        '<div id="kUtRL"><h5>' . __('Short link') . '</h5>' .
         form::hidden(['kutrl_old_post_url'], $post_url);
 
         if (!$rs) {
@@ -97,13 +98,13 @@ class adminKutrl
             } else {
                 $chk = !empty($_POST['kutrl_create']);
             }
-            echo 
+            $ret .= 
             '<p><label class="classic">' .
             form::checkbox('kutrl_create', 1, $chk, '', 3) . ' ' .
             __('Create short link') . '</label></p>';
 
             if ($kut->allow_custom_hash) {
-                echo 
+                $ret .= 
                 '<p class="classic">' .
                 '<label for="custom">' . __('Custom short link:') . ' ' .
                 form::field('kutrl_create_custom', 32, 32, '', 3) .
@@ -120,13 +121,15 @@ class adminKutrl
             }
             $href = $kut->url_base . $rs->hash;
 
-            echo 
+            $ret .= 
             '<p><label class="classic">' .
             form::checkbox('kutrl_delete', 1, !empty($_POST['kutrl_delete']), '', 3) . ' ' .
-            __('delete short link') . '</label></p>' .
+            __('Delete short link') . '</label></p>' .
             '<p><a href="' . $href . '" ' . 'title="' . $title . '">' . $href . '</a></p>';
         }
-        echo '</div>';
+        $ret .= '</div>';
+
+        $sidebar_items['options-box']['items']['kUtRL'] = $ret;
     }
 
     public static function adminAfterPostUpdate($cur, $post_id)
@@ -239,8 +242,8 @@ class adminKutrl
             return null;
         }
 
-        $args[0][__('kUtRL')][__('create short link')] = 'kutrl_create';
-        $args[0][__('kUtRL')][__('delete short link')] = 'kutrl_delete';
+        $args[0][__('kUtRL')][__('Create short link')] = 'kutrl_create';
+        $args[0][__('kUtRL')][__('Delete short link')] = 'kutrl_delete';
     }
 
     public static function adminPostsActions(dcCore $core, $posts, $action, $redir)
