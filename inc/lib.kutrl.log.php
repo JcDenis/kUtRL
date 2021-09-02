@@ -1,15 +1,15 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-#
-# This file is part of kUtRL, a plugin for Dotclear 2.
-# 
-# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
-# 
-# Licensed under the GPL version 2.0 license.
-# A copy of this license is available in LICENSE file or at
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK ------------------------------------
+/**
+ * @brief kUtRL, a plugin for Dotclear 2
+ * 
+ * @package Dotclear
+ * @subpackage Plugin
+ * 
+ * @author Jean-Christian Denis and contributors
+ * 
+ * @copyright Jean-Christian Denis
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 # This file contents class to acces local short links records
 
@@ -112,7 +112,7 @@ class kutrlLog
             $cur->kut_url = '';
             $cur->kut_dt = date('Y-m-d H:i:s');
             $cur->kut_counter = 0;
-            
+
             $cur->update(
                 "WHERE blog_id='" . $this->blog . "' " .
                 "AND kut_id='" . $id . "' "
@@ -180,7 +180,7 @@ class kutrlLog
             $r = 'SELECT count(S.kut_id) ';
         } else {
             $content_req = '';
-            
+
             if (!empty($p['columns']) && is_array($p['columns'])) {
                 $content_req .= implode(', ', $p['columns']) . ', ';
             }

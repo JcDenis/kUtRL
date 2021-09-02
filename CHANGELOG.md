@@ -2,7 +2,7 @@ xxx.xx.xx
 - [ ] Add public page of the list of know urls and in/visible status
 - [ ] Add passworded links
 - [ ] fix deprecated external service
-- [ ] update php header to phpdoc style
+- [x] update php header to phpdoc style
 - [x] fix post page options display
 
 2021.08.28 - pre release

@@ -1,15 +1,15 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-#
-# This file is part of kUtRL, a plugin for Dotclear 2.
-# 
-# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
-# 
-# Licensed under the GPL version 2.0 license.
-# A copy of this license is available in LICENSE file or at
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK ------------------------------------
+/**
+ * @brief kUtRL, a plugin for Dotclear 2
+ * 
+ * @package Dotclear
+ * @subpackage Plugin
+ * 
+ * @author Jean-Christian Denis and contributors
+ * 
+ * @copyright Jean-Christian Denis
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if (!defined('DC_RC_PATH')) {
     return null;
@@ -116,7 +116,7 @@ class widgetKutrl
     {
         global $core;
         $s = $core->blog->settings->kUtRL;
-        
+
         if (!$s->kutrl_active 
          || !$s->kutrl_srv_local_public 
          || ($w->homeonly == 1 && !$core->url->isHome($core->url->type)) || ($w->homeonly == 2 && $core->url->isHome($core->url->type))
@@ -177,7 +177,7 @@ class widgetKutrl
         $order .= $w->sort == 'desc' ? ' DESC' : ' ASC';
 
         $limit = $core->con->limit(abs((integer) $w->limit));
-        
+
         $rs = $core->con->select(
             'SELECT kut_counter, kut_hash ' .
             "FROM " . $core->prefix . "kutrl " .
@@ -195,7 +195,7 @@ class widgetKutrl
         while($rs->fetch()) {
             $i++;
             $rank = '<span class="rankkutrl-rank">' . $i . '</span>';
-            
+
             $hash = $rs->kut_hash;
             $url = $core->blog->url . $core->url->getBase('kutrl') . '/' . $hash;
             $cut_len = - abs((integer) $w->urllen);
@@ -227,7 +227,7 @@ class widgetKutrl
                 ) .
                 '</a></li>';
         }
-        
+
         if (empty($content)) {
             return null;
         }

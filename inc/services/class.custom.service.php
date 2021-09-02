@@ -1,15 +1,15 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-#
-# This file is part of kUtRL, a plugin for Dotclear 2.
-# 
-# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
-# 
-# Licensed under the GPL version 2.0 license.
-# A copy of this license is available in LICENSE file or at
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK ------------------------------------
+/**
+ * @brief kUtRL, a plugin for Dotclear 2
+ * 
+ * @package Dotclear
+ * @subpackage Plugin
+ * 
+ * @author Jean-Christian Denis and contributors
+ * 
+ * @copyright Jean-Christian Denis
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if (!defined('DC_RC_PATH')) {
     return null;
@@ -21,7 +21,7 @@ class customKutrlService extends kutrlService
         'id' => 'custom',
         'name' => 'Custom'
     ];
-    
+
     protected function init()
     {
         $config = unserialize(base64_decode($this->settings->kutrl_srv_custom));
@@ -29,12 +29,12 @@ class customKutrlService extends kutrlService
         {
             $config = [];
         }
-        
+
         $this->config['url_api'] = !empty($config['url_api']) ? $config['url_api'] : '';
         $this->config['url_base'] = !empty($config['url_base']) ? $config['url_base'] : '';
         $this->config['url_param'] = !empty($config['url_param']) ? $config['url_param'] : '';
         $this->config['url_encode'] = !empty($config['url_api']);
-        
+
         $this->config['url_min_length'] = strlen($this->url_base) + 2;
     }
 

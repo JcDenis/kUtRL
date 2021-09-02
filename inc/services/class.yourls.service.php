@@ -1,15 +1,15 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-#
-# This file is part of kUtRL, a plugin for Dotclear 2.
-# 
-# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
-# 
-# Licensed under the GPL version 2.0 license.
-# A copy of this license is available in LICENSE file or at
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK ------------------------------------
+/**
+ * @brief kUtRL, a plugin for Dotclear 2
+ * 
+ * @package Dotclear
+ * @subpackage Plugin
+ * 
+ * @author Jean-Christian Denis and contributors
+ * 
+ * @copyright Jean-Christian Denis
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if (!defined('DC_RC_PATH')) {
     return null;
@@ -34,10 +34,10 @@ class yourlsKutrlService extends kutrlService
     {
         $this->args['username'] = $this->settings->kutrl_srv_yourls_username;
         $this->args['password'] = $this->settings->kutrl_srv_yourls_password;
-    
+
         $base = (string) $this->settings->kutrl_srv_yourls_base;
         //if (!empty($base) && substr($base,-1,1) != '/') $base .= '/';
-    
+
         $this->config['url_api'] = $base;
         $this->config['url_base'] = $base;
         $this->config['url_min_len'] = strlen($base)+3;
@@ -80,16 +80,16 @@ class yourlsKutrlService extends kutrlService
             $this->error->add(__('Service is not well configured.'));
             return false;
         }
-        
+
         $args = $this->args;
         $args['url'] = $this->url_test;
-        
+
         if (!($response = self::post($this->url_api, $this->args, true))) {
             $this->error->add(__('Service is unavailable.'));
             return false;
         }
         $rsp = @simplexml_load_string($response);
-        
+
         if ($rsp && $rsp->status == 'success') {
             return true;
         }

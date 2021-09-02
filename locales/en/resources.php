@@ -14,4 +14,3 @@
 if (!defined('DC_RC_PATH')) { return; }
 
 $__resources['help']['kUtRL'] = dirname(__FILE__).'/help/help.html';
-?>

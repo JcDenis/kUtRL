@@ -1,15 +1,15 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-#
-# This file is part of kUtRL, a plugin for Dotclear 2.
-# 
-# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
-# 
-# Licensed under the GPL version 2.0 license.
-# A copy of this license is available in LICENSE file or at
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK ------------------------------------
+/**
+ * @brief kUtRL, a plugin for Dotclear 2
+ * 
+ * @package Dotclear
+ * @subpackage Plugin
+ * 
+ * @author Jean-Christian Denis and contributors
+ * 
+ * @copyright Jean-Christian Denis
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if (!defined('DC_RC_PATH')) {
     return null;
@@ -109,7 +109,7 @@ class urlKutrl extends dcUrlHandlers
     {
         global $core, $_ctx;
         $s = $core->blog->settings->kUtRL;
-        
+
         # Not active, go to default 404
         if (!$s->kutrl_active) {
             self::p404();
@@ -215,7 +215,7 @@ class urlKutrl extends dcUrlHandlers
     protected static function kutrl404()
     {
         global $core;
-        
+
         if (!$core->blog->settings->kUtRL->kutrl_srv_local_404_active) {
             self::p404();
             return null;
@@ -348,7 +348,7 @@ class tplKutrl
     public static function pageIf($attr, $content)
     {
         $operator = isset($attr['operator']) ? self::getOperator($attr['operator']) : '&&';
-        
+
         if (isset($attr['is_active'])) {
             $sign = (boolean) $attr['is_active'] ? '' : '!';
             $if[] = $sign . '$core->blog->settings->kUtRL->kutrl_srv_local_public';
@@ -511,7 +511,7 @@ class tplKutrl
         " if (!empty(\$kutrl_rs)) { " .
         "  \$core->callBehavior('publicAfterKutrlCreate',\$core,\$kutrl_rs,__('New public short URL')); " .
         " } \n" .
-        
+
         " } \n" .
         " unset(\$kutrl_rs); \n" .
         "} \n" .

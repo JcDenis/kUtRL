@@ -1,15 +1,15 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-#
-# This file is part of kUtRL, a plugin for Dotclear 2.
-# 
-# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
-# 
-# Licensed under the GPL version 2.0 license.
-# A copy of this license is available in LICENSE file or at
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK ------------------------------------
+/**
+ * @brief kUtRL, a plugin for Dotclear 2
+ * 
+ * @package Dotclear
+ * @subpackage Plugin
+ * 
+ * @author Jean-Christian Denis and contributors
+ * 
+ * @copyright Jean-Christian Denis
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if (!defined('DC_RC_PATH')) {
     return null;
@@ -21,10 +21,10 @@ class localKutrlService extends kutrlService
         'id' => 'local',
         'name' => 'kUtRL',
         'home' => 'http://kutrl.fr',
-        
+
         'allow_custom_hash' => true
     ];
-    
+
     protected function init()
     {
         $protocols = (string) $this->settings->kutrl_srv_local_protocols;
@@ -32,9 +32,9 @@ class localKutrlService extends kutrlService
 
         $this->config['url_base'] = $this->core->blog->url . $this->core->url->getBase('kutrl') . '/';
         $this->config['url_min_len'] = strlen($this->url_base) + 2;
-        
+
     }
-    
+
     public function saveSettings()
     {
         $this->settings->put('kutrl_srv_local_protocols', $_POST['kutrl_srv_local_protocols'], 'string');
@@ -47,7 +47,7 @@ class localKutrlService extends kutrlService
     {
         echo
         '<div class="two-cols"><div class="col">'  . 
-        
+
         '<p><strong>' . __('Settings:') . '</strong></p>'  . 
         '<p><label class="classic">' . 
         __('Allowed protocols:') . '<br />' . 
@@ -75,7 +75,7 @@ class localKutrlService extends kutrlService
         '<p class="form-note">' . __('If this is not activated, the default 404 page of the theme will be display.') . '</p>' . 
 
         '</div><div class="col">' . 
-        
+
         '<p><strong>' . __('Note:') . '</strong></p>' . 
         '<p>' . 
         __('This service use your own Blog to shorten and serve URL.') . '<br />' . 
@@ -96,7 +96,7 @@ class localKutrlService extends kutrlService
         '</p>' . 
         '<p>' . __('There are two templates delivered with kUtRL, if you do not use default theme, you may adapt them to yours.') . '<br />' . 
         __('Files are in plugin directory /default-templates, just copy them into your theme and edit them.') . '</p>' . 
-        
+
         '</div></div><br class="clear"/>';
     }
 
@@ -181,7 +181,7 @@ class localKutrlService extends kutrlService
         false === $this->log->select(null,$prefix . $next_id, null, 'local') ?
         $next_id : $this->next($next_id, $prefix);
     }
-    
+
     protected function append($id)
     {
         $id = str_split($id);
@@ -210,7 +210,7 @@ class localKutrlService extends kutrlService
         }
         return implode($id);
     }
-    
+
     public function getUrl($hash)
     {
         if (false === ($rs = $this->log->select(null, $hash, null, 'local'))) {

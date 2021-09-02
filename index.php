@@ -1,15 +1,15 @@
 <?php
-# -- BEGIN LICENSE BLOCK ----------------------------------
-#
-# This file is part of kUtRL, a plugin for Dotclear 2.
-# 
-# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
-# 
-# Licensed under the GPL version 2.0 license.
-# A copy of this license is available in LICENSE file or at
-# http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-#
-# -- END LICENSE BLOCK ------------------------------------
+/**
+ * @brief kUtRL, a plugin for Dotclear 2
+ * 
+ * @package Dotclear
+ * @subpackage Plugin
+ * 
+ * @author Jean-Christian Denis and contributors
+ * 
+ * @copyright Jean-Christian Denis
+ * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 
 if (!defined('DC_CONTEXT_ADMIN')) {
     return;
@@ -121,7 +121,7 @@ if ($part == 'link') {
             }
             $url = trim($core->con->escape($_POST['str']));
             $hash = empty($_POST['custom']) ? null : $_POST['custom'];
-            
+
             if (empty($url)) {
                 throw new Exception(__('There is nothing to shorten.'));
             }
@@ -257,7 +257,7 @@ if ($part == 'links') {
                 }
                 $o->remove($rs->kut_url);
             }
-            
+
             $core->blog->triggerBlog();
 
             dcPage::addSuccessNotice(
@@ -408,7 +408,7 @@ if ($part == 'service') {
 
     foreach(kutrl::getServices($core) as $service_id => $service) {
         $o = new $service($core);
-        
+
         echo '<div class="fieldset" id="setting-' . $service_id . '"><h4>' . $o->name . '</h4>';
 
         if (!empty($_POST['save'])) {
@@ -458,7 +458,7 @@ if ($part == 'link') {
         <div class="fieldset">
         <h4>' . sprintf(__('Shorten link using service "%s"'), $kut->name) . '</h4>
         <form id="create-link" method="post" action="' . $p_url . '">
-        
+
         <p><label for="str">' . __('Long link:') . '</label>' .
         form::field('str', 100, 255, '') . '</p>';
 
