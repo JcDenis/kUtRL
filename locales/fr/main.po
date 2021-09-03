@@ -242,7 +242,7 @@ msgstr "Il n'y a rien à configurer pour ce service."
 
 #: inc/lib.wiki.kutrl.php:68
 msgid "%s (Shorten with %s)"
-msgstr "% (réduit avec %s)"
+msgstr "%s (réduit avec %s)"
 
 #: inc/lib.wiki.kutrl.php:73
 #: index.php:179

@@ -185,7 +185,7 @@ $GLOBALS['__l10n']['Service'] = 'Service';
 $GLOBALS['__l10n']['There is nothing to configure for this service.'] = 'Il n\'y a rien à configurer pour ce service.';
 
 #inc/lib.wiki.kutrl.php:68
-$GLOBALS['__l10n']['%s (Shorten with %s)'] = '% (réduit avec %s)';
+$GLOBALS['__l10n']['%s (Shorten with %s)'] = '%s (réduit avec %s)';
 
 #inc/lib.wiki.kutrl.php:73
 #index.php:179
