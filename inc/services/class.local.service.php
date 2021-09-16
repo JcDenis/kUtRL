@@ -20,7 +20,7 @@ class localKutrlService extends kutrlService
     protected $config = [
         'id' => 'local',
         'name' => 'kUtRL',
-        'home' => 'http://kutrl.fr',
+        'home' => 'https://github.com/JcDenis/kUtRL',
 
         'allow_custom_hash' => true
     ];
