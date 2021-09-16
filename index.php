@@ -503,7 +503,7 @@ if ($part == 'links') {
     <div class="cell">
     <h4>' . __('Filters') . '</h4>
     <p><label for="urlsrv" class="ib">' . __('Service:') . '</label>' .
-    form::combo('urlsrv', $lst_services_combo, $urlsrv) . '
+    form::combo('urlsrv', $lst_services_combo, $urlsrv) . '</p>
     </div>
 
     <div class="cell filters-options">
