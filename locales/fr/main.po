@@ -1,14 +1,14 @@
 # Language: Français
-# Module: kUtRL - 2021.08.28
-# Date: 2021-09-02 12:25:32
-# Translated with translater 2021.08.18
+# Module: kUtRL - 2021.09.16
+# Date: 2021-09-16 20:45:06
+# Translated with translater 2021.09.02.1
 
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: kUtRL 2021.08.28\n"
+"Project-Id-Version: kUtRL 2021.09.16\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-09-02T12:25:32+00:00\n"
+"PO-Revision-Date: 2021-09-16T20:45:06+00:00\n"
 "Last-Translator: Jean-Christian Denis\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -24,9 +24,9 @@ msgstr ""
 #: default-templates/kutrl_old.html:48
 #: index.php:276
 #: index.php:300
-#: index.php:397
-#: index.php:446
-#: index.php:491
+#: index.php:398
+#: index.php:447
+#: index.php:492
 msgid "Links shortener"
 msgstr "Réducteur de liens"
 
@@ -41,7 +41,7 @@ msgid "Create short link"
 msgstr "Créer un lien court"
 
 #: _admin.php:109
-#: index.php:467
+#: index.php:468
 msgid "Custom short link:"
 msgstr "Lien court personnalisé :"
 
@@ -186,7 +186,7 @@ msgstr "Cacher les liens non suivis"
 #: _widgets.php:138
 #: default-templates/kutrl.html:33
 #: default-templates/kutrl_old.html:55
-#: index.php:462
+#: index.php:463
 msgid "Long link:"
 msgstr "Lien long :"
 
@@ -535,14 +535,14 @@ msgid "Links successfully deleted"
 msgstr "Liens supprimés avec succès"
 
 #: index.php:302
-#: index.php:399
-#: index.php:405
-#: index.php:561
+#: index.php:400
+#: index.php:406
+#: index.php:562
 msgid "Services configuration"
 msgstr "Configuration des services"
 
 #: index.php:309
-#: index.php:406
+#: index.php:407
 msgid "Back to links list"
 msgstr "Retour à la liste des liens"
 
@@ -586,92 +586,96 @@ msgstr "Si le mode actif est acitvé, les balises de thème (comme EntryURL) aff
 msgid "You can disable URL shortening for a specific template tag by adding attribute disable_kutrl=\"1\" to it ."
 msgstr "Vous pouvez désactiver le raccourcissement pour un tag de template spécifique en lui ajoutant l'attribue disable_kutrl=\"1\""
 
-#: index.php:337
+#: index.php:335
+msgid "We strongly discourage using active mode as it crashes public post form and complex url if theme is not customize for kUtRL."
+msgstr "Nous décrourageons fortement l'utilisation du mode atif car il casse les formulaires en pages publiques et les liens complexe si le thème n'est pas personnalisé pour utiliser kUtRL."
+
+#: index.php:338
 msgid "Create short link for new entries"
 msgstr "Créer un lien court pour les nouveaux billets"
 
-#: index.php:338
+#: index.php:339
 msgid "This can be changed on page of creation/edition of an entry."
 msgstr "Ceci peut être changé sur la page d'édition / création d'un billet."
 
-#: index.php:342
+#: index.php:343
 msgid "Default services"
 msgstr "Services par défaut"
 
-#: index.php:349
+#: index.php:350
 msgid "Administration:"
 msgstr "Administration :"
 
-#: index.php:352
+#: index.php:353
 msgid "Service to use in this admin page and on edit page of an entry."
 msgstr "Service à utiliser sur cette page d'administration ou sur la page d'édition d'un billet."
 
-#: index.php:359
+#: index.php:360
 msgid "Extensions:"
 msgstr "Extensions :"
 
-#: index.php:362
+#: index.php:363
 msgid "Service to use on third part plugins."
 msgstr "Service à utiliser par les plugins tiers"
 
-#: index.php:369
+#: index.php:370
 msgid "Templates:"
 msgstr "Templates :"
 
-#: index.php:372
+#: index.php:373
 msgid "Shorten links automatically when using template value like \"EntryKutrl\"."
 msgstr "Réduit automatiquement les liens des templates utilisant les balises telles que \"EntryKutrl\"."
 
-#: index.php:379
+#: index.php:380
 msgid "Contents:"
 msgstr "Contenus :"
 
-#: index.php:382
+#: index.php:383
 msgid "Shorten links automatically found in contents using wiki synthax."
 msgstr "Réduit automatiquement les liens des contenus utilisant la syntax wiki."
 
-#: index.php:417
+#: index.php:418
 msgid "%s API is well configured and runing."
 msgstr "L'API %s est correctement configurée et est fonctionnelle."
 
-#: index.php:418
+#: index.php:419
 msgid "Failed to test %s API."
 msgstr "Impossible de tester l'API %s."
 
-#: index.php:425
+#: index.php:426
 msgid "homepage"
 msgstr "page d'accueil"
 
-#: index.php:425
+#: index.php:426
 msgid "Learn more about %s."
 msgstr "En savoir plus à propos de %s."
 
-#: index.php:448
-#: index.php:493
+#: index.php:449
+#: index.php:494
 msgid "New link"
 msgstr "Nouveau lien"
 
-#: index.php:455
+#: index.php:456
 msgid "You must set an admin service."
 msgstr "Vous devez définir un service admin."
 
-#: index.php:459
+#: index.php:460
 msgid "Shorten link using service \"%s\""
 msgstr "Raccourcir un lien en utilisant le service \"%s\""
 
-#: index.php:469
+#: index.php:470
 msgid "Only if you want a custom short link."
 msgstr "Uniquement si vous souhaitez un lien court personnalisé."
 
-#: index.php:473
+#: index.php:474
 msgid "You can use \"bob!!\" if you want a semi-custom link, it starts with \"bob\" and \"!!\" will be replaced by an increment value."
 msgstr "Vous pouvez utiliser \"bob!!\" si vous souhaitez un lien semi-personnalisé, il commencera par \"bob\" et \"!!\" sera remplacé par une valeur incrémentale."
 
-#: index.php:505
+#: index.php:506
 msgid "Service:"
 msgstr "Service :"
 
-#: index.php:539
+#: index.php:540
 msgid "Delete selected short links"
 msgstr "Effacer les liens sélectionnés"
 

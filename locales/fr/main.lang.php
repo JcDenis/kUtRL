@@ -1,8 +1,8 @@
 <?php
 // Language: Français 
-// Module: kUtRL - 2021.08.28
-// Date: 2021-09-02 12:25:32 
-// Translated with dcTranslater - 2021.08.18 
+// Module: kUtRL - 2021.09.16
+// Date: 2021-09-16 20:45:06 
+// Translated with dcTranslater - 2021.09.02.1 
 
 #_admin.php:24
 #_admin.php:57
@@ -13,9 +13,9 @@
 #default-templates/kutrl_old.html:48
 #index.php:276
 #index.php:300
-#index.php:397
-#index.php:446
-#index.php:491
+#index.php:398
+#index.php:447
+#index.php:492
 $GLOBALS['__l10n']['Links shortener'] = 'Réducteur de liens';
 
 #_admin.php:92
@@ -27,7 +27,7 @@ $GLOBALS['__l10n']['Short link'] = 'Lien court';
 $GLOBALS['__l10n']['Create short link'] = 'Créer un lien court';
 
 #_admin.php:109
-#index.php:467
+#index.php:468
 $GLOBALS['__l10n']['Custom short link:'] = 'Lien court personnalisé :';
 
 #_admin.php:116
@@ -142,7 +142,7 @@ $GLOBALS['__l10n']['Hide no followed links'] = 'Cacher les liens non suivis';
 #_widgets.php:138
 #default-templates/kutrl.html:33
 #default-templates/kutrl_old.html:55
-#index.php:462
+#index.php:463
 $GLOBALS['__l10n']['Long link:'] = 'Lien long :';
 
 #_widgets.php:142
@@ -414,13 +414,13 @@ $GLOBALS['__l10n']['Long link'] = 'Lien long';
 $GLOBALS['__l10n']['Links successfully deleted'] = 'Liens supprimés avec succès';
 
 #index.php:302
-#index.php:399
-#index.php:405
-#index.php:561
+#index.php:400
+#index.php:406
+#index.php:562
 $GLOBALS['__l10n']['Services configuration'] = 'Configuration des services';
 
 #index.php:309
-#index.php:406
+#index.php:407
 $GLOBALS['__l10n']['Back to links list'] = 'Retour à la liste des liens';
 
 #index.php:314
@@ -453,69 +453,73 @@ $GLOBALS['__l10n']['If the active mode is enabled, all know default template tag
 #index.php:334
 $GLOBALS['__l10n']['You can disable URL shortening for a specific template tag by adding attribute disable_kutrl="1" to it .'] = 'Vous pouvez désactiver le raccourcissement pour un tag de template spécifique en lui ajoutant l\'attribue disable_kutrl="1"';
 
-#index.php:337
-$GLOBALS['__l10n']['Create short link for new entries'] = 'Créer un lien court pour les nouveaux billets';
+#index.php:335
+$GLOBALS['__l10n']['We strongly discourage using active mode as it crashes public post form and complex url if theme is not customize for kUtRL.'] = 'Nous décrourageons fortement l\'utilisation du mode atif car il casse les formulaires en pages publiques et les liens complexe si le thème n\'est pas personnalisé pour utiliser kUtRL.';
 
 #index.php:338
+$GLOBALS['__l10n']['Create short link for new entries'] = 'Créer un lien court pour les nouveaux billets';
+
+#index.php:339
 $GLOBALS['__l10n']['This can be changed on page of creation/edition of an entry.'] = 'Ceci peut être changé sur la page d\'édition / création d\'un billet.';
 
-#index.php:342
+#index.php:343
 $GLOBALS['__l10n']['Default services'] = 'Services par défaut';
 
-#index.php:349
+#index.php:350
 $GLOBALS['__l10n']['Administration:'] = 'Administration :';
 
-#index.php:352
+#index.php:353
 $GLOBALS['__l10n']['Service to use in this admin page and on edit page of an entry.'] = 'Service à utiliser sur cette page d\'administration ou sur la page d\'édition d\'un billet.';
 
-#index.php:359
+#index.php:360
 $GLOBALS['__l10n']['Extensions:'] = 'Extensions :';
 
-#index.php:362
+#index.php:363
 $GLOBALS['__l10n']['Service to use on third part plugins.'] = 'Service à utiliser par les plugins tiers';
 
-#index.php:369
+#index.php:370
 $GLOBALS['__l10n']['Templates:'] = 'Templates :';
 
-#index.php:372
+#index.php:373
 $GLOBALS['__l10n']['Shorten links automatically when using template value like "EntryKutrl".'] = 'Réduit automatiquement les liens des templates utilisant les balises telles que "EntryKutrl".';
 
-#index.php:379
+#index.php:380
 $GLOBALS['__l10n']['Contents:'] = 'Contenus :';
 
-#index.php:382
+#index.php:383
 $GLOBALS['__l10n']['Shorten links automatically found in contents using wiki synthax.'] = 'Réduit automatiquement les liens des contenus utilisant la syntax wiki.';
 
-#index.php:417
+#index.php:418
 $GLOBALS['__l10n']['%s API is well configured and runing.'] = 'L\'API %s est correctement configurée et est fonctionnelle.';
 
-#index.php:418
+#index.php:419
 $GLOBALS['__l10n']['Failed to test %s API.'] = 'Impossible de tester l\'API %s.';
 
-#index.php:425
+#index.php:426
 $GLOBALS['__l10n']['homepage'] = 'page d\'accueil';
 
-#index.php:425
+#index.php:426
 $GLOBALS['__l10n']['Learn more about %s.'] = 'En savoir plus à propos de %s.';
 
-#index.php:448
-#index.php:493
+#index.php:449
+#index.php:494
 $GLOBALS['__l10n']['New link'] = 'Nouveau lien';
 
-#index.php:455
+#index.php:456
 $GLOBALS['__l10n']['You must set an admin service.'] = 'Vous devez définir un service admin.';
 
-#index.php:459
+#index.php:460
 $GLOBALS['__l10n']['Shorten link using service "%s"'] = 'Raccourcir un lien en utilisant le service "%s"';
 
-#index.php:469
+#index.php:470
 $GLOBALS['__l10n']['Only if you want a custom short link.'] = 'Uniquement si vous souhaitez un lien court personnalisé.';
 
-#index.php:473
+#index.php:474
 $GLOBALS['__l10n']['You can use "bob!!" if you want a semi-custom link, it starts with "bob" and "!!" will be replaced by an increment value.'] = 'Vous pouvez utiliser "bob!!" si vous souhaitez un lien semi-personnalisé, il commencera par "bob" et "!!" sera remplacé par une valeur incrémentale.';
 
-#index.php:505
+#index.php:506
 $GLOBALS['__l10n']['Service:'] = 'Service :';
 
-#index.php:539
+#index.php:540
 $GLOBALS['__l10n']['Delete selected short links'] = 'Effacer les liens sélectionnés';
+

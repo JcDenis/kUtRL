@@ -332,6 +332,7 @@ if ($part == 'setting') {
     __('Active mode') . '</label></p>
     <p class="form-note">' . __('If the active mode is enabled, all know default template tags (like EntryURL) will display short urls instead of long ones on templates.') . '<br />' . 
     __('You can disable URL shortening for a specific template tag by adding attribute disable_kutrl="1" to it . ') . '</p>
+    <p class="warning">' . __('We strongly discourage using active mode as it crashes public post form and complex url if theme is not customize for kUtRL.') . '</p>
     <p><label class="classic">' . 
     form::checkbox(['s_admin_entry_default'], '1', $s_admin_entry_default) . 
     __('Create short link for new entries') . '</label></p>
