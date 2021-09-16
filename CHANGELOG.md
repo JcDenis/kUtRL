@@ -1,9 +1,13 @@
 xxx.xx.xx
+- Never fix breaking comments or complexe public url
 - [ ] Add public page of the list of know urls and in/visible status
 - [ ] Add passworded links
-- [ ] fix deprecated external service
-- [x] update php header to phpdoc style
-- [x] fix post page options display
+
+2021.09.16
+- remove deprecated external service
+- update php header to phpdoc style
+- fix post page options display
+- hack plugin permission to load plugin and shorten url on the fly
 
 2021.08.28 - pre release
 - add dashboard icon

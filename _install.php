@@ -63,7 +63,7 @@ try {
     $s->put('kutrl_allow_external_url', true, 'boolean', 'Limited short url to current blog\'s url', false, true);
     $s->put('kutrl_tpl_passive', true, 'boolean', 'Return long url on kutrl tags if kutrl is unactivate', false, true);
     $s->put('kutrl_tpl_active', false, 'boolean', 'Return short url on dotclear tags if kutrl is active', false, true);
-    $s->put('kutrl_admin_entry_default', true, 'boolean', 'Create short link an new entry by default', false, true);
+    $s->put('kutrl_admin_entry_default', true, 'boolean', 'Create short link on new entry by default', false, true);
     # Settings for "local" service
     $local_css =
     ".shortenkutrlwidget input { border: 1px solid #CCCCCC; }\n" .

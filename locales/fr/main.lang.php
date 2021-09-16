@@ -522,4 +522,3 @@ $GLOBALS['__l10n']['Service:'] = 'Service :';
 
 #index.php:540
 $GLOBALS['__l10n']['Delete selected short links'] = 'Effacer les liens sélectionnés';
-
