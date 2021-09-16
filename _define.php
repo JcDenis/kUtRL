@@ -22,7 +22,7 @@ $this->registerModule(
     '2021.08.28',
     [
         'requires' => [['core', '2.19']],
-        'permissions' => 'admin',
+        'permissions' => '-',
         'type' => 'plugin',
         'support' => 'https://github.com/JcDenis/kUtRL',
         'details' => 'http://plugins.dotaddict.org/dc2/details/kUtRL',
