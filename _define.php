@@ -19,7 +19,7 @@ $this->registerModule(
     'URL shortener',
     'Use, create and serve short url on your blog',
     'Jean-Christian Denis and contributors',
-    '2021.08.28',
+    '2021.09.16',
     [
         'requires' => [['core', '2.19']],
         'permissions' => '-',
