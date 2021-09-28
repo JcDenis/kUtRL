@@ -25,11 +25,14 @@ $_menu['Plugins']->addItem(
     $core->adminurl->get('admin.plugin.kUtRL'),
     dcPage::getPF('kUtRL/icon.png'),
     preg_match('/' . preg_quote($core->adminurl->get('admin.plugin.kUtRL')) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
-    $core->auth->check('admin', $core->blog->id));
+    $core->auth->check('admin', $core->blog->id)
+);
 
 # Admin behaviors
 if ($core->blog->settings->kUtRL->kutrl_active) {
     $core->addBehavior('adminDashboardFavorites', ['adminKutrl', 'antispamDashboardFavorites']);
+    $core->addBehavior('adminColumnsLists', ['adminKutrl', 'adminColumnsLists']);
+    $core->addBehavior('adminSortsLists', ['adminKutrl', 'adminSortsLists']);
     $core->addBehavior('adminPostHeaders', ['adminKutrl', 'adminPostHeaders']);
     $core->addBehavior('adminPostFormItems', ['adminKutrl', 'adminPostFormItems']);
     $core->addBehavior('adminAfterPostUpdate', ['adminKutrl', 'adminAfterPostUpdate']); // update existing short url
@@ -49,23 +52,56 @@ $core->addBehavior('importFull', ['backupKutrl', 'importFull']);
 # Admin behaviors class
 class adminKutrl
 {
+    public static function sortbyCombo()
+    {
+        return [
+            __('Date')      => 'kut_dt',
+            __('Short URL') => 'kut_hash',
+            __('Long URL')  => 'kut_url',
+            __('Service')   => 'kut_service'
+        ];
+    }
+
     public static function antispamDashboardFavorites(dcCore $core, $favs)
     {
         $favs->register(
             'kUtRL', 
             [
-                'title' => __('Links shortener'),
-                'url' => $core->adminurl->get('admin.plugin.kUtRL'),
-                'small-icon' => dcPage::getPF('kUtRL/icon.png'),
-                'large-icon' => dcPage::getPF('kUtRL/icon-b.png'),
+                'title'       => __('Links shortener'),
+                'url'         => $core->adminurl->get('admin.plugin.kUtRL'),
+                'small-icon'  => dcPage::getPF('kUtRL/icon.png'),
+                'large-icon'  => dcPage::getPF('kUtRL/icon-b.png'),
                 'permissions' => 'admin'
             ]
         );
     }
 
+    public static function adminColumnsLists(dcCore $core, $cols)
+    {
+        $cols['kUtRL'] = [
+            __('URL shortener'),
+            [
+                'kut_hash'    => [true, __('Hash')],
+                'kut_dt'      => [true, __('Date')],
+                'kut_service' => [true, __('Service')]
+            ]
+        ];
+    }
+
+    public static function adminSortsLists(dcCore $core, $sorts)
+    {
+        $sorts['kUtRL'] = [
+            __('URL shortener'),
+            self::sortbyCombo(),
+            'kut_dt',
+            'desc',
+            [__('Links per page'), 30]
+        ];
+    }
+
     public static function adminPostHeaders()
     {
-        return dcPage::jsLoad('index.php?pf=kUtRL/js/admin.js');
+        return dcPage::jsLoad(dcPage::getPF('kUtRL/js/posts.js'));
     }
 
     public static function adminPostFormItems($main_items, $sidebar_items, $post)

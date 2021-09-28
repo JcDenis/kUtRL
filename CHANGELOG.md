@@ -2,6 +2,10 @@ xxx.xx.xx
 - Never fix breaking comments or complexe public url
 - [ ] Add public page of the list of know urls and in/visible status
 - [ ] Add passworded links
+- fix permissions
+- fix js load
+- add user pref on table cols
+- add user pref on filters (dc 2.20)
 
 2021.09.16
 - remove deprecated external service

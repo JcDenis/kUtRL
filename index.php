@@ -190,20 +190,15 @@ if ($part == 'link') {
 if ($part == 'links') {
     $log = new kutrlLog($core);
 
-    $sortby_combo = [
-        __('Date') => 'kut_dt',
-        __('Long link') => 'kut_url',
-        __('Short link') => 'kut_hash'
-    ];
-    $order_combo = [
-        __('Descending') => 'desc',
-        __('Ascending') => 'asc'
-    ];
+    $sortby_combo = adminKutrl::sortbyCombo();
+    $order_combo = [__('Descending') => 'desc', __('Ascending') => 'asc'];
 
     $core->auth->user_prefs->addWorkspace('interface');
-    $default_sortby = 'kut_dt';
-    $default_order = $core->auth->user_prefs->interface->posts_order ?: 'desc';
-    $nb_per_page = $core->auth->user_prefs->interface->nb_posts_per_page ?: 30;
+    $sorts_user = @$core->auth->user_prefs->interface->sorts;
+    $default_sortby = $sorts_user['kUtRL'][0] ?? 'kut_dt';
+    $default_order  = $sorts_user['kUtRL'][1] ?? 'desc';
+    $nb_per_page    = !empty($sorts_user['kUtRL'][2]) ? $sorts_user['kUtRL'][2] : 30;
+
     $sortby = !empty($_GET['sortby']) ? $_GET['sortby'] : $default_sortby;
     $order = !empty($_GET['order']) ? $_GET['order'] : $default_order;
     $urlsrv = !empty($_GET['urlsrv']) ? $_GET['urlsrv'] : '';
@@ -277,16 +272,9 @@ echo
 
 if ($part == 'links') {
     echo 
-    '<script type="text/javascript">' . "\n" .
-    "//<![CDATA[\n" .
-    dcPage::jsVar(
-        'dotclear.filter_reset_url',
-        html::escapeJS($p_url . '&part=links')
-    ) . "\n" .
-    "\$(function(){\$('.checkboxes-helpers').each(function(){dotclear.checkboxesHelpers(this);});});\n" .
-    "//]]>\n" .
-    "</script>\n" .
-    dcPage::jsFilterControl($show_filters);
+    dcPage::jsVars(['dotclear.filter_reset_url' => $core->adminurl->get('admin.plugin.kUtRL', ['part' => 'links'])]) .
+    dcPage::jsFilterControl($show_filters) .
+    dcPage::jsLoad(dcPage::getPF('kUtRL/js/admin.js'));
 }
 
 echo 
@@ -498,7 +486,7 @@ if ($part == 'links') {
     dcPage::notices();
 
     echo '
-    <form action="' . $p_url . '&amp;part=links" method="get" id="filters-form">
+    <form action="' . $p_url . '" method="get" id="filters-form">
     <h3 class="out-of-screen-if-js">' . __('Show filters and display options') . '</h3>
     <div class="table">
     <div class="cell">
@@ -518,8 +506,9 @@ if ($part == 'links') {
     __('entries per page') . '</label></p>' .
 
     form::hidden('part', 'links') .
-    form::hidden('p', 'kUtRL') . '
-
+    form::hidden('p', 'kUtRL') .
+    form::hidden('filters-options-id', 'kUtRL') .
+    '<p class="hidden-if-no-js"><a href="#" id="filter-options-save">' . __('Save current options') . '</a></p>
     </div>
     </div>
 
@@ -530,21 +519,27 @@ if ($part == 'links') {
     $list_current->display(
         $page,
         $nb_per_page, 
-        '<form action="' . $p_url . '&amp;part=links" method="post" id="form-actions">
+        '<form action="' . $p_url . '&amp;part=links" method="post" id="form-entries">
 
         %s
 
         <div class="two-cols">
-        <p class="col checkboxes-helpers"></p>
+        <div class="col left">
+        <p class="checkboxes-helpers"></p>
+        </div>
         <p class="col right">
-        <input type="submit" value="' . __('Delete selected short links') . '" />' . 
-        form::hidden(['deletelinks'], 1) . 
-        form::hidden(['urlsrv'], $urlsrv) . 
-        form::hidden(['sortby'], $sortby) . 
-        form::hidden(['order'], $order) . 
-        form::hidden(['page'], $page) . 
-        form::hidden(['nb'], $nb_per_page) . 
-        form::hidden(['part'], 'links') . 
+        <input id="do-action" type="submit" value="' . __('Delete selected short links') . '" /></p>' .
+        $core->adminurl->getHiddenFormFields(
+            'admin.plugin.kUtRL',[
+                'deletelinks' =>  1,
+                'urlsrv' => $urlsrv,
+                'sortby' => $sortby,
+                'order' => $order,
+                'page' => $page,
+                'nb' => $nb_per_page,
+                'part' => 'links'
+            ]
+        ) . 
         $core->formNonce() . '
         </p>
         </div>

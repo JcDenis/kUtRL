@@ -28,6 +28,20 @@ class kutrlLinkslist
         $this->html_next = __('next &#187;');
     }
 
+    public function userColumns($type, $cols)
+    {
+        $cols_user = @$this->core->auth->user_prefs->interface->cols;
+        if (is_array($cols_user) || $cols_user instanceof ArrayObject) {
+            if (isset($cols_user[$type])) {
+                foreach ($cols_user[$type] as $cn => $cd) {
+                    if (!$cd && isset($cols[$cn])) {
+                        unset($cols[$cn]);
+                    }
+                }
+            }
+        }
+    }
+
     public function display($page, $nb_per_page, $enclose_block, $filter = false)
     {
         if ($this->rs->isEmpty()) {
@@ -38,59 +52,82 @@ class kutrlLinkslist
             }
         } else {
             $pager   = new dcPager($page, $this->rs_count, $nb_per_page, 10);
-            $entries = [];
+            $links = [];
             if (isset($_REQUEST['entries'])) {
                 foreach ($_REQUEST['entries'] as $v) {
-                    $entries[(integer) $v] = true;
+                    $links[(integer) $v] = true;
                 }
             }
 
-            $blocks = explode('%s', sprintf($enclose_block, 
-                '<div class="table-outer"><table>' .
-                ($filter ?
-                    '<caption>' . sprintf(__('List of %s links matching the filter.'), $this->rs_count) . '</caption>' :
-                    '<caption>' . sprintf(__('List of links (%s)'), $this->rs_count) . '</caption>'
-                ) .
-                '<tr>' . 
-                '<th colspan="2" class="first">' . __('Hash') . '</th>' .
-                '<th scope="col">' . __('Link') . '</th>' .
-                '<th scope="col">' . __('Date') . '</th>' .
-                '<th scope="col">' . __('Service') . '</th>' . 
-                '</tr>%s</table>%s</div>'
-            ));
+            $cols = [
+                    'kut_url'    => '<th colspan="2" class="first">' . __('Link') . '</th>',
+                    'kut_hash'     => '<th scope="col">' . __('Hash') . '</th>',
+                    'kut_dt'      => '<th scope="col">' . __('Date') . '</th>',
+                    'kut_service' => '<th scope="col">' . __('Service') . '</th>'
+            ];
+            $cols = new ArrayObject($cols);
+            $this->userColumns('kUtRL', $cols);
 
-            echo $pager->getLinks().$blocks[0];
+            $html_block =
+            '<div class="table-outer">' .
+            '<table>' .
+            '<caption>' . ($filter ? 
+                sprintf(__('List of %s links matching the filter.'), $this->rs_count) :
+                sprintf(__('List of links (%s)'), $this->rs_count)
+            ). '</caption>' .
+            '<thead>' .
+            '<tr>' . implode(iterator_to_array($cols)) . '</tr>' .
+            '</thead>' .
+            '<tbody>%s</tbody>' .
+            '</table>' .
+            '%s</div>';
+
+            if ($enclose_block) {
+                $html_block = sprintf($enclose_block, $html_block);
+            }
+            $blocks = explode('%s', $html_block);
+
+            echo $pager->getLinks() . $blocks[0];
 
             while ($this->rs->fetch()) {
-                $type = $this->rs->kut_type;
-                $hash = $this->rs->kut_hash;
-
-                if (null !== ($o = kutrl::quickService($type))) {
-                    $type = '<a href="' . $o->home . '" title="' . $o->name . '">' . $o->name . '</a>';
-                    $hash = '<a href="' . $o->url_base . $hash . '" title="' . $o->url_base . $hash . '">' . $hash . '</a>';
-                }
-
-                echo
-                '<tr class="line">' . 
-                '<td class="nowrap">' .
-                    form::checkbox(['entries[]'], $this->rs->kut_id, ['checked'  => isset($entries[$this->rs->kut_id])]) .
-                '</td>' .
-                '<td class="nowrap">' .
-                    $hash .
-                '</td>' .
-                '<td class="maximal" scope="row">' .
-                '<a href="' . $this->rs->kut_url . '">' . $this->rs->kut_url . '</a>' .
-                '</td>' .
-                '<td class="nowrap count">' .
-                    dt::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, $this->core->auth->getInfo('user_tz')) .
-                '</td>' .
-                '<td class="nowrap">' .
-                    $type .
-                '</td>' .
-                '</tr>';
+                echo $this->linkLine(isset($links[$this->rs->kut_id]));
             }
 
-            echo $blocks[1].$blocks[2].$pager->getLinks();
+            echo $blocks[1] . $blocks[2] . $pager->getLinks();
         }
+    }
+
+    private function linkLine($checked)
+    {
+        $type = $this->rs->kut_type;
+        $hash = $this->rs->kut_hash;
+
+        if (null !== ($o = kutrl::quickService($type))) {
+            $type = '<a href="' . $o->home . '" title="' . $o->name . '">' . $o->name . '</a>';
+            $hash = '<a href="' . $o->url_base . $hash . '" title="' . $o->url_base . $hash . '">' . $hash . '</a>';
+        }
+
+        $cols = [
+            'check' => '<td class="nowrap">' .
+                    form::checkbox(['entries[]'], $this->rs->kut_id, ['checked'  => isset($entries[$this->rs->kut_id])]) .
+                '</td>',
+            'kut_url' => '<td class="maximal" scope="row">' .
+                '<a href="' . $this->rs->kut_url . '">' . $this->rs->kut_url . '</a>' .
+                '</td>',
+            'kut_hash' => '<td class="nowrap">' .
+                    $hash .
+                '</td>',
+            'kut_dt' => '<td class="nowrap count">' .
+                    dt::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, $this->core->auth->getInfo('user_tz')) .
+                '</td>',
+            'kut_service' => '<td class="nowrap">' . 
+                    $type . 
+                '</td>'
+        ];
+
+        $cols = new ArrayObject($cols);
+        $this->userColumns('kUtRL', $cols);
+
+        return '<tr class="line">' .  implode(iterator_to_array($cols)) . '</tr>' . "\n";
     }
 }
