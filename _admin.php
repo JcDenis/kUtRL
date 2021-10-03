@@ -32,7 +32,7 @@ $_menu['Plugins']->addItem(
 if ($core->blog->settings->kUtRL->kutrl_active) {
     $core->addBehavior('adminDashboardFavorites', ['adminKutrl', 'antispamDashboardFavorites']);
     $core->addBehavior('adminColumnsLists', ['adminKutrl', 'adminColumnsLists']);
-    $core->addBehavior('adminSortsLists', ['adminKutrl', 'adminSortsLists']);
+    $core->addBehavior('adminFiltersLists', ['adminKutrl', 'adminFiltersLists']);
     $core->addBehavior('adminPostHeaders', ['adminKutrl', 'adminPostHeaders']);
     $core->addBehavior('adminPostFormItems', ['adminKutrl', 'adminPostFormItems']);
     $core->addBehavior('adminAfterPostUpdate', ['adminKutrl', 'adminAfterPostUpdate']); // update existing short url
@@ -88,7 +88,7 @@ class adminKutrl
         ];
     }
 
-    public static function adminSortsLists(dcCore $core, $sorts)
+    public static function adminFiltersLists(dcCore $core, $sorts)
     {
         $sorts['kUtRL'] = [
             __('URL shortener'),

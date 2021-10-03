@@ -22,7 +22,6 @@ dcPage::check('admin');
 $s = $core->blog->settings->kUtRL;
 
 # Default values
-$show_filters = false;
 $p_url = $core->adminurl->get('admin.plugin.kUtRL');
 $part = isset($_REQUEST['part']) ? $_REQUEST['part'] : 'links';
 $action = isset($_POST['action']) ? $_POST['action'] : '';
@@ -190,46 +189,32 @@ if ($part == 'link') {
 if ($part == 'links') {
     $log = new kutrlLog($core);
 
-    $sortby_combo = adminKutrl::sortbyCombo();
-    $order_combo = [__('Descending') => 'desc', __('Ascending') => 'asc'];
+    $kUtRL_filter = new adminGenericFilter($core, 'kUtRL');
 
-    $core->auth->user_prefs->addWorkspace('interface');
-    $sorts_user = @$core->auth->user_prefs->interface->sorts;
-    $default_sortby = $sorts_user['kUtRL'][0] ?? 'kut_dt';
-    $default_order  = $sorts_user['kUtRL'][1] ?? 'desc';
-    $nb_per_page    = !empty($sorts_user['kUtRL'][2]) ? $sorts_user['kUtRL'][2] : 30;
+    $sortby = $kUtRL_filter->getFilter('sortby');
+    $order  = $kUtRL_filter->getFilter('order');
+    $nb     = $kUtRL_filter->getFilter('nb');
 
-    $sortby = !empty($_GET['sortby']) ? $_GET['sortby'] : $default_sortby;
-    $order = !empty($_GET['order']) ? $_GET['order'] : $default_order;
-    $urlsrv = !empty($_GET['urlsrv']) ? $_GET['urlsrv'] : '';
     $page = !empty($_GET['page']) ? max(1, (integer) $_GET['page']) : 1;
-    $show_filters = false;
-
-    if (!empty($_GET['nb']) && (integer) $_GET['nb'] > 0) {
-        if ($nb_per_page != (integer) $_GET['nb']) {
-            $show_filters = true;
-        }
-        $nb_per_page = (integer) $_GET['nb'];
-    }
+    $kUtRL_filter->setFilter('page', $page);
+    $kUtRL_filter->setFilter('part', 'links');
 
     $params = [];
-    $params['limit'] = [(($page-1)*$nb_per_page), $nb_per_page];
-
-    if (!in_array($sortby, $sortby_combo)) {
-        $sortby = $default_sortby;
-    }
-
-    if (!in_array($order, $order_combo)) {
-        $order = $default_order;
-    }
+    $params['limit'] = [(($page-1)*$nb), $nb];
     $params['order'] = $sortby . ' ' . $order;
 
-    if ($urlsrv != '' && in_array($urlsrv, $lst_services_combo)) {
-        $params['kut_type'] = $urlsrv;
+    $urlsrv = !empty($_GET['urlsrv']) ? $_GET['urlsrv'] : '';
+    if ($urlsrv === '' || !in_array($urlsrv, $lst_services_combo)) {
+        $urlsrv = '';
     }
-
-    if ($sortby != $default_sortby || $order != $default_order || $urlsrv != '') {
-        $show_filters = true;
+    $urlsrv = $kUtRL_filter->setFilter([
+        'id'    => 'urlsrv',
+        'value' => $urlsrv,
+        'title' => __('Service:'),
+        'combo' => $lst_services_combo
+    ]);
+    if ($urlsrv != '') {
+        $params['kut_type'] = $urlsrv;
     }
 
     try {
@@ -259,7 +244,7 @@ if ($part == 'links') {
                 __('Links successfully deleted')
             );
 
-            http::redirect($p_url . '&part=links&urlsrv=' . $urlsrv . '&sortby=' . $sortby . '&order=' . $order . '&nb=' . $nb_per_page . '&page=' . $page);
+            http::redirect($p_url . '&part=links&urlsrv=' . $urlsrv . '&sortby=' . $sortby . '&order=' . $order . '&nb=' . $nb . '&page=' . $page);
         } catch (Exception $e) {
             $core->error->add($e->getMessage());
         }    
@@ -273,7 +258,7 @@ echo
 if ($part == 'links') {
     echo 
     dcPage::jsVars(['dotclear.filter_reset_url' => $core->adminurl->get('admin.plugin.kUtRL', ['part' => 'links'])]) .
-    dcPage::jsFilterControl($show_filters) .
+    dcPage::jsFilterControl($kUtRL_filter->show()) .
     dcPage::jsLoad(dcPage::getPF('kUtRL/js/admin.js'));
 }
 
@@ -485,40 +470,11 @@ if ($part == 'links') {
     ) .
     dcPage::notices();
 
-    echo '
-    <form action="' . $p_url . '" method="get" id="filters-form">
-    <h3 class="out-of-screen-if-js">' . __('Show filters and display options') . '</h3>
-    <div class="table">
-    <div class="cell">
-    <h4>' . __('Filters') . '</h4>
-    <p><label for="urlsrv" class="ib">' . __('Service:') . '</label>' .
-    form::combo('urlsrv', $lst_services_combo, $urlsrv) . '</p>
-    </div>
-
-    <div class="cell filters-options">
-    <h4>' . __('Display options') . '</h4>
-    <p><label for="sortby" class="ib">' . __('Order by:') . '</label>' .
-    form::combo('sortby', $sortby_combo, $sortby) . '</p>
-    <p><label for="order" class="ib">' . __('Sort:') . '</label>' .
-    form::combo('order', $order_combo, $order) . '</p>
-    <p><span class="label ib">' . __('Show') . '</span> <label for="nb" class="classic">' .
-    form::number('nb', 0, 999, $nb_per_page) . 
-    __('entries per page') . '</label></p>' .
-
-    form::hidden('part', 'links') .
-    form::hidden('p', 'kUtRL') .
-    form::hidden('filters-options-id', 'kUtRL') .
-    '<p class="hidden-if-no-js"><a href="#" id="filter-options-save">' . __('Save current options') . '</a></p>
-    </div>
-    </div>
-
-    <p><input type="submit" value="' . __('Apply filters and display options') . '" />
-    <br class="clear" /></p>
-    </form>';
+    $kUtRL_filter->display('admin.plugin.kUtRL', form::hidden('p', 'kUtRL') . form::hidden('part', 'links'));
 
     $list_current->display(
         $page,
-        $nb_per_page, 
+        $nb, 
         '<form action="' . $p_url . '&amp;part=links" method="post" id="form-entries">
 
         %s
@@ -529,22 +485,12 @@ if ($part == 'links') {
         </div>
         <p class="col right">
         <input id="do-action" type="submit" value="' . __('Delete selected short links') . '" /></p>' .
-        $core->adminurl->getHiddenFormFields(
-            'admin.plugin.kUtRL',[
-                'deletelinks' =>  1,
-                'urlsrv' => $urlsrv,
-                'sortby' => $sortby,
-                'order' => $order,
-                'page' => $page,
-                'nb' => $nb_per_page,
-                'part' => 'links'
-            ]
-        ) . 
+        $core->adminurl->getHiddenFormFields('admin.plugin.kUtRL', array_merge(['deletelinks' =>  1], $kUtRL_filter->getFilters(true))) . 
         $core->formNonce() . '
         </p>
         </div>
         </form>',
-        $show_filters
+        $kUtRL_filter->show()
     );
 }
 
