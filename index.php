@@ -190,32 +190,13 @@ if ($part == 'links') {
     $log = new kutrlLog($core);
 
     $kUtRL_filter = new adminGenericFilter($core, 'kUtRL');
+    $kUtRL_filter->add('part', 'links');
+    $kUtRL_filter->add(dcAdminFilters::getPageFilter());
+    $kUtRL_filter->add(dcAdminFilters::getSelectFilter(
+        'urlsrv', __('Service:'), $lst_services_combo, 'kut_type'
+    ));
 
-    $sortby = $kUtRL_filter->getFilter('sortby');
-    $order  = $kUtRL_filter->getFilter('order');
-    $nb     = $kUtRL_filter->getFilter('nb');
-
-    $page = !empty($_GET['page']) ? max(1, (integer) $_GET['page']) : 1;
-    $kUtRL_filter->setFilter('page', $page);
-    $kUtRL_filter->setFilter('part', 'links');
-
-    $params = [];
-    $params['limit'] = [(($page-1)*$nb), $nb];
-    $params['order'] = $sortby . ' ' . $order;
-
-    $urlsrv = !empty($_GET['urlsrv']) ? $_GET['urlsrv'] : '';
-    if ($urlsrv === '' || !in_array($urlsrv, $lst_services_combo)) {
-        $urlsrv = '';
-    }
-    $urlsrv = $kUtRL_filter->setFilter([
-        'id'    => 'urlsrv',
-        'value' => $urlsrv,
-        'title' => __('Service:'),
-        'combo' => $lst_services_combo
-    ]);
-    if ($urlsrv != '') {
-        $params['kut_type'] = $urlsrv;
-    }
+    $params = $kUtRL_filter->params();
 
     try {
         $list_all = $log->getLogs($params);
@@ -243,8 +224,7 @@ if ($part == 'links') {
             dcPage::addSuccessNotice(
                 __('Links successfully deleted')
             );
-
-            http::redirect($p_url . '&part=links&urlsrv=' . $urlsrv . '&sortby=' . $sortby . '&order=' . $order . '&nb=' . $nb . '&page=' . $page);
+            $core->adminurl->redirect('admin.plugin.kUtRL', $kUtRL_filter->values());
         } catch (Exception $e) {
             $core->error->add($e->getMessage());
         }    
@@ -473,8 +453,8 @@ if ($part == 'links') {
     $kUtRL_filter->display('admin.plugin.kUtRL', form::hidden('p', 'kUtRL') . form::hidden('part', 'links'));
 
     $list_current->display(
-        $page,
-        $nb, 
+        $kUtRL_filter->value('page'),
+        $kUtRL_filter->nb, 
         '<form action="' . $p_url . '&amp;part=links" method="post" id="form-entries">
 
         %s
@@ -485,7 +465,7 @@ if ($part == 'links') {
         </div>
         <p class="col right">
         <input id="do-action" type="submit" value="' . __('Delete selected short links') . '" /></p>' .
-        $core->adminurl->getHiddenFormFields('admin.plugin.kUtRL', array_merge(['deletelinks' =>  1], $kUtRL_filter->getFilters(true))) . 
+        $core->adminurl->getHiddenFormFields('admin.plugin.kUtRL', array_merge(['deletelinks' =>  1], $kUtRL_filter->values(true))) . 
         $core->formNonce() . '
         </p>
         </div>
