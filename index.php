@@ -237,8 +237,7 @@ echo
 
 if ($part == 'links') {
     echo 
-    dcPage::jsVars(['dotclear.filter_reset_url' => $core->adminurl->get('admin.plugin.kUtRL', ['part' => 'links'])]) .
-    dcPage::jsFilterControl($kUtRL_filter->show()) .
+    $kUtRL_filter->js($core->adminurl->get('admin.plugin.kUtRL', ['part' => 'links'])) .
     dcPage::jsLoad(dcPage::getPF('kUtRL/js/admin.js'));
 }
 
