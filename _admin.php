@@ -55,10 +55,10 @@ class adminKutrl
     public static function sortbyCombo()
     {
         return [
-            __('Date')      => 'kut_dt',
-            __('Short URL') => 'kut_hash',
-            __('Long URL')  => 'kut_url',
-            __('Service')   => 'kut_service'
+            __('Date')       => 'kut_dt',
+            __('Short link') => 'kut_hash',
+            __('Long link')  => 'kut_url',
+            __('Service')    => 'kut_service'
         ];
     }
 
@@ -79,7 +79,7 @@ class adminKutrl
     public static function adminColumnsLists(dcCore $core, $cols)
     {
         $cols['kUtRL'] = [
-            __('URL shortener'),
+            __('Links shortener'),
             [
                 'kut_hash'    => [true, __('Hash')],
                 'kut_dt'      => [true, __('Date')],
@@ -91,11 +91,11 @@ class adminKutrl
     public static function adminFiltersLists(dcCore $core, $sorts)
     {
         $sorts['kUtRL'] = [
-            __('URL shortener'),
+            __('Links shortener'),
             self::sortbyCombo(),
             'kut_dt',
             'desc',
-            [__('Links per page'), 30]
+            [__('links per page'), 30]
         ];
     }
 
@@ -278,8 +278,8 @@ class adminKutrl
             return null;
         }
 
-        $args[0][__('kUtRL')][__('Create short link')] = 'kutrl_create';
-        $args[0][__('kUtRL')][__('Delete short link')] = 'kutrl_delete';
+        $args[0][__('Links shortener')][__('Create short link')] = 'kutrl_create';
+        $args[0][__('Links shortener')][__('Delete short link')] = 'kutrl_delete';
     }
 
     public static function adminPostsActions(dcCore $core, $posts, $action, $redir)

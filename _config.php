@@ -75,7 +75,7 @@ if (!empty($_POST['save'])) {
         $core->blog->triggerBlog();
 
         dcPage::addSuccessNotice(
-            __('Configuration successfully saved')
+            __('Configuration successfully updated.')
         );
 
         $core->adminurl->redirect(
@@ -90,7 +90,7 @@ if (!empty($_POST['save'])) {
 echo '
 <div class="fieldset"><h4>' .  __('Settings') . '</h4>
 <div id="setting-plugin">
-<h5>' .  __('Plugin activation') . '</h5>
+<h5>' .  __('Activation') . '</h5>
 <p><label class="classic">' . 
 form::checkbox(['s_active'], '1', $s_active) . 
 __('Enable plugin') . '</label></p>

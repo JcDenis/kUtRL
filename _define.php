@@ -16,7 +16,7 @@ if (!defined('DC_RC_PATH')) {
 }
 
 $this->registerModule(
-    'URL shortener',
+    'Links shortener',
     'Use, create and serve short url on your blog',
     'Jean-Christian Denis and contributors',
     '2021.09.16',
