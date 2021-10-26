@@ -164,14 +164,11 @@ $header .
 # display link creation
 if ($part == 'link') {
     echo 
-    dcPage::breadcrumb(
-        [
-            __('Links shortener') => '',
-            __('Links') => $core->adminurl->get('admin.plugin.kUtRL'),
-            '<span class="page-title">' . __('New link') . '</span>'  => ''
-        ],
-        ['hl' => false]
-    ) .
+    dcPage::breadcrumb([
+            __('Plugins') => '',
+            __('Links shortener') => $core->adminurl->get('admin.plugin.kUtRL'),
+            __('New link')  => ''
+    ]) .
     dcPage::notices();
 
     if (null === $kut) {
@@ -207,15 +204,15 @@ if ($part == 'link') {
     }
 } else {
     echo    
-    dcPage::breadcrumb(
-        [
-            __('Links shortener') => '',
-            '<span class="page-title">' . __('Links') . '</span>'  => '',
-            __('New link') => $core->adminurl->get('admin.plugin.kUtRL').'&amp;part=link'
-        ],
-        ['hl' => false]
-    ) .
-    dcPage::notices();
+    dcPage::breadcrumb([
+            __('Plugins') => '',
+            __('Links shortener') => ''
+    ]) .
+    dcPage::notices() .
+
+    '<p class="top-add"><a class="button add" href="' . 
+        $core->adminurl->get('admin.plugin.kUtRL', ['part' => 'link']) . 
+    '">' . __('New Link') .'</a></p>';
 
     $kUtRL_filter->display('admin.plugin.kUtRL', form::hidden('p', 'kUtRL') . form::hidden('part', 'links'));
 
