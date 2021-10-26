@@ -18,96 +18,9 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 # Check user perms
 dcPage::check('admin');
 
-# Settings
-$s = $core->blog->settings->kUtRL;
-
-# Default values
-$p_url = $core->adminurl->get('admin.plugin.kUtRL');
+$header = '';
 $part = isset($_REQUEST['part']) ? $_REQUEST['part'] : 'links';
 $action = isset($_POST['action']) ? $_POST['action'] : '';
-
-# used in setting & links
-if (in_array($part, ['setting', 'links'])) {
-    $services_combo = [];
-    foreach(kutrl::getServices($core) as $service_id => $service) {
-        $o = new $service($core);
-        $services_combo[__($o->name)] = $o->id;
-    }
-    $ext_services_combo = array_merge([__('Disabled')=>''], $services_combo);
-    $lst_services_combo = array_merge(['-'=>''], $services_combo);
-}
-
-# used in setting & service
-if (in_array($part, ['setting', 'service'])) {
-    $img_green = '<img src="images/check-on.png" alt="ok" />';
-    $img_red = '<img src="images/check-off.png" alt="fail" />';
-}
-
-# setting
-if ($part == 'setting') {
-    $s_active = (boolean) $s->kutrl_active;
-    $s_plugin_service = (string) $s->kutrl_plugin_service;
-    $s_admin_service = (string) $s->kutrl_admin_service;
-    $s_tpl_service = (string) $s->kutrl_tpl_service;
-    $s_wiki_service = (string) $s->kutrl_wiki_service;
-    $s_allow_external_url = (boolean) $s->kutrl_allow_external_url;
-    $s_tpl_passive = (boolean) $s->kutrl_tpl_passive;
-    $s_tpl_active = (boolean) $s->kutrl_tpl_active;
-    $s_admin_entry_default = (string) $s->kutrl_admin_entry_default;
-
-    if (!empty($_POST['save'])) {
-        try {
-            $s_active = !empty($_POST['s_active']);
-            $s_admin_service = (string) $_POST['s_admin_service'];
-            $s_plugin_service = (string) $_POST['s_plugin_service'];
-            $s_tpl_service = (string) $_POST['s_tpl_service'];
-            $s_wiki_service = (string) $_POST['s_wiki_service'];
-            $s_allow_external_url = !empty($_POST['s_allow_external_url']);
-            $s_tpl_passive = !empty($_POST['s_tpl_passive']);
-            $s_tpl_active = !empty($_POST['s_tpl_active']);
-            $s_admin_entry_default = !empty($_POST['s_admin_entry_default']);
-
-            $s->put('kutrl_active', $s_active);
-            $s->put('kutrl_plugin_service', $s_plugin_service);
-            $s->put('kutrl_admin_service', $s_admin_service);
-            $s->put('kutrl_tpl_service', $s_tpl_service);
-            $s->put('kutrl_wiki_service', $s_wiki_service);
-            $s->put('kutrl_allow_external_url', $s_allow_external_url);
-            $s->put('kutrl_tpl_passive', $s_tpl_passive);
-            $s->put('kutrl_tpl_active', $s_tpl_active);
-            $s->put('kutrl_admin_entry_default', $s_admin_entry_default);
-
-            $core->blog->triggerBlog();
-
-            dcPage::addSuccessNotice(
-                __('Configuration successfully saved')
-            );
-
-            http::redirect($p_url . '&part=setting');
-        } catch (Exception $e) {
-            $core->error->add($e->getMessage());
-        }
-    }
-}
-
-# services
-if ($part == 'service' && !empty($_POST['save'])) {
-    try {
-        foreach(kutrl::getServices($core) as $service_id => $service) {
-            $o = new $service($core);
-            $o->saveSettings();
-        }
-        $core->blog->triggerBlog();
-
-        dcPage::addSuccessNotice(
-            __('Configuration successfully saved')
-        );
-
-        http::redirect($p_url . '&part=service');
-    } catch (Exception $e) {
-        $core->error->add($e->getMessage());
-    }
-}
 
 # link creation
 if ($part == 'link') {
@@ -183,10 +96,17 @@ if ($part == 'link') {
             $core->error->add($e->getMessage());
         }
     }
-}
 
 # links
-if ($part == 'links') {
+} else {
+    $services_combo = [];
+    foreach(kutrl::getServices($core) as $service_id => $service) {
+        $o = new $service($core);
+        $services_combo[__($o->name)] = $o->id;
+    }
+    $ext_services_combo = array_merge([__('Disabled')=>''], $services_combo);
+    $lst_services_combo = array_merge(['-'=>''], $services_combo);
+
     $log = new kutrlLog($core);
 
     $kUtRL_filter = new adminGenericFilter($core, 'kUtRL');
@@ -205,6 +125,10 @@ if ($part == 'links') {
     } catch (Exception $e) {
         $core->error->add($e->getMessage());
     }
+
+    $header = 
+        $kUtRL_filter->js($core->adminurl->get('admin.plugin.kUtRL', ['part' => 'links'])) .
+        dcPage::jsLoad(dcPage::getPF('kUtRL/js/admin.js'));
 
     if (!empty($_POST['deletelinks'])) {
         try {
@@ -233,163 +157,9 @@ if ($part == 'links') {
 
 # display header
 echo 
-'<html><head><title>kUtRL, ' . __('Links shortener') . '</title>';
-
-if ($part == 'links') {
-    echo 
-    $kUtRL_filter->js($core->adminurl->get('admin.plugin.kUtRL', ['part' => 'links'])) .
-    dcPage::jsLoad(dcPage::getPF('kUtRL/js/admin.js'));
-}
-
-echo 
+'<html><head><title>kUtRL, ' . __('Links shortener') . '</title>' .
+$header .
 '</head><body>';
-
-# display setting
-if ($part == 'setting') {
-    echo 
-    dcPage::breadcrumb(
-        [
-            __('Links shortener') => '',
-            '<span class="page-title">' . __('Plugin configuration') . '</span>'  => '',
-            __('Services configuration') => $p_url .'&amp;part=service'
-        ],
-        ['hl' => false]
-    ) .
-    dcPage::notices() .
-
-    '<h3>' . __('Plugin configuration') . '</h3>
-    <p><a class="back" href="' . $p_url . '">' . __('Back to links list') . '</a></p>
-
-    <form id="setting-form" method="post" action="' . $p_url . '">
-
-    <div class="fieldset" id="setting-plugin">
-    <h4>' .  __('Plugin activation') . '</h4>
-    <p><label class="classic">' . 
-    form::checkbox(['s_active'], '1', $s_active) . 
-    __('Enable plugin') . '</label></p>
-    </div>
-
-    <div class="fieldset" id="setting-option">
-    <h4>' .  __('Behaviors') . '</h4>
-    <p><label class="classic">' . 
-    form::checkbox(['s_allow_external_url'], '1', $s_allow_external_url) . 
-    __('Allow short link for external URL') . '</label></p>
-    <p class="form-note">' . __('Not only link started with this blog URL could be shortened.') . '</p>
-    <p><label class="classic">' . 
-    form::checkbox(['s_tpl_passive'], '1', $s_tpl_passive) . 
-    __('Passive mode') . '</label></p>
-    <p class="form-note">' . __('If this extension is disabled and the passive mode is enabled, "kutrl" tags (like EntryKurl) will display long urls instead of nothing on templates.') . '</p>
-    <p><label class="classic">' . 
-    form::checkbox(['s_tpl_active'], '1', $s_tpl_active) . 
-    __('Active mode') . '</label></p>
-    <p class="form-note">' . __('If the active mode is enabled, all know default template tags (like EntryURL) will display short urls instead of long ones on templates.') . '<br />' . 
-    __('You can disable URL shortening for a specific template tag by adding attribute disable_kutrl="1" to it . ') . '</p>
-    <p class="warning">' . __('We strongly discourage using active mode as it crashes public post form and complex url if theme is not customize for kUtRL.') . '</p>
-    <p><label class="classic">' . 
-    form::checkbox(['s_admin_entry_default'], '1', $s_admin_entry_default) . 
-    __('Create short link for new entries') . '</label></p>
-    <p class="form-note">' . __('This can be changed on page of creation/edition of an entry.') . '</p>
-    </div>
-
-    <div class="fieldset" id="setting-service">
-    <h4>' .  __('Default services') . '</h4>
-    <p><label>';
-    if (!empty($msg)) {
-        if (null !== ($o = kutrl::quickPlace($s_admin_service))) {
-            echo $o->testService() ? $img_green : $img_red;
-        }
-    }
-    echo '&nbsp;' . __('Administration:') . '<br />' . 
-    form::combo(['s_admin_service'], $services_combo, $s_admin_service) . '
-    </label></p>
-    <p class="form-note">' . __('Service to use in this admin page and on edit page of an entry.') . '</p>
-    <p><label>';
-    if (!empty($msg)) {
-        if (null !== ($o = kutrl::quickPlace($s_plugin_service))) {
-            echo $o->testService() ? $img_green : $img_red;
-        }
-    }
-    echo '&nbsp;' . __('Extensions:') . '<br />' . 
-    form::combo(['s_plugin_service'], $services_combo, $s_plugin_service) . '
-    </label></p>
-    <p class="form-note">' . __('Service to use on third part plugins.') . '</p>
-    <p><label>';
-    if (!empty($msg)) {
-        if (null !== ($o = kutrl::quickPlace($s_tpl_service))) {
-            echo $o->testService() ? $img_green : $img_red;
-        }
-    }
-    echo '&nbsp;' . __('Templates:') . '<br />' . 
-    form::combo(['s_tpl_service'], $ext_services_combo, $s_tpl_service) . '
-    </label></p>
-    <p class="form-note">' . __('Shorten links automatically when using template value like "EntryKutrl".') . '</p>
-    <p><label>';
-    if (!empty($msg)) {
-        if (null !== ($o = kutrl::quickPlace($s_wiki_service))) {
-            echo $o->testService() ? $img_green : $img_red;
-        }
-    }
-    echo '&nbsp;' . __('Contents:') . '<br />' . 
-    form::combo(['s_wiki_service'], $ext_services_combo, $s_wiki_service) . '
-    </label></p>
-    <p class="form-note">' . __('Shorten links automatically found in contents using wiki synthax.') . '</p>
-    </div>
-
-    <p><input type="submit" name="save" value="' . __('Save') . '" />' . 
-    $core->formNonce() . 
-    form::hidden(['part'], 'setting') . '
-    </p>
-    </form>';
-}
-
-# display service
-if ($part == 'service') {
-    echo 
-    dcPage::breadcrumb(
-        [
-            __('Links shortener') => '',
-            __('Plugin configuration')  => $p_url . '&amp;part=setting',
-            '<span class="page-title">' . __('Services configuration') . '</span>' => ''
-        ],
-        ['hl' => false]
-    ) .
-    dcPage::notices() .
-
-    '<h3>' . __('Services configuration') . '</h3>' .
-    '<p><a class="back" href="' . $p_url . '">' . __('Back to links list') . '</a></p>' .
-    '<form id="service-form" method="post" action="' . $p_url . '">';
-
-    foreach(kutrl::getServices($core) as $service_id => $service) {
-        $o = new $service($core);
-
-        echo '<div class="fieldset" id="setting-' . $service_id . '"><h4>' . $o->name . '</h4>';
-
-        if (!empty($_POST['save'])) {
-            echo '<p><em>' . (
-            $o->testService() ?
-                $img_green . ' ' . sprintf(__('%s API is well configured and runing.'), $o->name) :
-                $img_red . ' ' . sprintf(__('Failed to test %s API.'), $o->name)
-            ) . '</em></p>';
-            //if ($o->error->flag()) {
-                echo $o->error->toHTML();
-            //}
-        }
-        if ($o->home != '') {
-            echo '<p><a title="' . __('homepage') . '" href="' . $o->home . '">' . sprintf(__('Learn more about %s.'), $o->name) . '</a></p>';
-        }
-        $o->settingsForm();
-
-        echo '</div>';
-    }
-
-    echo '
-    <div class="clear">
-    <p><input type="submit" name="save" value="' . __('Save') . '" />' . 
-    $core->formNonce() . 
-    form::hidden(['part'], 'service') . '
-    </p></div>
-    </form>';
-}
 
 # display link creation
 if ($part == 'link') {
@@ -410,7 +180,7 @@ if ($part == 'link') {
         echo '
         <div class="fieldset">
         <h4>' . sprintf(__('Shorten link using service "%s"'), $kut->name) . '</h4>
-        <form id="create-link" method="post" action="' . $p_url . '">
+        <form id="create-link" method="post" action="' . $core->adminurl->get('admin.plugin.kUtRL') . '">
 
         <p><label for="str">' . __('Long link:') . '</label>' .
         form::field('str', 100, 255, '') . '</p>';
@@ -435,9 +205,7 @@ if ($part == 'link') {
         </p></div>
         </form>';
     }
-}
-
-if ($part == 'links') {
+} else {
     echo    
     dcPage::breadcrumb(
         [
@@ -454,7 +222,7 @@ if ($part == 'links') {
     $list_current->display(
         $kUtRL_filter->value('page'),
         $kUtRL_filter->nb, 
-        '<form action="' . $p_url . '&amp;part=links" method="post" id="form-entries">
+        '<form action="' . $core->adminurl->get('admin.plugin.kUtRL') . '" method="post" id="form-entries">
 
         %s
 
@@ -476,12 +244,4 @@ if ($part == 'links') {
 # display footer
 dcPage::helpBlock('kUtRL');
 
-echo 
-'<p class="clear right">
-<a href="' . $p_url . '&amp;part=setting">' . __('Plugin configuration') . '</a> - 
-<a href="' . $p_url . '&amp;part=service">' . __('Services configuration') . '</a> - 
-kUtRL - ' . $core->plugins->moduleInfo('kUtRL', 'version') . '&nbsp;
-<a href="' . $core->plugins->getModules('kUtRL')['support'] . '">
-<img alt="' . __('kUtRL') . '" src="index.php?pf=kUtRL/icon.png" /></a>
-</p>
-</body></html>';
+echo '</body></html>';
