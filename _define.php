@@ -21,11 +21,11 @@ $this->registerModule(
     'Jean-Christian Denis and contributors',
     '2021.09.16',
     [
-        'requires' => [['core', '2.19']],
+        'requires'    => [['core', '2.19']],
         'permissions' => 'usage,contentadmin,admin',
-        'type' => 'plugin',
-        'support' => 'https://github.com/JcDenis/kUtRL',
-        'details' => 'http://plugins.dotaddict.org/dc2/details/kUtRL',
-        'repository' => 'https://raw.githubusercontent.com/JcDenis/kUtRL/master/dcstore.xml'
+        'type'        => 'plugin',
+        'support'     => 'https://github.com/JcDenis/kUtRL',
+        'details'     => 'http://plugins.dotaddict.org/dc2/details/kUtRL',
+        'repository'  => 'https://raw.githubusercontent.com/JcDenis/kUtRL/master/dcstore.xml'
     ]
 );

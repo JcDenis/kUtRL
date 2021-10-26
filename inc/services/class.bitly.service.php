@@ -18,26 +18,26 @@ if (!defined('DC_RC_PATH')) {
 class bitlyKutrlService extends kutrlService
 {
     protected $config = [
-        'id' => 'bitly',
-        'name' => 'bit.ly',
-        'home' => 'http://bit.ly',
+        'id'         => 'bitly',
+        'name'        => 'bit.ly',
+        'home'        => 'http://bit.ly',
 
-        'url_api' => 'http://api.bit.ly/v3/',
-        'url_base' => 'http://bit.ly/',
+        'url_api'     => 'http://api.bit.ly/v3/',
+        'url_base'    => 'http://bit.ly/',
         'url_min_len' => 25
     ];
 
     private $args = [
-        'format' => 'xml',
-        'login' => '',
-        'apiKey' => '',
+        'format'  => 'xml',
+        'login'   => '',
+        'apiKey'  => '',
         'history' => 0
     ];
 
     protected function init()
     {
-        $this->args['login'] = $this->settings->kutrl_srv_bitly_login;
-        $this->args['apiKey'] = $this->settings->kutrl_srv_bitly_apikey;
+        $this->args['login']   = $this->settings->kutrl_srv_bitly_login;
+        $this->args['apiKey']  = $this->settings->kutrl_srv_bitly_apikey;
         $this->args['history'] = $this->settings->kutrl_srv_bitly_history ? 1 : 0;
     }
 
@@ -76,6 +76,7 @@ class bitlyKutrlService extends kutrlService
     {
         if (empty($this->args['login']) || empty($this->args['apiKey'])) {
             $this->error->add(__('Service is not well configured.'));
+
             return false;
         }
 
@@ -83,6 +84,7 @@ class bitlyKutrlService extends kutrlService
         $args['hash'] = 'WP9vc';
         if (!($response = self::post($this->url_api . 'expand', $args, true))) {
             $this->error->add(__('Failed to call service.'));
+
             return false;
         }
 
@@ -92,18 +94,20 @@ class bitlyKutrlService extends kutrlService
         if ($err_msg != 'OK') {
             $err_no = (integer) $rsp->status_code;
             $this->error->add(sprintf(__('An error occured with code %s and message "%s"'), $err_no, $err_msg));
+
             return false;
         }
+
         return true;
     }
 
     public function createHash($url, $hash = null)
     {
-        $args = $this->args;
-        $args['longUrl'] = $url;
+        $args = array_merge($this->args, ['longUrl' => $url]);
 
         if (!($response = self::post($this->url_api . 'shorten', $args, true))) {
             $this->error->add(__('Failed to call service.'));
+
             return false;
         }
 
@@ -113,12 +117,13 @@ class bitlyKutrlService extends kutrlService
         if ($err_msg != 'OK') {
             $err_no = (integer) $rsp->status_code;
             $this->error->add(sprintf(__('An error occured with code %s and message "%s"'), $err_no, $err_msg));
+
             return false;
         }
 
         $rs = new ArrayObject();
         $rs->hash = (string) $rsp->data[0]->hash;
-        $rs->url = (string) $rsp->data[0]->long_url;
+        $rs->url  = (string) $rsp->data[0]->long_url;
         $rs->type = $this->id;
 
         return $rs;

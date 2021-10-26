@@ -18,7 +18,7 @@ if (!defined('DC_RC_PATH')) {
 class yourlsKutrlService extends kutrlService
 {
     protected $config = [
-        'id' => 'yourls',
+        'id'   => 'yourls',
         'name' => 'YOURLS',
         'home' => 'http://yourls.org'
     ];
@@ -26,8 +26,8 @@ class yourlsKutrlService extends kutrlService
     private $args = [
         'username' => '',
         'password' => '',
-        'format' => 'xml',
-        'action' => 'shorturl'
+        'format'   => 'xml',
+        'action'   => 'shorturl'
     ];
 
     protected function init()
@@ -38,8 +38,8 @@ class yourlsKutrlService extends kutrlService
         $base = (string) $this->settings->kutrl_srv_yourls_base;
         //if (!empty($base) && substr($base,-1,1) != '/') $base .= '/';
 
-        $this->config['url_api'] = $base;
-        $this->config['url_base'] = $base;
+        $this->config['url_api']     = $base;
+        $this->config['url_base']    = $base;
         $this->config['url_min_len'] = strlen($base)+3;
     }
 
@@ -78,6 +78,7 @@ class yourlsKutrlService extends kutrlService
     {
         if (empty($this->url_api)) {
             $this->error->add(__('Service is not well configured.'));
+
             return false;
         }
 
@@ -86,24 +87,27 @@ class yourlsKutrlService extends kutrlService
 
         if (!($response = self::post($this->url_api, $this->args, true))) {
             $this->error->add(__('Service is unavailable.'));
+
             return false;
         }
         $rsp = @simplexml_load_string($response);
 
         if ($rsp && $rsp->status == 'success') {
+
             return true;
         }
         $this->error->add(__('Authentication to service failed.'));
+
         return false;
     }
 
     public function createHash($url, $hash = null)
     {
-        $args = $this->args;
-        $args['url'] = $url;
+        $args = array_merge($this->args, ['url' => $url]);
 
         if (!($response = self::post($this->url_api, $args, true))) {
             $this->error->add(__('Service is unavailable.'));
+
             return false;
         }
 
@@ -112,12 +116,13 @@ class yourlsKutrlService extends kutrlService
         if ($rsp && $rsp->status == 'success') {
             $rs = new ArrayObject();
             $rs->hash = $rsp->url[0]->keyword;
-            $rs->url = $url;
+            $rs->url  = $url;
             $rs->type = $this->id;
 
             return $rs;
         }
         $this->error->add(__('Unreadable service response.'));
+
         return false;
     }
 }

@@ -20,12 +20,12 @@ class kutrlLog
     public $blog;
     public $con;
 
-    public function __construct($core)
+    public function __construct(dcCore $core)
     {
-        $this->core = $core;
+        $this->core  = $core;
         $this->table = $core->prefix . 'kutrl';
-        $this->blog = $core->con->escape($core->blog->id);
-        $this->con = $core->con;
+        $this->blog  = $core->con->escape($core->blog->id);
+        $this->con   = $core->con;
     }
 
     public function nextId()
@@ -41,23 +41,23 @@ class kutrlLog
         $this->con->writeLock($this->table);
 
         try {
-            $cur->kut_id = $this->nextId();
-            $cur->blog_id = $this->blog;
-            $cur->kut_url = (string) $url;
-            $cur->kut_hash = (string) $hash;
-            $cur->kut_type = (string) $type;
+            $cur->kut_id      = $this->nextId();
+            $cur->blog_id     = $this->blog;
+            $cur->kut_url     = (string) $url;
+            $cur->kut_hash    = (string) $hash;
+            $cur->kut_type    = (string) $type;
             $cur->kut_service = (string) $service;
-            $cur->kut_dt = date('Y-m-d H:i:s');
+            $cur->kut_dt      = date('Y-m-d H:i:s');
             $cur->kut_counter = 0;
 
             $cur->insert();
             $this->con->unlock();
 
             return [
-                'id' => $cur->kut_id,
-                'url' => $url,
-                'hash' => $hash,
-                'type' => $type,
+                'id'      => $cur->kut_id,
+                'url'     => $url,
+                'hash'    => $hash,
+                'type'    => $type,
                 'service' => $service,
                 'counter '=> 0
             ];
@@ -65,6 +65,7 @@ class kutrlLog
             $this->con->unlock();
             throw $e;
         }
+
         return false;
     }
 
@@ -109,8 +110,8 @@ class kutrlLog
         $this->con->writeLock($this->table);
 
         try {
-            $cur->kut_url = '';
-            $cur->kut_dt = date('Y-m-d H:i:s');
+            $cur->kut_url     = '';
+            $cur->kut_dt      = date('Y-m-d H:i:s');
             $cur->kut_counter = 0;
 
             $cur->update(
@@ -124,6 +125,7 @@ class kutrlLog
             $this->con->unlock();
             throw $e;
         }
+
         return false;
     }
 
@@ -152,12 +154,14 @@ class kutrlLog
         $counter = $rs->isEmpty() ? 0 : $rs->kut_counter;
 
         if ('get' == $do) {
+
             return $counter;
         } elseif ('up' == $do) {
             $counter += 1;
         } elseif ('reset' == $do) {   
             $counter = 0;
         } else {
+
             return 0;
         }
 
@@ -253,6 +257,7 @@ class kutrlLog
         if (!$count_only && !empty($p['limit'])) {
             $r .= $this->con->limit($p['limit']);
         }
+
         return $this->con->select($r);
     }
 }

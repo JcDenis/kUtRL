@@ -26,8 +26,9 @@ class kutrlWiki
 
         # Do nothing on comment preview and post preview
         if (!empty($_POST['preview']) 
-         || !empty($GLOBALS['_ctx']) && $GLOBALS['_ctx']->preview
-         || !$s->kutrl_active) {
+            || !empty($GLOBALS['_ctx']) && $GLOBALS['_ctx']->preview
+            || !$s->kutrl_active
+        ) {
             return null;
         }
         if (null === ($kut = kutrl::quickPlace('wiki'))) {

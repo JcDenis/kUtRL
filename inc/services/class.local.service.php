@@ -18,9 +18,9 @@ if (!defined('DC_RC_PATH')) {
 class localKutrlService extends kutrlService
 {
     protected $config = [
-        'id' => 'local',
-        'name' => 'kUtRL',
-        'home' => 'https://github.com/JcDenis/kUtRL',
+        'id'                => 'local',
+        'name'              => 'kUtRL',
+        'home'              => 'https://github.com/JcDenis/kUtRL',
 
         'allow_custom_hash' => true
     ];
@@ -104,9 +104,11 @@ class localKutrlService extends kutrlService
     {
         $ap = $this->allow_protocols;
         if (!empty($ap)) {
+
             return true;
         } else {
             $this->error->add(__('Service is not well configured.'));
+
             return false;
         }
     }
@@ -116,7 +118,7 @@ class localKutrlService extends kutrlService
         # Create response object
         $rs = new ArrayObject();
         $rs->type = 'local';
-        $rs->url = $url;
+        $rs->url  = $url;
 
         # Normal link
         if ($hash === null) {
@@ -132,6 +134,7 @@ class localKutrlService extends kutrlService
         } elseif (preg_match('/^[A-Za-z0-9\.\-\_]{2,}$/', $hash)) {
             if (false !== $this->log->select(null, $hash, null, 'local')) {
                 $this->error->add(__('Custom short link is already taken.'));
+
                 return false;
             }
             $type = 'localcustom';
@@ -140,23 +143,25 @@ class localKutrlService extends kutrlService
         # Wrong char in custom hash
         } else {
             $this->error->add(__('Custom short link is not valid.'));
+
             return false;
         }
 
         # Save link
         try {
             $this->log->insert($rs->url, $rs->hash, $type, $rs->type);
+
             return $rs;
         } catch (Exception $e) {
             $this->error->add(__('Failed to save link.'));
         }
+
         return false;
     }
 
     protected function last($type)
     {
-        return 
-            false === ($rs = $this->log->select(null, null, $type, 'local')) ?
+        return false === ($rs = $this->log->select(null, null, $type, 'local')) ?
             -1 : $rs->hash;
     }
 
@@ -177,9 +182,9 @@ class localKutrlService extends kutrlService
                 $next_id = $this->append($last_id);
             }
         }
-        return 
-        false === $this->log->select(null,$prefix . $next_id, null, 'local') ?
-        $next_id : $this->next($next_id, $prefix);
+
+        return false === $this->log->select(null,$prefix . $next_id, null, 'local') ?
+            $next_id : $this->next($next_id, $prefix);
     }
 
     protected function append($id)
@@ -188,6 +193,7 @@ class localKutrlService extends kutrlService
         for ($x = 0; $x < count($id); $x++) {
             $id[$x] = 0;
         }
+
         return implode($id) . '0';
     }
 
@@ -208,24 +214,29 @@ class localKutrlService extends kutrlService
                 $id[$x] = 0;
             }
         }
+
         return implode($id);
     }
 
     public function getUrl($hash)
     {
         if (false === ($rs = $this->log->select(null, $hash, null, 'local'))) {
+
             return false;
         }
         if (!$rs->url) { //previously removed url
+
             return false;
         }
         $this->log->counter($rs->id, 'up');
+
         return $rs->url;
     }
 
     public function deleteUrl($url, $delete = false)
     {
         if (false === ($rs = $this->log->select($url, null, null, 'local'))) {
+
             return false;
         }
         if ($delete) {
@@ -233,6 +244,7 @@ class localKutrlService extends kutrlService
         } else {
             $this->log->clear($rs->id, '');
         }
+
         return true;
     }
 }

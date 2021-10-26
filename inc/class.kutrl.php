@@ -19,11 +19,12 @@ if (!defined('DC_RC_PATH')) {
 class kUtRL
 {
     # Load services list from behavior
-    public static function getServices($core)
+    public static function getServices(dcCore $core)
     {
         $list = $core->getBehaviors('kutrlService');
 
         if (empty($list)) {
+
             return [];
         }
         $services = [];  
@@ -35,6 +36,7 @@ class kUtRL
 
             }
         }
+
         return $services;
     }
 
@@ -46,15 +48,17 @@ class kUtRL
 
         try {
             if (empty($id)) {
+
                 return null;
             }
             $services = self::getServices($core);
             if (isset($services[$id])) {
+
                 return new $services[$id]($core);
             }
         } catch(Exception $e) {
-
         }
+
         return null; 
     }
 
@@ -66,15 +70,17 @@ class kUtRL
 
         try {
             if (!in_array($place, ['tpl', 'wiki', 'admin', 'plugin'])) {
+
                 return null;
             }
             $id = $core->blog->settings->kUtRL->get('kutrl_' . $place .'_service');
             if (!empty($id)) {
+
                 return self::quickService($id);
             }
         } catch(Exception $e) {
-
         }
+
         return null; 
     }
 
@@ -87,16 +93,18 @@ class kUtRL
         try {
             $srv = self::quickPlace($place);
             if (empty($srv)) {
+
                 return $url;
             }
             $rs = $srv->hash($url,$custom);
             if (empty($rs)) {
+
                 return $url;
             }
             return $srv->url_base.$rs->hash;
         } catch(Exception $e) {
-
         }
+
         return $url; 
     }
 }

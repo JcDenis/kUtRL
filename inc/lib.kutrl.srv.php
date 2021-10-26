@@ -24,10 +24,10 @@ class kutrlService
 
     public function __construct($core)
     {
-        $this->core = $core;
+        $this->core     = $core;
         $this->settings = $core->blog->settings->kUtRL;
-        $this->log = new kutrlLog($core);
-        $this->error = new dcError();
+        $this->log      = new kutrlLog($core);
+        $this->error    = new dcError();
         $this->error->setHTMLFormat('%s', "%s\n");
 
         $this->init();
@@ -39,18 +39,18 @@ class kutrlService
 
         $this->config = array_merge(
             [
-                'id' => 'undefined',
-                'name' => 'undefined',
-                'home' => '',
+                'id'                 => 'undefined',
+                'name'               => 'undefined',
+                'home'               => '',
 
                 'allow_external_url' => true,
-                'allow_custom_hash' => false,
-                'allow_protocols' => ['http://'],
+                'allow_custom_hash'  => false,
+                'allow_protocols'    => ['http://'],
 
-                'url_test' => 'http://dotclear.jcdenis.com/go/kUtRL',
-                'url_api' => '',
-                'url_base' => '',
-                'url_min_len' => 0
+                'url_test'           => 'http://dotclear.jcdenis.com/go/kUtRL',
+                'url_api'            => '',
+                'url_base'           => '',
+                'url_min_len'        => 0
             ],
             $this->config
         );
@@ -121,9 +121,11 @@ class kutrlService
                 continue;
             }
             if (strpos($url,$protocol) === 0) {
+
                 return true;
             }
         }
+
         return false;
     }
 
@@ -199,6 +201,7 @@ class kutrlService
         }
         $this->deleteUrl($url);
         $this->log->delete($rs->id);
+
         return true;
     }
 
@@ -238,6 +241,7 @@ class kutrlService
         if ($verbose) {
             return $client->getContent();
         }
+
         return true;
     }
 }

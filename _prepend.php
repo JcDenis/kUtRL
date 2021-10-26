@@ -14,11 +14,6 @@
 if (!defined('DC_RC_PATH')) {
     return;
 }
-if (version_compare(str_replace("-r", "-p", DC_VERSION), '2.2-alpha', '<')) {
-    return;
-}
-
-global $__autoload, $core;
 
 # Set a URL shortener for quick get request
 if (!defined('SHORTEN_SERVICE_NAME')) {
@@ -39,9 +34,9 @@ if (!defined('SHORTEN_SERVICE_ENCODE')) {
 
 # Main class
 $d = dirname(__FILE__) . '/inc/';
-$__autoload['kutrl'] = $d . 'class.kutrl.php';
-$__autoload['kutrlService'] = $d . 'lib.kutrl.srv.php';
-$__autoload['kutrlLog'] = $d . 'lib.kutrl.log.php';
+$__autoload['kutrl']          = $d . 'class.kutrl.php';
+$__autoload['kutrlService']   = $d . 'lib.kutrl.srv.php';
+$__autoload['kutrlLog']       = $d . 'lib.kutrl.log.php';
 $__autoload['kutrlLinksList'] = $d . 'lib.kutrl.lst.php';
 
 # Services

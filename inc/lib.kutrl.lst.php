@@ -60,8 +60,8 @@ class kutrlLinkslist
             }
 
             $cols = [
-                    'kut_url'    => '<th colspan="2" class="first">' . __('Link') . '</th>',
-                    'kut_hash'     => '<th scope="col">' . __('Hash') . '</th>',
+                    'kut_url'     => '<th colspan="2" class="first">' . __('Link') . '</th>',
+                    'kut_hash'    => '<th scope="col">' . __('Hash') . '</th>',
                     'kut_dt'      => '<th scope="col">' . __('Date') . '</th>',
                     'kut_service' => '<th scope="col">' . __('Service') . '</th>'
             ];

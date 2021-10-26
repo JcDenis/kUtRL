@@ -21,15 +21,11 @@ $old_version = $core->getVersion('kUtRL');
 
 # Compare versions
 if (version_compare($old_version, $new_version, '>=')) {
-    return;
+    return null;
 }
 
 # Install or update
 try {
-    if (version_compare(str_replace("-r", "-p", DC_VERSION), '2.2-alpha', '<')) {
-        throw new Exception('kUtRL requires Dotclear 2.2');
-    }
-
     # Table
     $t = new dbStruct($core->con, $core->prefix);
     $t->kutrl
@@ -89,5 +85,6 @@ try {
     return true;
 } catch (Exception $e) {
     $core->error->add($e->getMessage());
-    return false;
 }
+
+return false;

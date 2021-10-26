@@ -18,7 +18,7 @@ if (!defined('DC_RC_PATH')) {
 class bilbolinksKutrlService extends kutrlService
 {
     protected $config = [
-        'id' => 'bilbolinks',
+        'id'   => 'bilbolinks',
         'name' => 'BilboLinks',
         'home' => 'http://www.tux-planet.fr/bilbobox/'
     ];
@@ -62,14 +62,17 @@ class bilbolinksKutrlService extends kutrlService
     {
         if (empty($this->url_base)) {
             $this->error->add(__('Service is not well configured.'));
+
             return false;
         }
 
         $arg = ['longurl' => urlencode($this->url_test)];
         if (!self::post($this->url_api, $arg, true,true)) {
             $this->error->add(__('Service is unavailable.'));
+
             return false;
         }
+
         return true;
     }
 
@@ -79,15 +82,17 @@ class bilbolinksKutrlService extends kutrlService
 
         if (!($response = self::post($this->url_api, $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
+
             return false;
         }
         if ($response == 'You are too speed!') {
             $this->error->add(__('Service rate limit exceeded.'));
+
             return false;
         }
         $rs = new ArrayObject();
         $rs->hash = str_replace($this->url_base, '', $response);
-        $rs->url = $url;
+        $rs->url  = $url;
         $rs->type = $this->id;
 
         return $rs;

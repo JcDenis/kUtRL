@@ -18,22 +18,21 @@ if (!defined('DC_RC_PATH')) {
 class customKutrlService extends kutrlService
 {
     protected $config = [
-        'id' => 'custom',
+        'id'   => 'custom',
         'name' => 'Custom'
     ];
 
     protected function init()
     {
         $config = unserialize(base64_decode($this->settings->kutrl_srv_custom));
-        if (!is_array($config))
-        {
+        if (!is_array($config)) {
             $config = [];
         }
 
-        $this->config['url_api'] = !empty($config['url_api']) ? $config['url_api'] : '';
-        $this->config['url_base'] = !empty($config['url_base']) ? $config['url_base'] : '';
-        $this->config['url_param'] = !empty($config['url_param']) ? $config['url_param'] : '';
-        $this->config['url_encode'] = !empty($config['url_api']);
+        $this->config['url_api']        = !empty($config['url_api']) ? $config['url_api'] : '';
+        $this->config['url_base']       = !empty($config['url_base']) ? $config['url_base'] : '';
+        $this->config['url_param']      = !empty($config['url_param']) ? $config['url_param'] : '';
+        $this->config['url_encode']     = !empty($config['url_api']);
 
         $this->config['url_min_length'] = strlen($this->url_base) + 2;
     }
@@ -41,9 +40,9 @@ class customKutrlService extends kutrlService
     public function saveSettings()
     {
         $config = [
-            'url_api' => $_POST['kutrl_srv_custom_url_api'],
-            'url_base' => $_POST['kutrl_srv_custom_url_base'],
-            'url_param' => $_POST['kutrl_srv_custom_url_param'],
+            'url_api'    => $_POST['kutrl_srv_custom_url_api'],
+            'url_base'   => $_POST['kutrl_srv_custom_url_base'],
+            'url_param'  => $_POST['kutrl_srv_custom_url_param'],
             'url_encode' => !empty($_POST['kutrl_srv_custom_url_encode'])
         ];
         $this->settings->put('kutrl_srv_custom', base64_encode(serialize($config)));
@@ -52,9 +51,9 @@ class customKutrlService extends kutrlService
     public function settingsForm()
     {
         $default = [
-            'url_api' => '',
-            'url_base' => '',
-            'url_param' => '',
+            'url_api'    => '',
+            'url_base'   => '',
+            'url_param'  => '',
             'url_encode' => true
         ];
         $config = unserialize(base64_decode($this->settings->kutrl_srv_custom));
@@ -89,21 +88,24 @@ class customKutrlService extends kutrlService
     public function testService()
     {
         if (empty($this->url_api)) {
+
             return false;
         }
         $url = $this->url_encode ? urlencode($this->url_test) : $this->url_test;
         $arg = [$this->url_param => $url];
         if (!self::post($this->url_api, $arg, true, true)) {
             $this->error->add(__('Service is unavailable.'));
+
             return false;
         }
+
         return true;
     }
 
     public function createHash($url, $hash = null)
     {
         $enc = $this->url_encode ? urlencode($url) : $url;
-        $arg = array($this->url_param => $enc);
+        $arg = [$this->url_param => $enc];
 
         if (!($response = self::post($this->url_api, $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
@@ -111,7 +113,7 @@ class customKutrlService extends kutrlService
         }
         $rs = new ArrayObject();
         $rs->hash = str_replace($this->url_base, '', $response);
-        $rs->url = $url;
+        $rs->url  = $url;
         $rs->type = $this->id;
 
         return $rs;

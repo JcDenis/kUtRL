@@ -57,11 +57,13 @@ class urlKutrl extends dcUrlHandlers
         # Not active, go to default 404
         if (!$s->kutrl_active) {
             self::p404();
+
             return null;
         }
         # Not a valid url, go to kutrl 404
         if (!preg_match('#^(|(/(.*?)))$#', $args, $m)) {
             self::kutrl404();
+
             return null;
         }
 
@@ -85,6 +87,7 @@ class urlKutrl extends dcUrlHandlers
         # No arg, go to kurtl page
         if ($args == '') {
             self::pageKutrl($kut);
+
             return null;
         }
         # Not find, go to kutrl 404
@@ -92,16 +95,19 @@ class urlKutrl extends dcUrlHandlers
             //$_ctx->kutrl_msg = 'Failed to find short link.';
             //self::pageKutrl($kut);
             self::kutrl404();
+
             return null;
         }
         # Removed (empty url), go to kutrl 404
         if (!$url) {
             self::kutrl404();
+
             return null;
         }
 
         $core->blog->triggerBlog();
         http::redirect($url . $suffix);
+
         return null;
     }
 
@@ -113,11 +119,13 @@ class urlKutrl extends dcUrlHandlers
         # Not active, go to default 404
         if (!$s->kutrl_active) {
             self::p404();
+
             return null;
         }
         # Public page not active, go to kutrl 404
         if (!$s->kutrl_srv_local_public) {
             self::kutrl404();
+
             return null;
         }
         # Validation form
@@ -209,6 +217,7 @@ class urlKutrl extends dcUrlHandlers
 
         $core->tpl->setPath($core->tpl->getPath(), dirname(__FILE__) . '/default-templates');
         self::serveDocument('kutrl.html');
+
         return null;
     }
 
@@ -218,6 +227,7 @@ class urlKutrl extends dcUrlHandlers
 
         if (!$core->blog->settings->kUtRL->kutrl_srv_local_404_active) {
             self::p404();
+
             return null;
         }
 
@@ -282,7 +292,8 @@ class pubKutrl
         if (empty($GLOBALS['disable_kutrl'])) {
             # kUtRL is not activated
             if (!$core->blog->settings->kUtRL->kutrl_active 
-             || !$core->blog->settings->kUtRL->kutrl_tpl_active) {
+                || !$core->blog->settings->kUtRL->kutrl_tpl_active
+            ) {
                 return null;
             }
 
