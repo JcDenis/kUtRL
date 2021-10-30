@@ -30,7 +30,7 @@ Dotaddict repository. (See Dotclear's documentation to know how do this)
 Manage settings, services and short URLs from sidebar menu "URL shortener".
 You can also add widgets, template block and values.
 
-## Links
+## LINKS
 
  * License : [GNU GPL v2](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html)
  * Source & contribution : [GitHub Page](https://github.com/JcDenis/kUtRL)
