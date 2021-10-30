@@ -1,7 +1,9 @@
 xxx.xx.xx
-- Never fix breaking comments or complexe public url
+- [ ] Fix bit.ly multi domain for short links
+- [ ] Add bit.ly custom domain
 - [ ] Add public page of the list of know urls and in/visible status
 - [ ] Add passworded links
+- Never fix breaking comments or complexe public url (add warning)
 - fix permissions
 - fix js load
 - add user pref on table cols

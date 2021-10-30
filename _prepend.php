@@ -54,10 +54,10 @@ if (!defined('SHORTEN_SERVICE_DISABLE_BILBOLINKS')) {
     $__autoload['bilbolinksKutrlService'] = $d . 'services/class.bilbolinks.service.php';
     $core->addBehavior('kutrlService', function() { return ["bilbolinks","bilbolinksKutrlService"]; } );
 }
-//if (!defined('SHORTEN_SERVICE_DISABLE_BITLY')) {
-//$__autoload['bitlyKutrlService'] = $d . 'services/class.bitly.service.php';
-//$core->addBehavior('kutrlService', function() { return ["bitly","bitlyKutrlService"]; } );
-//}
+if (!defined('SHORTEN_SERVICE_DISABLE_BITLY')) {
+    $__autoload['bitlyKutrlService'] = $d . 'services/class.bitly.service.php';
+    $core->addBehavior('kutrlService', function() { return ["bitly","bitlyKutrlService"]; } );
+}
 //if (!defined('SHORTEN_SERVICE_DISABLE_GOOGL')) {
 //    $__autoload['googlKutrlService'] = $d . 'services/class.googl.service.php';
 //    $core->addBehavior('kutrlService', function() { return ["googl","googlKutrlService"]; } );
