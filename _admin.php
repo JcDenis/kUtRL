@@ -1,16 +1,15 @@
 <?php
 /**
  * @brief kUtRL, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
@@ -65,7 +64,7 @@ class adminKutrl
     public static function antispamDashboardFavorites(dcCore $core, $favs)
     {
         $favs->register(
-            'kUtRL', 
+            'kUtRL',
             [
                 'title'       => __('Links shortener'),
                 'url'         => $core->adminurl->get('admin.plugin.kUtRL'),
@@ -118,14 +117,13 @@ class adminKutrl
 
         if ($post) {
             $post_url = $post->getURL();
-            $rs = $kut->isKnowUrl($post_url);
+            $rs       = $kut->isKnowUrl($post_url);
         } else {
             $post_url = '';
-            $rs = false;
+            $rs       = false;
         }
 
-        $ret =  
-        '<div id="kUtRL"><h5>' . __('Short link') . '</h5>' .
+        $ret = '<div id="kUtRL"><h5>' . __('Short link') . '</h5>' .
         form::hidden(['kutrl_old_post_url'], $post_url);
 
         if (!$rs) {
@@ -134,14 +132,12 @@ class adminKutrl
             } else {
                 $chk = !empty($_POST['kutrl_create']);
             }
-            $ret .= 
-            '<p><label class="classic">' .
+            $ret .= '<p><label class="classic">' .
             form::checkbox('kutrl_create', 1, $chk, '', 3) . ' ' .
             __('Create short link') . '</label></p>';
 
             if ($kut->allow_custom_hash) {
-                $ret .= 
-                '<p class="classic">' .
+                $ret .= '<p class="classic">' .
                 '<label for="custom">' . __('Custom short link:') . ' ' .
                 form::field('kutrl_create_custom', 32, 32, '', 3) .
                 '</label></p>';
@@ -153,12 +149,11 @@ class adminKutrl
             } elseif ($count == 1) {
                 $title = __('followed one time');
             } else {
-                $title = sprintf(__('followed %s times'),$count);
+                $title = sprintf(__('followed %s times'), $count);
             }
             $href = $kut->url_base . $rs->hash;
 
-            $ret .= 
-            '<p><label class="classic">' .
+            $ret .= '<p><label class="classic">' .
             form::checkbox('kutrl_delete', 1, !empty($_POST['kutrl_delete']), '', 3) . ' ' .
             __('Delete short link') . '</label></p>' .
             '<p><a href="' . $href . '" ' . 'title="' . $title . '">' . $href . '</a></p>';
@@ -194,7 +189,7 @@ class adminKutrl
         if ($rs->isEmpty()) {
             return null;
         }
-        $title = html::escapeHTML($rs->post_title);
+        $title        = html::escapeHTML($rs->post_title);
         $new_post_url = $rs->getURL();
 
         # Delete
@@ -208,12 +203,12 @@ class adminKutrl
 
             $kut->remove($old_post_url);
 
-            $rs = $kut->hash($new_post_url, $custom); // better to update (not yet implemented)
+            $rs  = $kut->hash($new_post_url, $custom); // better to update (not yet implemented)
             $url = $kut->url_base . $rs->hash;
 
             # ex: Send new url to messengers
             if (!empty($rs)) {
-                $core->callBehavior('adminAfterKutrlCreate' ,$core, $rs, $title);
+                $core->callBehavior('adminAfterKutrlCreate', $core, $rs, $title);
             }
         }
     }
@@ -239,7 +234,7 @@ class adminKutrl
         $custom = !empty($_POST['kutrl_create_custom']) && $kut->allow_custom_hash ?
             $_POST['kutrl_create_custom'] : null;
 
-        $rs = $kut->hash($rs->getURL(), $custom);
+        $rs  = $kut->hash($rs->getURL(), $custom);
         $url = $kut->url_base . $rs->hash;
 
         # ex: Send new url to messengers
@@ -273,8 +268,8 @@ class adminKutrl
         global $core;
         $s = $core->blog->settings->kUtRL;
 
-        if (!$s->kutrl_active 
-         || !$core->auth->check('admin',$core->blog->id)) {
+        if (!$s->kutrl_active
+         || !$core->auth->check('admin', $core->blog->id)) {
             return null;
         }
 
@@ -284,7 +279,7 @@ class adminKutrl
 
     public static function adminPostsActions(dcCore $core, $posts, $action, $redir)
     {
-        if ($action != 'kutrl_create' 
+        if ($action != 'kutrl_create'
          && $action != 'kutrl_delete') {
             return null;
         }
@@ -316,7 +311,8 @@ class backupKutrl
 {
     public static function exportSingle($core, $exp, $blog_id)
     {
-        $exp->export('kutrl',
+        $exp->export(
+            'kutrl',
             'SELECT kut_id, blog_id, kut_service, kut_type, ' .
             'kut_hash, kut_url, kut_dt, kut_password, kut_counter ' .
             'FROM ' . $core->prefix . 'kutrl ' .
@@ -332,10 +328,10 @@ class backupKutrl
     public static function importInit($bk, $core)
     {
         $bk->cur_kutrl = $core->con->openCursor($core->prefix . 'kutrl');
-        $bk->kutrl = new kutrlLog($core);
+        $bk->kutrl     = new kutrlLog($core);
     }
 
-    public static function importSingle($line,$bk,$core)
+    public static function importSingle($line, $bk, $core)
     {
         if ($line->__name == 'kutrl') {
             # Do nothing if str/type exists !
@@ -349,14 +345,14 @@ class backupKutrl
     {
         if ($line->__name == 'kutrl') {
             $bk->cur_kutrl->clean();
-            $bk->cur_kutrl->kut_id = (integer) $line->kut_id;
-            $bk->cur_kutrl->blog_id = (string) $line->blog_id;
-            $bk->cur_kutrl->kut_service = (string) $line->kut_service;
-            $bk->cur_kutrl->kut_type = (string) $line->kut_type;
-            $bk->cur_kutrl->kut_hash = (string) $line->kut_hash;
-            $bk->cur_kutrl->kut_url = (string) $line->kut_url;
-            $bk->cur_kutrl->kut_dt = (string) $line->miniurl_dt;
-            $bk->cur_kutrl->kut_counter = (integer) $line->kut_counter;
+            $bk->cur_kutrl->kut_id       = (int) $line->kut_id;
+            $bk->cur_kutrl->blog_id      = (string) $line->blog_id;
+            $bk->cur_kutrl->kut_service  = (string) $line->kut_service;
+            $bk->cur_kutrl->kut_type     = (string) $line->kut_type;
+            $bk->cur_kutrl->kut_hash     = (string) $line->kut_hash;
+            $bk->cur_kutrl->kut_url      = (string) $line->kut_url;
+            $bk->cur_kutrl->kut_dt       = (string) $line->miniurl_dt;
+            $bk->cur_kutrl->kut_counter  = (int) $line->kut_counter;
             $bk->cur_kutrl->kut_password = (string) $line->kut_password;
             $bk->cur_kutrl->insert();
         }

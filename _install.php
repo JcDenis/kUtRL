@@ -1,16 +1,15 @@
 <?php
 /**
  * @brief kUtRL, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
@@ -45,7 +44,7 @@ try {
         ->index('idx_kut_service', 'btree', 'kut_service')
         ->index('idx_kut_type', 'btree', 'kut_type');
 
-    $ti = new dbStruct($core->con, $core->prefix);
+    $ti      = new dbStruct($core->con, $core->prefix);
     $changes = $ti->synchronize($t);
 
     # Settings
@@ -61,9 +60,8 @@ try {
     $s->put('kutrl_tpl_active', false, 'boolean', 'Return short url on dotclear tags if kutrl is active', false, true);
     $s->put('kutrl_admin_entry_default', true, 'boolean', 'Create short link on new entry by default', false, true);
     # Settings for "local" service
-    $local_css =
-    ".shortenkutrlwidget input { border: 1px solid #CCCCCC; }\n" .
-    ".dc-kutrl input { border: 1px solid #CCCCCC; margin: 10px; }";
+    $local_css = ".shortenkutrlwidget input { border: 1px solid #CCCCCC; }\n" .
+    '.dc-kutrl input { border: 1px solid #CCCCCC; margin: 10px; }';
     $s->put('kutrl_srv_local_protocols', 'http:,https:,ftp:,ftps:,irc:', 'string', 'Allowed kutrl local service protocols', false, true);
     $s->put('kutrl_srv_local_public', false, 'boolean', 'Enabled local service public page', false, true);
     $s->put('kutrl_srv_local_css', $local_css, 'string', 'Special CSS for kutrl local service', false, true);
@@ -82,6 +80,7 @@ try {
     if ($core->plugins->moduleExists('dcMiniUrl')) {
         require_once dirname(__FILE__) . '/inc/patch.dcminiurl.php';
     }
+
     return true;
 } catch (Exception $e) {
     $core->error->add($e->getMessage());

@@ -1,16 +1,15 @@
 <?php
 /**
  * @brief kUtRL, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 # Generic class for shorten link service
 # A service class must extends this one
 class kutrlService
@@ -20,7 +19,7 @@ class kutrlService
     public $settings;
     public $log;
 
-    protected $config = array();
+    protected $config = [];
 
     public function __construct($core)
     {
@@ -33,24 +32,24 @@ class kutrlService
         $this->init();
 
         // Force setting
-        $allow_external_url = $this->settings->kutrl_allow_external_url;
+        $allow_external_url                  = $this->settings->kutrl_allow_external_url;
         $this->config['$allow_external_url'] = null === $allow_external_url ?
             true : $allow_external_url;
 
         $this->config = array_merge(
             [
-                'id'                 => 'undefined',
-                'name'               => 'undefined',
-                'home'               => '',
+                'id'   => 'undefined',
+                'name' => 'undefined',
+                'home' => '',
 
                 'allow_external_url' => true,
                 'allow_custom_hash'  => false,
                 'allow_protocols'    => ['http://'],
 
-                'url_test'           => 'http://dotclear.jcdenis.com/go/kUtRL',
-                'url_api'            => '',
-                'url_base'           => '',
-                'url_min_len'        => 0
+                'url_test'    => 'http://dotclear.jcdenis.com/go/kUtRL',
+                'url_api'     => '',
+                'url_base'    => '',
+                'url_min_len' => 0
             ],
             $this->config
         );
@@ -65,7 +64,7 @@ class kutrlService
     # get config value
     public function get($k)
     {
-        return isset($this->config[$k]) ? $this->config[$k] : null;
+        return $this->config[$k] ?? null;
     }
 
     # Additionnal actions on child start
@@ -83,7 +82,7 @@ class kutrlService
     # Settings form for admin page
     public function settingsForm()
     {
-        echo 
+        echo
         '<p class="form-note">' .
         __('There is nothing to configure for this service.') .
         '</p>';
@@ -98,7 +97,7 @@ class kutrlService
     # Test if an url is valid
     public function isValidUrl($url)
     {
-        return (boolean) filter_var($url, FILTER_VALIDATE_URL);
+        return (bool) filter_var($url, FILTER_VALIDATE_URL);
     }
 
     # Test if an url contents know prefix
@@ -110,18 +109,17 @@ class kutrlService
     # Test if an url is long enoutgh
     public function isLongerUrl($url)
     {
-        return (strlen($url) >= (integer) $this->url_min_len);
+        return (strlen($url) >= (int) $this->url_min_len);
     }
 
     # Test if an url protocol (eg: http://) is allowed
     public function isProtocolUrl($url)
     {
-        foreach($this->allow_protocols as $protocol) {
+        foreach ($this->allow_protocols as $protocol) {
             if (empty($protocol)) {
                 continue;
             }
-            if (strpos($url,$protocol) === 0) {
-
+            if (strpos($url, $protocol) === 0) {
                 return true;
             }
         }
@@ -133,7 +131,7 @@ class kutrlService
     public function isBlogUrl($url)
     {
         $base = $this->core->blog->url;
-        $url = substr($url, 0, strlen($base));
+        $url  = substr($url, 0, strlen($base));
 
         return $url == $base;
     }
@@ -182,12 +180,12 @@ class kutrlService
 
             # --BEHAVIOR-- kutrlAfterCreateShortUrl
             $this->core->callBehavior('kutrlAfterCreateShortUrl', $rs);
-
         }
+
         return $rs;
     }
 
-    # Create a hash for a given url (and its custom hash) 
+    # Create a hash for a given url (and its custom hash)
     public function createHash($url, $hash = null)
     {
         return false;
@@ -220,13 +218,13 @@ class kutrlService
     # Post request
     public static function post($server, $data, $verbose = true, $get = false, $headers = [])
     {
-        $url = (string) $server;
+        $url    = (string) $server;
         $client = netHttp::initClient($url, $url);
         $client->setUserAgent('kUtRL - http://kutrl.fr');
         $client->setPersistReferers(false);
 
         if (is_array($headers) && !empty($headers)) {
-            foreach($headers as $header) {
+            foreach ($headers as $header) {
                 $client->setMoreHeader($header);
             }
         }

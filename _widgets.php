@@ -1,16 +1,15 @@
 <?php
 /**
  * @brief kUtRL, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_RC_PATH')) {
     return null;
 }
@@ -60,10 +59,11 @@ class widgetKutrl
                 'type',
                 __('Type:'),
                 'all',
-                'combo',[
-                    __('All') => '-',
-                    __('Mini URL') => 'localnormal',
-                    __('Custom URL') => 'localcustom',
+                'combo',
+                [
+                    __('All')         => '-',
+                    __('Mini URL')    => 'localnormal',
+                    __('Custom URL')  => 'localcustom',
                     __('Semi-custom') => 'localmix'
                 ]
             )
@@ -90,7 +90,7 @@ class widgetKutrl
                 'desc',
                 'combo',
                 [
-                    __('Ascending') => 'asc',
+                    __('Ascending')  => 'asc',
                     __('Descending') => 'desc'
                 ]
             )
@@ -117,14 +117,14 @@ class widgetKutrl
         global $core;
         $s = $core->blog->settings->kUtRL;
 
-        if (!$s->kutrl_active 
-         || !$s->kutrl_srv_local_public 
+        if (!$s->kutrl_active
+         || !$s->kutrl_srv_local_public
          || ($w->homeonly == 1 && !$core->url->isHome($core->url->type)) || ($w->homeonly == 2 && $core->url->isHome($core->url->type))
          || $core->url->type == 'kutrl') {
             return null;
         }
 
-        $hmf = hmfKutrl::create();
+        $hmf  = hmfKutrl::create();
         $hmfp = hmfKutrl::protect($hmf);
 
         return $w->renderDiv(
@@ -140,10 +140,10 @@ class widgetKutrl
                 '</label></p>' .
                 '<p><label>' .
                  sprintf(__('Rewrite "%s" in next field to show that you are not a robot:'), $hmf) . '<br />' .
-                 form::field('hmf',20,255,'') .
+                 form::field('hmf', 20, 255, '') .
                 '</label></p>' .
                 '<p><input class="submit" type="submit" name="submiturl" value="' . __('Shorten') . '" />' .
-                form::hidden('hmfp',$hmfp) .
+                form::hidden('hmfp', $hmfp) .
                 $core->formNonce() .
                 '</p>' .
                 '</form>'
@@ -155,32 +155,32 @@ class widgetKutrl
         global $core;
         $s = $core->blog->settings->kUtRL;
 
-        if (!$s->kutrl_active 
+        if (!$s->kutrl_active
          || ($w->homeonly == 1 && !$core->url->isHome($core->url->type)) || ($w->homeonly == 2 && $core->url->isHome($core->url->type))) {
             return null;
         }
 
         $type = in_array($w->type, ['localnormal', 'localmix', 'localcustom']) ?
             "AND kut_type ='" . $w->type . "' " :
-            "AND kut_type " . $core->con->in(['localnormal', 'localmix', 'localcustom']) . " ";
+            'AND kut_type ' . $core->con->in(['localnormal', 'localmix', 'localcustom']) . ' ';
 
-        $hide = (boolean) $w->hideempty ? 'AND kut_counter > 0 ' : '';
+        $hide = (bool) $w->hideempty ? 'AND kut_counter > 0 ' : '';
 
         $more = '';
         if ($w->type == 'localmix' && '' != $w->mixprefix) {
             $more = "AND kut_hash LIKE '" . $core->con->escape($w->mixprefix) . "%' ";
         }
 
-        $order = ($w->sortby && in_array($w->sortby, ['kut_dt', 'kut_counter', 'kut_hash'])) ? 
+        $order = ($w->sortby && in_array($w->sortby, ['kut_dt', 'kut_counter', 'kut_hash'])) ?
             $w->sortby : 'kut_dt';
 
         $order .= $w->sort == 'desc' ? ' DESC' : ' ASC';
 
-        $limit = $core->con->limit(abs((integer) $w->limit));
+        $limit = $core->con->limit(abs((int) $w->limit));
 
         $rs = $core->con->select(
             'SELECT kut_counter, kut_hash ' .
-            "FROM " . $core->prefix . "kutrl " .
+            'FROM ' . $core->prefix . 'kutrl ' .
             "WHERE blog_id='" . $core->con->escape($core->blog->id) . "' " .
             "AND kut_service = 'local' " .
             $type . $hide . $more . 'ORDER BY ' . $order . $limit
@@ -191,23 +191,23 @@ class widgetKutrl
         }
 
         $content = '';
-        $i = 0;
-        while($rs->fetch()) {
+        $i       = 0;
+        while ($rs->fetch()) {
             $i++;
             $rank = '<span class="rankkutrl-rank">' . $i . '</span>';
 
-            $hash = $rs->kut_hash;
-            $url = $core->blog->url . $core->url->getBase('kutrl') . '/' . $hash;
-            $cut_len = - abs((integer) $w->urllen);
+            $hash    = $rs->kut_hash;
+            $url     = $core->blog->url . $core->url->getBase('kutrl') . '/' . $hash;
+            $cut_len = - abs((int) $w->urllen);
 
             if (strlen($url) > $cut_len) {
                 $url = '...' . substr($url, $cut_len);
             }
-/*
-            if (strlen($hash) > $cut_len) {
-                $url = '...'.substr($hash, $cut_len);
-            }
-//*/
+            /*
+                        if (strlen($hash) > $cut_len) {
+                            $url = '...'.substr($hash, $cut_len);
+                        }
+            //*/
             if ($rs->kut_counter == 0) {
                 $counttext = __('never followed');
             } elseif ($rs->kut_counter == 1) {
@@ -216,8 +216,7 @@ class widgetKutrl
                 $counttext = sprintf(__('followed %s times'), $rs->kut_counter);
             }
 
-            $content .= 
-                '<li><a href="' .
+            $content .= '<li><a href="' .
                 $core->blog->url . $core->url->getBase('kutrl') . '/' . $rs->kut_hash .
                 '">' .
                 str_replace(
@@ -238,7 +237,6 @@ class widgetKutrl
             '',
             ($w->title ? $w->renderTitle(html::escapeHTML($w->title)) : '') .
                 sprintf('<ul>%s</ul>', $content)
-        );        
-
+        );
     }
 }

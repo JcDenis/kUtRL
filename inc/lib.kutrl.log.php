@@ -1,16 +1,15 @@
 <?php
 /**
  * @brief kUtRL, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 # This file contents class to acces local short links records
 
 class kutrlLog
@@ -54,27 +53,27 @@ class kutrlLog
             $this->con->unlock();
 
             return [
-                'id'      => $cur->kut_id,
-                'url'     => $url,
-                'hash'    => $hash,
-                'type'    => $type,
-                'service' => $service,
-                'counter '=> 0
+                'id'       => $cur->kut_id,
+                'url'      => $url,
+                'hash'     => $hash,
+                'type'     => $type,
+                'service'  => $service,
+                'counter ' => 0
             ];
         } catch (Exception $e) {
             $this->con->unlock();
+
             throw $e;
         }
 
         return false;
     }
 
-    public function select($url = null, $hash = null, $type =null, $service = 'kutrl')
+    public function select($url = null, $hash = null, $type = null, $service = 'kutrl')
     {
         //$this->con->writeLock($this->table);
 
-        $req = 
-        'SELECT kut_id as id, kut_hash as hash, kut_url as url, ' .
+        $req = 'SELECT kut_id as id, kut_hash as hash, kut_url as url, ' .
         'kut_type as type, kut_service as service, kut_counter as counter ' .
         'FROM ' . $this->table . ' ' .
         "WHERE blog_id = '" . $this->blog . "' " .
@@ -88,7 +87,7 @@ class kutrlLog
         }
         if (null !== $type) {
             if (is_array($type)) {
-                $req .= "AND kut_type '" . $this->con->in($type)  ."' ";
+                $req .= "AND kut_type '" . $this->con->in($type) . "' ";
             } else {
                 $req .= "AND kut_type = '" . $this->con->escape($type) . "' ";
             }
@@ -104,7 +103,7 @@ class kutrlLog
 
     public function clear($id)
     {
-        $id = (integer) $id;
+        $id = (int) $id;
 
         $cur = $this->con->openCursor($this->table);
         $this->con->writeLock($this->table);
@@ -123,6 +122,7 @@ class kutrlLog
             return true;
         } catch (Exception $e) {
             $this->con->unlock();
+
             throw $e;
         }
 
@@ -131,7 +131,7 @@ class kutrlLog
 
     public function delete($id)
     {
-        $id = (integer) $id;
+        $id = (int) $id;
 
         return $this->con->execute(
             'DELETE FROM ' . $this->table . ' ' .
@@ -142,7 +142,7 @@ class kutrlLog
 
     public function counter($id, $do = 'get')
     {
-        $id = (integer) $id;
+        $id = (int) $id;
 
         $rs = $this->con->select(
             'SELECT kut_counter ' .
@@ -154,21 +154,19 @@ class kutrlLog
         $counter = $rs->isEmpty() ? 0 : $rs->kut_counter;
 
         if ('get' == $do) {
-
             return $counter;
         } elseif ('up' == $do) {
             $counter += 1;
-        } elseif ('reset' == $do) {   
+        } elseif ('reset' == $do) {
             $counter = 0;
         } else {
-
             return 0;
         }
 
         $cur = $this->con->openCursor($this->table);
         $this->con->writeLock($this->table);
 
-        $cur->kut_counter = (integer) $counter;
+        $cur->kut_counter = (int) $counter;
         $cur->update(
             "WHERE blog_id='" . $this->blog . "' " .
             "AND kut_id='" . $id . "'"
@@ -188,8 +186,7 @@ class kutrlLog
             if (!empty($p['columns']) && is_array($p['columns'])) {
                 $content_req .= implode(', ', $p['columns']) . ', ';
             }
-            $r = 
-            'SELECT S.kut_id, S.kut_type, S.kut_hash, S.kut_url, ' .
+            $r = 'SELECT S.kut_id, S.kut_type, S.kut_hash, S.kut_url, ' .
             $content_req . 'S.kut_dt ';
         }
         $r .= 'FROM ' . $this->table . ' S ';
@@ -203,8 +200,7 @@ class kutrlLog
             $r .= "AND kut_service='kutrl' ";
         }
         if (isset($p['kut_type'])) {
-            if (is_array($p['kut_type']) && !empty($p['kut_type']))
-            {
+            if (is_array($p['kut_type']) && !empty($p['kut_type'])) {
                 $r .= 'AND kut_type ' . $this->con->in($p['kut_type']);
             } elseif ($p['kut_type'] != '') {
                 $r .= "AND kut_type = '" . $this->con->escape($p['kut_type']) . "' ";
@@ -232,18 +228,15 @@ class kutrlLog
             }
         }
         if (!empty($p['kut_year'])) {
-            $r .= 
-            'AND ' . $this->con->dateFormat('kut_dt', '%Y') . ' = ' .
+            $r .= 'AND ' . $this->con->dateFormat('kut_dt', '%Y') . ' = ' .
             "'" . sprintf('%04d', $p['kut_year']) . "' ";
         }
         if (!empty($p['kut_month'])) {
-            $r .= 
-            'AND ' . $this->con->dateFormat('kut_dt', '%m') . ' = ' .
+            $r .= 'AND ' . $this->con->dateFormat('kut_dt', '%m') . ' = ' .
             "'" . sprintf('%02d', $p['kut_month']) . "' ";
         }
         if (!empty($p['kut_day'])) {
-            $r .= 
-            'AND ' . $this->con->dateFormat('kut_dt', '%d') . ' = ' .
+            $r .= 'AND ' . $this->con->dateFormat('kut_dt', '%d') . ' = ' .
             "'" . sprintf('%02d', $p['kut_day']) . "' ";
         }
         if (!empty($p['sql'])) {

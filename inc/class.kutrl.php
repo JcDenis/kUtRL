@@ -1,16 +1,15 @@
 <?php
 /**
  * @brief kUtRL, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_RC_PATH')) {
     return null;
 }
@@ -24,16 +23,14 @@ class kUtRL
         $list = $core->getBehaviors('kutrlService');
 
         if (empty($list)) {
-
             return [];
         }
-        $services = [];  
-        foreach($list as $k => $callback) {
+        $services = [];
+        foreach ($list as $k => $callback) {
             try {
-                list($service_id,$service_class) = call_user_func($callback);
-                $services[(string) $service_id] = (string) $service_class;
+                list($service_id, $service_class) = call_user_func($callback);
+                $services[(string) $service_id]   = (string) $service_class;
             } catch (Exception $e) {
-
             }
         }
 
@@ -48,18 +45,16 @@ class kUtRL
 
         try {
             if (empty($id)) {
-
                 return null;
             }
             $services = self::getServices($core);
             if (isset($services[$id])) {
-
                 return new $services[$id]($core);
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
         }
 
-        return null; 
+        return null;
     }
 
     # Silently try to load a service according to its place
@@ -70,18 +65,16 @@ class kUtRL
 
         try {
             if (!in_array($place, ['tpl', 'wiki', 'admin', 'plugin'])) {
-
                 return null;
             }
-            $id = $core->blog->settings->kUtRL->get('kutrl_' . $place .'_service');
+            $id = $core->blog->settings->kUtRL->get('kutrl_' . $place . '_service');
             if (!empty($id)) {
-
                 return self::quickService($id);
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
         }
 
-        return null; 
+        return null;
     }
 
     # Silently try to reduce url (using 'plugin' place)
@@ -93,18 +86,17 @@ class kUtRL
         try {
             $srv = self::quickPlace($place);
             if (empty($srv)) {
-
                 return $url;
             }
-            $rs = $srv->hash($url,$custom);
+            $rs = $srv->hash($url, $custom);
             if (empty($rs)) {
-
                 return $url;
             }
-            return $srv->url_base.$rs->hash;
-        } catch(Exception $e) {
+
+            return $srv->url_base . $rs->hash;
+        } catch (Exception $e) {
         }
 
-        return $url; 
+        return $url;
     }
 }
