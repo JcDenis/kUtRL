@@ -3,11 +3,19 @@ xxx.xx.xx
 - [ ] Add bit.ly custom domain
 - [ ] Add public page of the list of know urls and in/visible status
 - [ ] Add passworded links
-- Never fix breaking comments or complexe public url (add warning)
-- fix permissions
+
+2021.11.06
+- never fix breaking comments or complexe public url (add warning)
+- fix permissions (dc 2.20)
 - fix js load
+- fix various bugs, typo and ui enhancment
 - add user pref on table cols
 - add user pref on filters (dc 2.20)
+- add constant to disable service on entire plateform
+- re-add bit.ly (partially)
+- move settings to plugin config page
+- update translations (and remove .lang.php file)
+- update to PSR12
 
 2021.09.16
 - remove deprecated external service

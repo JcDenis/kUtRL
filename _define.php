@@ -18,9 +18,9 @@ $this->registerModule(
     'Links shortener',
     'Use, create and serve short url on your blog',
     'Jean-Christian Denis and contributors',
-    '2021.09.16',
+    '2021.11.06',
     [
-        'requires'    => [['core', '2.19']],
+        'requires'    => [['core', '2.20']],
         'permissions' => 'usage,contentadmin,admin',
         'type'        => 'plugin',
         'support'     => 'https://github.com/JcDenis/kUtRL',

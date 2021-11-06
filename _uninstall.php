@@ -15,46 +15,46 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 $this->addUserAction(
-    /* type */ 
+    /* type */
     'settings',
-    /* action */ 
+    /* action */
     'delete_all',
-    /* ns */ 
+    /* ns */
     'kUtRL',
-    /* description */ 
+    /* description */
     __('delete all settings')
 );
 
 $this->addUserAction(
-    /* type */ 
+    /* type */
     'tables',
-    /* action */ 
+    /* action */
     'delete',
-    /* ns */ 
+    /* ns */
     'kutrl',
-    /* description */ 
+    /* description */
     __('delete table')
 );
 
 $this->addUserAction(
-    /* type */ 
+    /* type */
     'plugins',
-    /* action */ 
+    /* action */
     'delete',
-    /* ns */ 
+    /* ns */
     'kUtRL',
-    /* description */ 
+    /* description */
     __('delete plugin files')
 );
 
 $this->addUserAction(
-    /* type */ 
+    /* type */
     'versions',
-    /* action */ 
+    /* action */
     'delete',
-    /* ns */ 
+    /* ns */
     'kUtRL',
-    /* description */ 
+    /* description */
     __('delete the version number')
 );
 
@@ -62,34 +62,34 @@ $this->addUserAction(
 # Keep table
 
 $this->addDirectAction(
-    /* type */ 
+    /* type */
     'settings',
-    /* action */ 
+    /* action */
     'delete_all',
-    /* ns */ 
+    /* ns */
     'kUtRL',
-    /* description */ 
+    /* description */
     sprintf(__('delete all %s settings'), 'kUtRL')
 );
 
 $this->addDirectAction(
-    /* type */ 
+    /* type */
     'versions',
-    /* action */ 
+    /* action */
     'delete',
-    /* ns */ 
+    /* ns */
     'kUtRL',
-    /* description */ 
+    /* description */
     sprintf(__('delete %s version number'), 'kUtRL')
 );
 
 $this->addDirectAction(
-    /* type */ 
+    /* type */
     'plugins',
-    /* action */ 
+    /* action */
     'delete',
-    /* ns */ 
+    /* ns */
     'kUtRL',
-    /* description */ 
+    /* description */
     sprintf(__('delete %s plugin files'), 'kUtRL')
 );
