@@ -15,7 +15,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 # Check user perms
-dcPage::check('admin');
+dcPage::check(dcAuth::PERMISSION_ADMIN);
 
 $header = '';
 $part   = $_REQUEST['part'] ?? 'links';
@@ -23,14 +23,14 @@ $action = $_POST['action']  ?? '';
 
 # link creation
 if ($part == 'link') {
-    $kut = kutrl::quickPlace('admin');
+    $kut = kUtRL::quickPlace('admin');
 
     if (!empty($_POST['save'])) {
         try {
             if (null === $kut) {
                 throw new Exception('Unknow service');
             }
-            $url  = trim($core->con->escape($_POST['str']));
+            $url  = trim(dcCore::app()->con->escape($_POST['str']));
             $hash = empty($_POST['custom']) ? null : $_POST['custom'];
 
             if (empty($url)) {
@@ -64,7 +64,7 @@ if ($part == 'link') {
                 $url     = $rs->url;
                 $new_url = $kut->url_base . $rs->hash;
 
-                dcPage::addSuccessNotice(sprintf(
+                dcAdminNotices::addSuccessNotice(sprintf(
                     __('Short link for %s is %s'),
                     '<strong>' . html::escapeHTML($url) . '</strong>',
                     '<a href="' . $new_url . '">' . $new_url . '</a>'
@@ -80,7 +80,7 @@ if ($part == 'link') {
                     $url     = $rs->url;
                     $new_url = $kut->url_base . $rs->hash;
 
-                    dcPage::addSuccessNotice(sprintf(
+                    dcAdminNotices::addSuccessNotice(sprintf(
                         __('Short link for %s is %s'),
                         '<strong>' . html::escapeHTML($url) . '</strong>',
                         '<a href="' . $new_url . '">' . $new_url . '</a>'
@@ -88,28 +88,28 @@ if ($part == 'link') {
 
                     # ex: Send new url to messengers
                     if (!empty($rs)) {
-                        $core->callBehavior('adminAfterKutrlCreate', $core, $rs, __('New short URL'));
+                        dcCore::app()->callBehavior('adminAfterKutrlCreate', $rs, __('New short URL'));
                     }
                 }
             }
         } catch (Exception $e) {
-            $core->error->add($e->getMessage());
+            dcCore::app()->error->add($e->getMessage());
         }
     }
 
-    # links
+# links
 } else {
     $services_combo = [];
-    foreach (kutrl::getServices($core) as $service_id => $service) {
-        $o                            = new $service($core);
+    foreach (kUtRL::getServices() as $service_id => $service) {
+        $o                            = new $service();
         $services_combo[__($o->name)] = $o->id;
     }
     $ext_services_combo = array_merge([__('Disabled') => ''], $services_combo);
     $lst_services_combo = array_merge(['-' => ''], $services_combo);
 
-    $log = new kutrlLog($core);
+    $log = new kutrlLog();
 
-    $kUtRL_filter = new adminGenericFilter($core, 'kUtRL');
+    $kUtRL_filter = new adminGenericFilterV2('kUtRL');
     $kUtRL_filter->add('part', 'links');
     $kUtRL_filter->add(dcAdminFilters::getPageFilter());
     $kUtRL_filter->add(dcAdminFilters::getSelectFilter(
@@ -124,12 +124,12 @@ if ($part == 'link') {
     try {
         $list_all     = $log->getLogs($params);
         $list_counter = $log->getLogs($params, true)->f(0);
-        $list_current = new kutrlLinksList($core, $list_all, $list_counter);
+        $list_current = new kutrlLinkslist($list_all, $list_counter);
     } catch (Exception $e) {
-        $core->error->add($e->getMessage());
+        dcCore::app()->error->add($e->getMessage());
     }
 
-    $header = $kUtRL_filter->js($core->adminurl->get('admin.plugin.kUtRL', ['part' => 'links'])) .
+    $header = $kUtRL_filter->js(dcCore::app()->adminurl->get('admin.plugin.kUtRL', ['part' => 'links'])) .
         dcPage::jsLoad(dcPage::getPF('kUtRL/js/admin.js'));
 
     if (!empty($_POST['deletelinks'])) {
@@ -139,20 +139,20 @@ if ($part == 'link') {
                 if ($rs->isEmpty()) {
                     continue;
                 }
-                if (null === ($o = kutrl::quickService($rs->kut_type))) {
+                if (null === ($o = kUtRL::quickService($rs->kut_type))) {
                     continue;
                 }
                 $o->remove($rs->kut_url);
             }
 
-            $core->blog->triggerBlog();
+            dcCore::app()->blog->triggerBlog();
 
-            dcPage::addSuccessNotice(
+            dcAdminNotices::addSuccessNotice(
                 __('Links successfully deleted')
             );
-            $core->adminurl->redirect('admin.plugin.kUtRL', $kUtRL_filter->values());
+            dcCore::app()->adminurl->redirect('admin.plugin.kUtRL', $kUtRL_filter->values());
         } catch (Exception $e) {
-            $core->error->add($e->getMessage());
+            dcCore::app()->error->add($e->getMessage());
         }
     }
 }
@@ -168,8 +168,8 @@ if ($part == 'link') {
     echo
     dcPage::breadcrumb([
         __('Plugins')         => '',
-        __('Links shortener') => $core->adminurl->get('admin.plugin.kUtRL'),
-        __('New link')        => ''
+        __('Links shortener') => dcCore::app()->adminurl->get('admin.plugin.kUtRL'),
+        __('New link')        => '',
     ]) .
     dcPage::notices();
 
@@ -179,7 +179,7 @@ if ($part == 'link') {
         echo '
         <div class="fieldset">
         <h4>' . sprintf(__('Shorten link using service "%s"'), $kut->name) . '</h4>
-        <form id="create-link" method="post" action="' . $core->adminurl->get('admin.plugin.kUtRL') . '">
+        <form id="create-link" method="post" action="' . dcCore::app()->adminurl->get('admin.plugin.kUtRL') . '">
 
         <p><label for="str">' . __('Long link:') . '</label>' .
         form::field('str', 100, 255, '') . '</p>';
@@ -199,7 +199,7 @@ if ($part == 'link') {
 
         echo '
         <p><input type="submit" name="save" value="' . __('Save') . '" />' .
-        $core->formNonce() .
+        dcCore::app()->formNonce() .
         form::hidden(['part'], 'link') . '
         </p></div>
         </form>';
@@ -208,12 +208,12 @@ if ($part == 'link') {
     echo
     dcPage::breadcrumb([
         __('Plugins')         => '',
-        __('Links shortener') => ''
+        __('Links shortener') => '',
     ]) .
     dcPage::notices() .
 
     '<p class="top-add"><a class="button add" href="' .
-        $core->adminurl->get('admin.plugin.kUtRL', ['part' => 'link']) .
+        dcCore::app()->adminurl->get('admin.plugin.kUtRL', ['part' => 'link']) .
     '">' . __('New Link') . '</a></p>';
 
     $kUtRL_filter->display('admin.plugin.kUtRL', form::hidden('p', 'kUtRL') . form::hidden('part', 'links'));
@@ -221,7 +221,7 @@ if ($part == 'link') {
     $list_current->display(
         $kUtRL_filter->value('page'),
         $kUtRL_filter->nb,
-        '<form action="' . $core->adminurl->get('admin.plugin.kUtRL') . '" method="post" id="form-entries">
+        '<form action="' . dcCore::app()->adminurl->get('admin.plugin.kUtRL') . '" method="post" id="form-entries">
 
         %s
 
@@ -231,8 +231,8 @@ if ($part == 'link') {
         </div>
         <p class="col right">
         <input id="do-action" type="submit" value="' . __('Delete selected short links') . '" /></p>' .
-        $core->adminurl->getHiddenFormFields('admin.plugin.kUtRL', array_merge(['deletelinks' => 1], $kUtRL_filter->values(true))) .
-        $core->formNonce() . '
+        dcCore::app()->adminurl->getHiddenFormFields('admin.plugin.kUtRL', array_merge(['deletelinks' => 1], $kUtRL_filter->values(true))) .
+        dcCore::app()->formNonce() . '
         </p>
         </div>
         </form>',

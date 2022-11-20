@@ -14,17 +14,15 @@
 
 class kutrlLog
 {
-    public $core;
     public $table;
     public $blog;
     public $con;
 
-    public function __construct(dcCore $core)
+    public function __construct()
     {
-        $this->core  = $core;
-        $this->table = $core->prefix . 'kutrl';
-        $this->blog  = $core->con->escape($core->blog->id);
-        $this->con   = $core->con;
+        $this->table = dcCore::app()->prefix . 'kutrl';
+        $this->blog  = dcCore::app()->con->escape(dcCore::app()->blog->id);
+        $this->con   = dcCore::app()->con;
     }
 
     public function nextId()
@@ -58,7 +56,7 @@ class kutrlLog
                 'hash'     => $hash,
                 'type'     => $type,
                 'service'  => $service,
-                'counter ' => 0
+                'counter ' => 0,
             ];
         } catch (Exception $e) {
             $this->con->unlock();

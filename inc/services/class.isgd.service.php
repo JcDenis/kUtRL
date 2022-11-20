@@ -23,7 +23,7 @@ class isgdKutrlService extends kutrlService
 
         'url_api'        => 'http://is.gd/api.php',
         'url_base'       => 'http://is.gd/',
-        'url_min_length' => 25
+        'url_min_length' => 25,
     ];
 
     public function testService()

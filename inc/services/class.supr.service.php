@@ -23,14 +23,14 @@ class suprKutrlService extends kutrlService
 
         'url_api'     => 'http://su.pr/api/',
         'url_base'    => 'http://su.pr/',
-        'url_min_len' => 23
+        'url_min_len' => 23,
     ];
 
     private $args = [
         'version' => '1.0',
         'format'  => 'xml',
         'login'   => '',
-        'apiKey'  => ''
+        'apiKey'  => '',
     ];
 
     protected function init()

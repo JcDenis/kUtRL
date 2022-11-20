@@ -23,7 +23,7 @@ class shorttoKutrlService extends kutrlService
 
         'url_api'     => 'http://short.to/s.txt',
         'url_base'    => 'http://short.to/',
-        'url_min_len' => 25
+        'url_min_len' => 25,
     ];
 
     public function testService()

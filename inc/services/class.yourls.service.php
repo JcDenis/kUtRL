@@ -19,14 +19,14 @@ class yourlsKutrlService extends kutrlService
     protected $config = [
         'id'   => 'yourls',
         'name' => 'YOURLS',
-        'home' => 'http://yourls.org'
+        'home' => 'http://yourls.org',
     ];
 
     private $args = [
         'username' => '',
         'password' => '',
         'format'   => 'xml',
-        'action'   => 'shorturl'
+        'action'   => 'shorturl',
     ];
 
     protected function init()

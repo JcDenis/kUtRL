@@ -23,12 +23,12 @@ class trimKutrlService extends kutrlService
 
         'url_api'     => 'http://api.tr.im/v1/',
         'url_base'    => 'http://tr.im/',
-        'url_min_len' => 25
+        'url_min_len' => 25,
     ];
 
     private $args = [
         'username' => '',
-        'password' => ''
+        'password' => '',
     ];
 
     private $api_rate_time = 0;

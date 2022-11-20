@@ -18,9 +18,9 @@ if (!defined('DC_RC_PATH')) {
 class kUtRL
 {
     # Load services list from behavior
-    public static function getServices(dcCore $core)
+    public static function getServices()
     {
-        $list = $core->getBehaviors('kutrlService');
+        $list = dcCore::app()->getBehaviors('kutrlService');
 
         if (empty($list)) {
             return [];
@@ -28,8 +28,8 @@ class kUtRL
         $services = [];
         foreach ($list as $k => $callback) {
             try {
-                list($service_id, $service_class) = call_user_func($callback);
-                $services[(string) $service_id]   = (string) $service_class;
+                [$service_id, $service_class]   = call_user_func($callback);
+                $services[(string) $service_id] = (string) $service_class;
             } catch (Exception $e) {
             }
         }
@@ -41,15 +41,13 @@ class kUtRL
     # Return null on error else service on success
     public static function quickService($id = '')
     {
-        global $core;
-
         try {
             if (empty($id)) {
                 return null;
             }
-            $services = self::getServices($core);
+            $services = self::getServices();
             if (isset($services[$id])) {
-                return new $services[$id]($core);
+                return new $services[$id]();
             }
         } catch (Exception $e) {
         }
@@ -61,13 +59,11 @@ class kUtRL
     # Return null on error else service on success
     public static function quickPlace($place = 'plugin')
     {
-        global $core;
-
         try {
             if (!in_array($place, ['tpl', 'wiki', 'admin', 'plugin'])) {
                 return null;
             }
-            $id = $core->blog->settings->kUtRL->get('kutrl_' . $place . '_service');
+            $id = dcCore::app()->blog->settings->kUtRL->get('kutrl_' . $place . '_service');
             if (!empty($id)) {
                 return self::quickService($id);
             }
@@ -81,8 +77,6 @@ class kUtRL
     # return long url on error else short url on success
     public static function quickReduce($url, $custom = null, $place = 'plugin')
     {
-        global $core;
-
         try {
             $srv = self::quickPlace($place);
             if (empty($srv)) {

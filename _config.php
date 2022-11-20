@@ -15,18 +15,18 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 # Check user perms
-dcPage::check('admin');
+dcPage::check(dcAuth::PERMISSION_ADMIN);
 
 # Settings
-$s = $core->blog->settings->kUtRL;
+$s = dcCore::app()->blog->settings->kUtRL;
 
 # Default values
 $img_green = '<img src="images/check-on.png" alt="ok" />';
 $img_red   = '<img src="images/check-off.png" alt="fail" />';
 
 $services_combo = [];
-foreach (kutrl::getServices($core) as $service_id => $service) {
-    $o                            = new $service($core);
+foreach (kUtRL::getServices() as $service_id => $service) {
+    $o                            = new $service();
     $services_combo[__($o->name)] = $o->id;
 }
 $ext_services_combo = array_merge([__('Disabled') => ''], $services_combo);
@@ -66,23 +66,23 @@ if (!empty($_POST['save'])) {
         $s->put('kutrl_admin_entry_default', $s_admin_entry_default);
 
         # services
-        foreach (kutrl::getServices($core) as $service_id => $service) {
-            $o = new $service($core);
+        foreach (kUtRL::getServices() as $service_id => $service) {
+            $o = new $service();
             $o->saveSettings();
         }
 
-        $core->blog->triggerBlog();
+        dcCore::app()->blog->triggerBlog();
 
-        dcPage::addSuccessNotice(
+        dcAdminNotices::addSuccessNotice(
             __('Configuration successfully updated.')
         );
 
-        $core->adminurl->redirect(
+        dcCore::app()->adminurl->redirect(
             'admin.plugins',
-            ['module' => 'kUtRL', 'conf' => 1, 'chk' => 1, 'redir' => $list->getRedir()]
+            ['module' => 'kUtRL', 'conf' => 1, 'chk' => 1, 'redir' => dcCore::app()->admin->list->getRedir()]
         );
     } catch (Exception $e) {
-        $core->error->add($e->getMessage());
+        dcCore::app()->error->add($e->getMessage());
     }
 }
 
@@ -121,7 +121,7 @@ __('Create short link for new entries') . '</label></p>
 <h5>' . __('Default services') . '</h5>
 <p><label>';
 if (!empty($_REQUEST['chk'])) {
-    if (null !== ($o = kutrl::quickPlace($s_admin_service))) {
+    if (null !== ($o = kUtRL::quickPlace($s_admin_service))) {
         echo $o->testService() ? $img_green : $img_red;
     }
 }
@@ -131,7 +131,7 @@ form::combo(['s_admin_service'], $services_combo, $s_admin_service) . '
 <p class="form-note">' . __('Service to use in this admin page and on edit page of an entry.') . '</p>
 <p><label>';
 if (!empty($_REQUEST['chk'])) {
-    if (null !== ($o = kutrl::quickPlace($s_plugin_service))) {
+    if (null !== ($o = kUtRL::quickPlace($s_plugin_service))) {
         echo $o->testService() ? $img_green : $img_red;
     }
 }
@@ -141,7 +141,7 @@ form::combo(['s_plugin_service'], $services_combo, $s_plugin_service) . '
 <p class="form-note">' . __('Service to use on third part plugins.') . '</p>
 <p><label>';
 if (!empty($_REQUEST['chk'])) {
-    if (null !== ($o = kutrl::quickPlace($s_tpl_service))) {
+    if (null !== ($o = kUtRL::quickPlace($s_tpl_service))) {
         echo $o->testService() ? $img_green : $img_red;
     }
 }
@@ -151,7 +151,7 @@ form::combo(['s_tpl_service'], $ext_services_combo, $s_tpl_service) . '
 <p class="form-note">' . __('Shorten links automatically when using template value like "EntryKutrl".') . '</p>
 <p><label>';
 if (!empty($_REQUEST['chk'])) {
-    if (null !== ($o = kutrl::quickPlace($s_wiki_service))) {
+    if (null !== ($o = kUtRL::quickPlace($s_wiki_service))) {
         echo $o->testService() ? $img_green : $img_red;
     }
 }
@@ -167,8 +167,8 @@ form::combo(['s_wiki_service'], $ext_services_combo, $s_wiki_service) . '
 <p class="info">' . __('List of services you can use to shorten links with pkugin kUtRL.') . '</p>
 ';
 
-foreach (kutrl::getServices($core) as $service_id => $service) {
-    $o = new $service($core);
+foreach (kUtRL::getServices() as $service_id => $service) {
+    $o = new $service();
 
     echo '<hr/><div id="setting-' . $service_id . '"><h5>' . $o->name . '</h5>';
 
@@ -180,7 +180,7 @@ foreach (kutrl::getServices($core) as $service_id => $service) {
                 $img_chk = $img_green . ' ' . sprintf(__('%s API is well configured and runing.'), $o->name);
             }
         } catch (Exception $e) {
-            $core->error->add(sprintf(__('Failed to test service %s: %s'), $o->name, $e->getMessage()));
+            dcCore::app()->error->add(sprintf(__('Failed to test service %s: %s'), $o->name, $e->getMessage()));
         }
         echo sprintf('<p><em>%s</em></p>', $img_chk) . $o->error->toHTML();
     }

@@ -15,8 +15,8 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 # Get new version
-$new_version = $core->plugins->moduleInfo('kUtRL', 'version');
-$old_version = $core->getVersion('kUtRL');
+$new_version = dcCore::app()->plugins->moduleInfo('kUtRL', 'version');
+$old_version = dcCore::app()->getVersion('kUtRL');
 
 # Compare versions
 if (version_compare($old_version, $new_version, '>=')) {
@@ -26,7 +26,7 @@ if (version_compare($old_version, $new_version, '>=')) {
 # Install or update
 try {
     # Table
-    $t = new dbStruct($core->con, $core->prefix);
+    $t = new dbStruct(dcCore::app()->con, dcCore::app()->prefix);
     $t->kutrl
         ->kut_id('bigint', 0, false)
         ->blog_id('varchar', 32, false)
@@ -44,12 +44,12 @@ try {
         ->index('idx_kut_service', 'btree', 'kut_service')
         ->index('idx_kut_type', 'btree', 'kut_type');
 
-    $ti      = new dbStruct($core->con, $core->prefix);
+    $ti      = new dbStruct(dcCore::app()->con, dcCore::app()->prefix);
     $changes = $ti->synchronize($t);
 
     # Settings
-    $core->blog->settings->addNamespace('kUtRL');
-    $s = $core->blog->settings->kUtRL;
+    dcCore::app()->blog->settings->addNamespace('kUtRL');
+    $s = dcCore::app()->blog->settings->kUtRL;
     $s->put('kutrl_active', false, 'boolean', 'Enabled kutrl plugin', false, true);
     $s->put('kutrl_plugin_service', 'default', 'string', 'Service to use to shorten links on third part plugins', false, true);
     $s->put('kutrl_admin_service', 'local', 'string', 'Service to use to shorten links on admin', false, true);
@@ -74,16 +74,16 @@ try {
     $s->put('kutrl_srv_yourls_password', '', 'string', 'User password to YOURLS service', false, true);
 
     # Version
-    $core->setVersion('kUtRL', $new_version);
+    dcCore::app()->setVersion('kUtRL', $new_version);
 
     # Get dcMiniUrl records as this plugin do the same
-    if ($core->plugins->moduleExists('dcMiniUrl')) {
-        require_once dirname(__FILE__) . '/inc/patch.dcminiurl.php';
+    if (dcCore::app()->plugins->moduleExists('dcMiniUrl')) {
+        require_once __DIR__ . '/inc/patch.dcminiurl.php';
     }
 
     return true;
 } catch (Exception $e) {
-    $core->error->add($e->getMessage());
+    dcCore::app()->error->add($e->getMessage());
 }
 
 return false;

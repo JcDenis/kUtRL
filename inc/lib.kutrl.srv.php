@@ -14,20 +14,18 @@
 # A service class must extends this one
 class kutrlService
 {
-    public $core;
     public $error;
     public $settings;
     public $log;
 
     protected $config = [];
 
-    public function __construct($core)
+    public function __construct()
     {
-        $this->core     = $core;
-        $this->settings = $core->blog->settings->kUtRL;
-        $this->log      = new kutrlLog($core);
+        $this->settings = dcCore::app()->blog->settings->kUtRL;
+        $this->log      = new kutrlLog();
         $this->error    = new dcError();
-        $this->error->setHTMLFormat('%s', "%s\n");
+        //$this->error->setHTMLFormat('%s', "%s\n");
 
         $this->init();
 
@@ -49,7 +47,7 @@ class kutrlService
                 'url_test'    => 'http://dotclear.jcdenis.com/go/kUtRL',
                 'url_api'     => '',
                 'url_base'    => '',
-                'url_min_len' => 0
+                'url_min_len' => 0,
             ],
             $this->config
         );
@@ -130,7 +128,7 @@ class kutrlService
     # Test if an url is from current blog
     public function isBlogUrl($url)
     {
-        $base = $this->core->blog->url;
+        $base = dcCore::app()->blog->url;
         $url  = substr($url, 0, strlen($base));
 
         return $url == $base;
@@ -151,7 +149,7 @@ class kutrlService
     # Create hash from url
     public function hash($url, $hash = null)
     {
-        $url = trim($this->core->con->escape($url));
+        $url = trim(dcCore::app()->con->escape($url));
         if ('undefined' === $this->id) {
             return false;
         }
@@ -176,10 +174,10 @@ class kutrlService
             }
 
             $this->log->insert($rs->url, $rs->hash, $rs->type, 'kutrl');
-            $this->core->blog->triggerBlog();
+            dcCore::app()->blog->triggerBlog();
 
             # --BEHAVIOR-- kutrlAfterCreateShortUrl
-            $this->core->callBehavior('kutrlAfterCreateShortUrl', $rs);
+            dcCore::app()->callBehavior('kutrlAfterCreateShortUrl', $rs);
         }
 
         return $rs;

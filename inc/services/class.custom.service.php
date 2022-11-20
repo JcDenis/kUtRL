@@ -18,12 +18,12 @@ class customKutrlService extends kutrlService
 {
     protected $config = [
         'id'   => 'custom',
-        'name' => 'Custom'
+        'name' => 'Custom',
     ];
 
     protected function init()
     {
-        $config = unserialize(base64_decode($this->settings->kutrl_srv_custom));
+        $config = unserialize(base64_decode((string) $this->settings->kutrl_srv_custom));
         if (!is_array($config)) {
             $config = [];
         }
@@ -42,7 +42,7 @@ class customKutrlService extends kutrlService
             'url_api'    => $_POST['kutrl_srv_custom_url_api'],
             'url_base'   => $_POST['kutrl_srv_custom_url_base'],
             'url_param'  => $_POST['kutrl_srv_custom_url_param'],
-            'url_encode' => !empty($_POST['kutrl_srv_custom_url_encode'])
+            'url_encode' => !empty($_POST['kutrl_srv_custom_url_encode']),
         ];
         $this->settings->put('kutrl_srv_custom', base64_encode(serialize($config)));
     }
@@ -53,9 +53,9 @@ class customKutrlService extends kutrlService
             'url_api'    => '',
             'url_base'   => '',
             'url_param'  => '',
-            'url_encode' => true
+            'url_encode' => true,
         ];
-        $config = unserialize(base64_decode($this->settings->kutrl_srv_custom));
+        $config = unserialize(base64_decode((string) $this->settings->kutrl_srv_custom));
         if (!is_array($config)) {
             $config = [];
         }

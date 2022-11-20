@@ -19,7 +19,7 @@ class bilbolinksKutrlService extends kutrlService
     protected $config = [
         'id'   => 'bilbolinks',
         'name' => 'BilboLinks',
-        'home' => 'http://www.tux-planet.fr/bilbobox/'
+        'home' => 'http://www.tux-planet.fr/bilbobox/',
     ];
 
     protected function init()

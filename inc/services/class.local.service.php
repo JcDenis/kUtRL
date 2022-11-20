@@ -21,7 +21,7 @@ class localKutrlService extends kutrlService
         'name' => 'kUtRL',
         'home' => 'https://github.com/JcDenis/kUtRL',
 
-        'allow_custom_hash' => true
+        'allow_custom_hash' => true,
     ];
 
     protected function init()
@@ -29,7 +29,7 @@ class localKutrlService extends kutrlService
         $protocols                       = (string) $this->settings->kutrl_srv_local_protocols;
         $this->config['allow_protocols'] = empty($protocols) ? [] : explode(',', $protocols);
 
-        $this->config['url_base']    = $this->core->blog->url . $this->core->url->getBase('kutrl') . '/';
+        $this->config['url_base']    = dcCore::app()->blog->url . dcCore::app()->url->getBase('kutrl') . '/';
         $this->config['url_min_len'] = strlen($this->url_base) + 2;
     }
 
@@ -62,7 +62,7 @@ class localKutrlService extends kutrlService
         '</label></p>' .
 
         '<p class="area" id="style-area"><label for="_style">' . __('CSS:') . '</label>' .
-        form::textarea('kutrl_srv_local_css', 50, 3, html::escapeHTML($this->settings->kutrl_srv_local_css), '', 2) .
+        form::textarea('kutrl_srv_local_css', 50, 3, html::escapeHTML($this->settings->kutrl_srv_local_css), '', '2') .
         '</p>' .
         '<p class="form-note">' . __('You can add here special cascading style sheet. Body of page has class "dc-kutrl" and widgets have class "shortenkutrlwidget" and "rankkutrlwidget".') . '</p>' .
 
@@ -221,7 +221,6 @@ class localKutrlService extends kutrlService
             return false;
         }
         if (!$rs->url) { //previously removed url
-
             return false;
         }
         $this->log->counter($rs->id, 'up');

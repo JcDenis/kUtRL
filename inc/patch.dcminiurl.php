@@ -17,28 +17,26 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
 
-$miniurl_patch = new dcMiniUrl2kUtRL($core);
+$miniurl_patch = new dcMiniUrl2kUtRL();
 if ($miniurl_patch->parseRecords()) {
     try {
-        $core->plugins->deactivateModule('dcMiniUrl');
+        dcCore::app()->plugins->deactivateModule('dcMiniUrl');
     } catch (Exception $e) {
-        //$core->error->add($e->getMessage());
+        //dcCore::app()->error->add($e->getMessage());
     }
 }
 
 class dcMiniUrl2kUtRL
 {
-    public $core;
-
+    public $con;
     public $k_tb;
     public $m_tb;
 
-    public function __construct($core)
+    public function __construct()
     {
-        $this->core = $core;
-        $this->con  = $core->con;
-        $this->k_tb = $core->prefix . 'kutrl';
-        $this->m_tb = $core->prefix . 'miniurl';
+        $this->con  = dcCore::app()->con;
+        $this->k_tb = dcCore::app()->prefix . 'kutrl';
+        $this->m_tb = dcCore::app()->prefix . 'miniurl';
     }
 
     public function parseRecords()

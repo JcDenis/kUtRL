@@ -14,39 +14,38 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
 
-$core->blog->settings->addNamespace('kUtRL');
+dcCore::app()->blog->settings->addNamespace('kUtRL');
 
-require_once dirname(__FILE__) . '/_widgets.php';
+require_once __DIR__ . '/_widgets.php';
 
 # Plugin menu
-$_menu['Plugins']->addItem(
+dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
     __('Links shortener'),
-    $core->adminurl->get('admin.plugin.kUtRL'),
+    dcCore::app()->adminurl->get('admin.plugin.kUtRL'),
     dcPage::getPF('kUtRL/icon.png'),
-    preg_match('/' . preg_quote($core->adminurl->get('admin.plugin.kUtRL')) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
-    $core->auth->check('admin', $core->blog->id)
+    preg_match('/' . preg_quote(dcCore::app()->adminurl->get('admin.plugin.kUtRL')) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
+    dcCore::app()->auth->check(dcAuth::PERMISSION_ADMIN, dcCore::app()->blog->id)
 );
 
 # Admin behaviors
-if ($core->blog->settings->kUtRL->kutrl_active) {
-    $core->addBehavior('adminDashboardFavorites', ['adminKutrl', 'antispamDashboardFavorites']);
-    $core->addBehavior('adminColumnsLists', ['adminKutrl', 'adminColumnsLists']);
-    $core->addBehavior('adminFiltersLists', ['adminKutrl', 'adminFiltersLists']);
-    $core->addBehavior('adminPostHeaders', ['adminKutrl', 'adminPostHeaders']);
-    $core->addBehavior('adminPostFormItems', ['adminKutrl', 'adminPostFormItems']);
-    $core->addBehavior('adminAfterPostUpdate', ['adminKutrl', 'adminAfterPostUpdate']); // update existing short url
-    $core->addBehavior('adminAfterPostUpdate', ['adminKutrl', 'adminAfterPostCreate']); // create new short url
-    $core->addBehavior('adminAfterPostCreate', ['adminKutrl', 'adminAfterPostCreate']);
-    $core->addBehavior('adminBeforePostDelete', ['adminKutrl', 'adminBeforePostDelete']);
-    $core->addBehavior('adminPostsActionsCombo', ['adminKutrl', 'adminPostsActionsCombo']);
-    $core->addBehavior('adminPostsActions', ['adminKutrl', 'adminPostsActions']);
+if (dcCore::app()->blog->settings->kUtRL->kutrl_active) {
+    dcCore::app()->addBehavior('adminDashboardFavoritesV2', ['adminKutrl', 'antispamDashboardFavorites']);
+    dcCore::app()->addBehavior('adminColumnsListsV2', ['adminKutrl', 'adminColumnsLists']);
+    dcCore::app()->addBehavior('adminFiltersListsV2', ['adminKutrl', 'adminFiltersLists']);
+    dcCore::app()->addBehavior('adminPostHeaders', ['adminKutrl', 'adminPostHeaders']);
+    dcCore::app()->addBehavior('adminPostFormItems', ['adminKutrl', 'adminPostFormItems']);
+    dcCore::app()->addBehavior('adminAfterPostUpdate', ['adminKutrl', 'adminAfterPostUpdate']); // update existing short url
+    dcCore::app()->addBehavior('adminAfterPostUpdate', ['adminKutrl', 'adminAfterPostCreate']); // create new short url
+    dcCore::app()->addBehavior('adminAfterPostCreate', ['adminKutrl', 'adminAfterPostCreate']);
+    dcCore::app()->addBehavior('adminBeforePostDelete', ['adminKutrl', 'adminBeforePostDelete']);
+    dcCore::app()->addBehavior('adminPostsActions', ['adminKutrl', 'adminPostsActions']);
 }
 
-$core->addBehavior('exportFull', ['backupKutrl', 'exportFull']);
-$core->addBehavior('exportSingle', ['backupKutrl', 'exportSingle']);
-$core->addBehavior('importInit', ['backupKutrl', 'importInit']);
-$core->addBehavior('importSingle', ['backupKutrl', 'importSingle']);
-$core->addBehavior('importFull', ['backupKutrl', 'importFull']);
+dcCore::app()->addBehavior('exportFullV2', ['backupKutrl', 'exportFull']);
+dcCore::app()->addBehavior('exportSingleV2', ['backupKutrl', 'exportSingle']);
+dcCore::app()->addBehavior('importInitV2', ['backupKutrl', 'importInit']);
+dcCore::app()->addBehavior('importSingleV2', ['backupKutrl', 'importSingle']);
+dcCore::app()->addBehavior('importFullV2', ['backupKutrl', 'importFull']);
 
 # Admin behaviors class
 class adminKutrl
@@ -57,44 +56,44 @@ class adminKutrl
             __('Date')       => 'kut_dt',
             __('Short link') => 'kut_hash',
             __('Long link')  => 'kut_url',
-            __('Service')    => 'kut_service'
+            __('Service')    => 'kut_service',
         ];
     }
 
-    public static function antispamDashboardFavorites(dcCore $core, $favs)
+    public static function antispamDashboardFavorites(dcFavorites $favs)
     {
         $favs->register(
             'kUtRL',
             [
                 'title'       => __('Links shortener'),
-                'url'         => $core->adminurl->get('admin.plugin.kUtRL'),
+                'url'         => dcCore::app()->adminurl->get('admin.plugin.kUtRL'),
                 'small-icon'  => dcPage::getPF('kUtRL/icon.png'),
                 'large-icon'  => dcPage::getPF('kUtRL/icon-b.png'),
-                'permissions' => 'admin'
+                'permissions' => 'admin',
             ]
         );
     }
 
-    public static function adminColumnsLists(dcCore $core, $cols)
+    public static function adminColumnsLists($cols)
     {
         $cols['kUtRL'] = [
             __('Links shortener'),
             [
                 'kut_hash'    => [true, __('Hash')],
                 'kut_dt'      => [true, __('Date')],
-                'kut_service' => [true, __('Service')]
-            ]
+                'kut_service' => [true, __('Service')],
+            ],
         ];
     }
 
-    public static function adminFiltersLists(dcCore $core, $sorts)
+    public static function adminFiltersLists($sorts)
     {
         $sorts['kUtRL'] = [
             __('Links shortener'),
             self::sortbyCombo(),
             'kut_dt',
             'desc',
-            [__('links per page'), 30]
+            [__('links per page'), 30],
         ];
     }
 
@@ -105,13 +104,12 @@ class adminKutrl
 
     public static function adminPostFormItems($main_items, $sidebar_items, $post)
     {
-        global $core;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         if (!$s->kutrl_active || !$s->kutrl_admin_service) {
             return null;
         }
-        if (null === ($kut = kutrl::quickPlace('admin'))) {
+        if (null === ($kut = kUtRL::quickPlace('admin'))) {
             return null;
         }
 
@@ -165,14 +163,13 @@ class adminKutrl
 
     public static function adminAfterPostUpdate($cur, $post_id)
     {
-        global $core;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         # Create: see adminAfterPostCreate
         if (!empty($_POST['kutrl_create']) || !$s->kutrl_active) {
             return null;
         }
-        if (null === ($kut = kutrl::quickPlace('admin'))) {
+        if (null === ($kut = kUtRL::quickPlace('admin'))) {
             return null;
         }
         if (empty($_POST['kutrl_old_post_url'])) {
@@ -185,7 +182,7 @@ class adminKutrl
             return null;
         }
 
-        $rs = $core->blog->getPosts(['post_id' => $post_id]);
+        $rs = dcCore::app()->blog->getPosts(['post_id' => $post_id]);
         if ($rs->isEmpty()) {
             return null;
         }
@@ -208,24 +205,23 @@ class adminKutrl
 
             # ex: Send new url to messengers
             if (!empty($rs)) {
-                $core->callBehavior('adminAfterKutrlCreate', $core, $rs, $title);
+                dcCore::app()->callBehavior('adminAfterKutrlCreate', $rs, $title);
             }
         }
     }
 
     public static function adminAfterPostCreate($cur, $post_id)
     {
-        global $core;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         if (empty($_POST['kutrl_create']) || !$s->kutrl_active) {
             return null;
         }
-        if (null === ($kut = kutrl::quickPlace('admin'))) {
+        if (null === ($kut = kUtRL::quickPlace('admin'))) {
             return null;
         }
 
-        $rs = $core->blog->getPosts(['post_id' => $post_id]);
+        $rs = dcCore::app()->blog->getPosts(['post_id' => $post_id]);
         if ($rs->isEmpty()) {
             return null;
         }
@@ -239,23 +235,22 @@ class adminKutrl
 
         # ex: Send new url to messengers
         if (!empty($rs)) {
-            $core->callBehavior('adminAfterKutrlCreate', $core, $rs, $title);
+            dcCore::app()->callBehavior('adminAfterKutrlCreate', $rs, $title);
         }
     }
 
     public static function adminBeforePostDelete($post_id)
     {
-        global $core;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         if (!$s->kutrl_active) {
             return null;
         }
-        if (null === ($kut = kutrl::quickPlace('admin'))) {
+        if (null === ($kut = kUtRL::quickPlace('admin'))) {
             return null;
         }
 
-        $rs = $core->blog->getPosts(['post_id' => $post_id]);
+        $rs = dcCore::app()->blog->getPosts(['post_id' => $post_id]);
         if ($rs->isEmpty()) {
             return null;
         }
@@ -263,75 +258,102 @@ class adminKutrl
         $kut->remove($rs->getURL());
     }
 
-    public static function adminPostsActionsCombo($args)
+    public static function adminPostsActions(dcPostsActions $pa)
     {
-        global $core;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         if (!$s->kutrl_active
-         || !$core->auth->check('admin', $core->blog->id)) {
+         || !dcCore::app()->auth->check(dcAuth::PERMISSION_ADMIN, dcCore::app()->blog->id)) {
             return null;
         }
 
-        $args[0][__('Links shortener')][__('Create short link')] = 'kutrl_create';
-        $args[0][__('Links shortener')][__('Delete short link')] = 'kutrl_delete';
+        $pa->addAction(
+            [__('Links shortener') => [__('Create short link') => 'kutrl_create']],
+            ['adminKutrl', 'callbackCreate']
+        );
+        $pa->addAction(
+            [__('Links shortener') => [__('Delete short link') => 'kutrl_delete']],
+            ['adminKutrl', 'callbackDelete']
+        );
     }
 
-    public static function adminPostsActions(dcCore $core, $posts, $action, $redir)
+    public static function callbackCreate(dcPostsActions $pa, ArrayObject $post)
     {
-        if ($action != 'kutrl_create'
-         && $action != 'kutrl_delete') {
-            return null;
-        }
-        $s = $core->blog->settings->kUtRL;
-        if (!$s->kutrl_active) {
-            return null;
-        }
-        if (null === ($kut = kutrl::quickPlace('admin'))) {
+        if (null === ($kut = kUtRL::quickPlace('admin'))) {
             return null;
         }
 
+        # No entry
+        $posts_ids = $pa->getIDs();
+        if (empty($posts_ids)) {
+            throw new Exception(__('No entry selected'));
+        }
+
+        # No right
+        if (!dcCore::app()->auth->check(dcAuth::PERMISSION_ADMIN, dcCore::app()->blog->id)) {
+            throw new Exception(__('No enough right'));
+        }
+
+        # retrieve posts info and create hash
+        $posts = dcCore::app()->blog->getPosts(['post_id' => $posts_ids]);
         while ($posts->fetch()) {
-            $url = $posts->getURL();
-
-            if ($action == 'kutrl_create') {
-                $kut->hash($url);
-            }
-            if ($action == 'kutrl_delete') {
-                $kut->remove($url);
-            }
+            $kut->hash($posts->getURL());
         }
-        $core->blog->triggerBlog();
-        http::redirect($redir . '&done=1');
+
+        dcAdminNotices::addSuccessNotice(__('Posts short links have been created.'));
+        $pa->redirect(true);
+    }
+
+    public static function callbackDelete(dcPostsActions $pa, ArrayObject $post)
+    {
+        # No entry
+        $posts_ids = $pa->getIDs();
+        if (empty($posts_ids)) {
+            throw new Exception(__('No entry selected'));
+        }
+
+        # No right
+        if (!dcCore::app()->auth->check(dcAuth::PERMISSION_ADMIN, dcCore::app()->blog->id)) {
+            throw new Exception(__('No enough right'));
+        }
+
+        # retrieve posts info and create hash
+        $posts = dcCore::app()->blog->getPosts(['post_id' => $posts_ids]);
+        while ($posts->fetch()) {
+            $kut->remove($posts->getURL());
+        }
+
+        dcAdminNotices::addSuccessNotice(__('Posts short links have been created.'));
+        $pa->redirect(true);
     }
 }
 
 # Import/export behaviors for Import/export plugin
 class backupKutrl
 {
-    public static function exportSingle($core, $exp, $blog_id)
+    public static function exportSingle($exp, $blog_id)
     {
         $exp->export(
             'kutrl',
             'SELECT kut_id, blog_id, kut_service, kut_type, ' .
             'kut_hash, kut_url, kut_dt, kut_password, kut_counter ' .
-            'FROM ' . $core->prefix . 'kutrl ' .
+            'FROM ' . dcCore::app()->prefix . 'kutrl ' .
             "WHERE blog_id = '" . $blog_id . "' "
         );
     }
 
-    public static function exportFull($core, $exp)
+    public static function exportFull($exp)
     {
         $exp->exportTable('kutrl');
     }
 
-    public static function importInit($bk, $core)
+    public static function importInit($bk)
     {
-        $bk->cur_kutrl = $core->con->openCursor($core->prefix . 'kutrl');
-        $bk->kutrl     = new kutrlLog($core);
+        $bk->cur_kutrl = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'kutrl');
+        $bk->kutrl     = new kutrlLog();
     }
 
-    public static function importSingle($line, $bk, $core)
+    public static function importSingle($line, $bk)
     {
         if ($line->__name == 'kutrl') {
             # Do nothing if str/type exists !
@@ -341,7 +363,7 @@ class backupKutrl
         }
     }
 
-    public static function importFull($line, $bk, $core)
+    public static function importFull($line, $bk)
     {
         if ($line->__name == 'kutrl') {
             $bk->cur_kutrl->clean();

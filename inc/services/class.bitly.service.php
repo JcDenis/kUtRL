@@ -29,7 +29,7 @@ class bitlyKutrlService extends kutrlService
     ];
 
     private $args = [
-        'apiKey' => ''
+        'apiKey' => '',
     ];
 
     protected function init()

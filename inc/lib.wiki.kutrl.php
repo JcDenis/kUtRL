@@ -20,17 +20,16 @@ class kutrlWiki
 {
     public static function coreInitWiki($wiki2xhtml)
     {
-        global $core;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         # Do nothing on comment preview and post preview
         if (!empty($_POST['preview'])
-            || !empty($GLOBALS['_ctx']) && $GLOBALS['_ctx']->preview
+            || isset(dcCore::app()->ctx) && dcCore::app()->ctx->preview
             || !$s->kutrl_active
         ) {
             return null;
         }
-        if (null === ($kut = kutrl::quickPlace('wiki'))) {
+        if (null === ($kut = kUtRL::quickPlace('wiki'))) {
             return null;
         }
         foreach ($kut->allow_protocols as $protocol) {
@@ -43,13 +42,12 @@ class kutrlWiki
 
     public static function transform($url, $content)
     {
-        global $core;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         if (!$s->kutrl_active) {
             return null;
         }
-        if (null === ($kut = kutrl::quickPlace('wiki'))) {
+        if (null === ($kut = kUtRL::quickPlace('wiki'))) {
             return [];
         }
         # Test if long url exists
@@ -72,7 +70,7 @@ class kutrlWiki
 
         # ex: Send new url to messengers
         if (!empty($rs)) {
-            $core->callBehavior('wikiAfterKutrlCreate', $core, $rs, __('New short URL'));
+            dcCore::app()->callBehavior('wikiAfterKutrlCreate', $rs, __('New short URL'));
         }
 
         return $res;

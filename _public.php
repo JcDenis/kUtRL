@@ -14,44 +14,43 @@ if (!defined('DC_RC_PATH')) {
     return null;
 }
 
-require_once dirname(__FILE__) . '/_widgets.php';
+require_once __DIR__ . '/_widgets.php';
 
-$core->tpl->setPath($core->tpl->getPath(), dirname(__FILE__) . '/default-templates');
+dcCore::app()->tpl->setPath(dcCore::app()->tpl->getPath(), __DIR__ . '/default-templates');
 
-$core->addBehavior('publicBeforeDocument', ['pubKutrl', 'publicBeforeDocument']);
-$core->addBehavior('publicHeadContent', ['pubKutrl', 'publicHeadContent']);
-$core->addBehavior('publicBeforeContentFilter', ['pubKutrl', 'publicBeforeContentFilter']);
-$core->addBehavior('templateBeforeValue', ['pubKutrl', 'templateBeforeValue']);
-$core->addBehavior('templateAfterValue', ['pubKutrl', 'templateAfterValue']);
+dcCore::app()->addBehavior('publicBeforeDocumentV2', ['pubKutrl', 'publicBeforeDocument']);
+dcCore::app()->addBehavior('publicHeadContent', ['pubKutrl', 'publicHeadContent']);
+dcCore::app()->addBehavior('publicBeforeContentFilterV2', ['pubKutrl', 'publicBeforeContentFilter']);
+dcCore::app()->addBehavior('templateBeforeValueV2', ['pubKutrl', 'templateBeforeValue']);
+dcCore::app()->addBehavior('templateAfterValueV2', ['pubKutrl', 'templateAfterValue']);
 
-$core->tpl->addBlock('kutrlPageIf', ['tplKutrl', 'pageIf']);
-$core->tpl->addBlock('kutrlMsgIf', ['tplKutrl', 'pageMsgIf']);
+dcCore::app()->tpl->addBlock('kutrlPageIf', ['tplKutrl', 'pageIf']);
+dcCore::app()->tpl->addBlock('kutrlMsgIf', ['tplKutrl', 'pageMsgIf']);
 
-$core->tpl->addValue('kutrlPageURL', ['tplKutrl', 'pageURL']);
-$core->tpl->addValue('kutrlMsg', ['tplKutrl', 'pageMsg']);
-$core->tpl->addValue('kutrlHumanField', ['tplKutrl', 'humanField']);
-$core->tpl->addValue('kutrlHumanFieldProtect', ['tplKutrl', 'humanFieldProtect']);
+dcCore::app()->tpl->addValue('kutrlPageURL', ['tplKutrl', 'pageURL']);
+dcCore::app()->tpl->addValue('kutrlMsg', ['tplKutrl', 'pageMsg']);
+dcCore::app()->tpl->addValue('kutrlHumanField', ['tplKutrl', 'humanField']);
+dcCore::app()->tpl->addValue('kutrlHumanFieldProtect', ['tplKutrl', 'humanFieldProtect']);
 
-$core->tpl->addBlock('AttachmentKutrlIf', ['tplKutrl', 'AttachmentKutrlIf']);
-$core->tpl->addValue('AttachmentKutrl', ['tplKutrl', 'AttachmentKutrl']);
-$core->tpl->addBlock('MediaKutrlIf', ['tplKutrl', 'MediaKutrlIf']);
-$core->tpl->addValue('MediaKutrl', ['tplKutrl', 'MediaKutrl']);
-$core->tpl->addBlock('EntryAuthorKutrlIf', ['tplKutrl', 'EntryAuthorKutrlIf']);
-$core->tpl->addValue('EntryAuthorKutrl', ['tplKutrl', 'EntryAuthorKutrl']);
-$core->tpl->addBlock('EntryKutrlIf', ['tplKutrl', 'EntryKutrlIf']);
-$core->tpl->addValue('EntryKutrl', ['tplKutrl', 'EntryKutrl']);
-$core->tpl->addBlock('CommentAuthorKutrlIf', ['tplKutrl', 'CommentAuthorKutrlIf']);
-$core->tpl->addValue('CommentAuthorKutrl', ['tplKutrl', 'CommentAuthorKutrl']);
-$core->tpl->addBlock('CommentPostKutrlIf', ['tplKutrl', 'CommentPostKutrlIf']);
-$core->tpl->addValue('CommentPostKutrl', ['tplKutrl', 'CommentPostKutrl']);
+dcCore::app()->tpl->addBlock('AttachmentKutrlIf', ['tplKutrl', 'AttachmentKutrlIf']);
+dcCore::app()->tpl->addValue('AttachmentKutrl', ['tplKutrl', 'AttachmentKutrl']);
+dcCore::app()->tpl->addBlock('MediaKutrlIf', ['tplKutrl', 'MediaKutrlIf']);
+dcCore::app()->tpl->addValue('MediaKutrl', ['tplKutrl', 'MediaKutrl']);
+dcCore::app()->tpl->addBlock('EntryAuthorKutrlIf', ['tplKutrl', 'EntryAuthorKutrlIf']);
+dcCore::app()->tpl->addValue('EntryAuthorKutrl', ['tplKutrl', 'EntryAuthorKutrl']);
+dcCore::app()->tpl->addBlock('EntryKutrlIf', ['tplKutrl', 'EntryKutrlIf']);
+dcCore::app()->tpl->addValue('EntryKutrl', ['tplKutrl', 'EntryKutrl']);
+dcCore::app()->tpl->addBlock('CommentAuthorKutrlIf', ['tplKutrl', 'CommentAuthorKutrlIf']);
+dcCore::app()->tpl->addValue('CommentAuthorKutrl', ['tplKutrl', 'CommentAuthorKutrl']);
+dcCore::app()->tpl->addBlock('CommentPostKutrlIf', ['tplKutrl', 'CommentPostKutrlIf']);
+dcCore::app()->tpl->addValue('CommentPostKutrl', ['tplKutrl', 'CommentPostKutrl']);
 
 class urlKutrl extends dcUrlHandlers
 {
     # Redirect !!! local !!! service only
     public static function redirectUrl($args)
     {
-        global $core, $_ctx;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         # Not active, go to default 404
         if (!$s->kutrl_active) {
@@ -66,16 +65,16 @@ class urlKutrl extends dcUrlHandlers
             return null;
         }
 
-        $args             = $m[3] ?? '';
-        $_ctx->kutrl_msg  = '';
-        $_ctx->kutrl_hmf  = hmfKutrl::create();
-        $_ctx->kutrl_hmfp = hmfKutrl::protect($_ctx->kutrl_hmf);
+        $args                          = $m[3] ?? '';
+        dcCore::app()->ctx->kutrl_msg  = '';
+        dcCore::app()->ctx->kutrl_hmf  = hmfKutrl::create();
+        dcCore::app()->ctx->kutrl_hmfp = hmfKutrl::protect(dcCore::app()->ctx->kutrl_hmf);
 
-        $kut = new localKutrlService($core);
+        $kut = new localKutrlService();
 
         # Nothing on url
         if ($m[1] == '/') {
-            $_ctx->kutrl_msg = 'No link given.';
+            dcCore::app()->ctx->kutrl_msg = 'No link given.';
         }
         # find suffix on redirect url
         $suffix = '';
@@ -104,7 +103,7 @@ class urlKutrl extends dcUrlHandlers
             return null;
         }
 
-        $core->blog->triggerBlog();
+        dcCore::app()->blog->triggerBlog();
         http::redirect($url . $suffix);
 
         return null;
@@ -112,8 +111,7 @@ class urlKutrl extends dcUrlHandlers
 
     private static function pageKutrl($kut)
     {
-        global $core, $_ctx;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         # Not active, go to default 404
         if (!$s->kutrl_active) {
@@ -128,7 +126,7 @@ class urlKutrl extends dcUrlHandlers
             return null;
         }
         # Validation form
-        $url = !empty($_POST['longurl']) ? trim($core->con->escape($_POST['longurl'])) : '';
+        $url = !empty($_POST['longurl']) ? trim(dcCore::app()->con->escape($_POST['longurl'])) : '';
         if (!empty($url)) {
             $hmf  = !empty($_POST['hmf']) ? $_POST['hmf'] : '!';
             $hmfu = !empty($_POST['hmfp']) ? hmfKutrl::unprotect($_POST['hmfp']) : '?';
@@ -136,45 +134,45 @@ class urlKutrl extends dcUrlHandlers
             $err = false;
             if (!$err) {
                 if ($hmf != $hmfu) {
-                    $err             = true;
-                    $_ctx->kutrl_msg = __('Failed to verify protected field.');
+                    $err                          = true;
+                    dcCore::app()->ctx->kutrl_msg = __('Failed to verify protected field.');
                 }
             }
             if (!$err) {
                 if (!$kut->testService()) {
-                    $err             = true;
-                    $_ctx->kutrl_msg = __('Service is not well configured.');
+                    $err                          = true;
+                    dcCore::app()->ctx->kutrl_msg = __('Service is not well configured.');
                 }
             }
             if (!$err) {
                 if (!$kut->isValidUrl($url)) {
-                    $err             = true;
-                    $_ctx->kutrl_msg = __('This string is not a valid URL.');
+                    $err                          = true;
+                    dcCore::app()->ctx->kutrl_msg = __('This string is not a valid URL.');
                 }
             }
             if (!$err) {
                 if (!$kut->isLongerUrl($url)) {
-                    $err             = true;
-                    $_ctx->kutrl_msg = __('This link is too short.');
+                    $err                          = true;
+                    dcCore::app()->ctx->kutrl_msg = __('This link is too short.');
                 }
             }
             if (!$err) {
                 if (!$kut->isProtocolUrl($url)) {
-                    $err             = true;
-                    $_ctx->kutrl_msg = __('This type of link is not allowed.');
+                    $err                          = true;
+                    dcCore::app()->ctx->kutrl_msg = __('This type of link is not allowed.');
                 }
             }
 
             if (!$err) {
                 if (!$kut->allow_external_url && !$kut->isBlogUrl($url)) {
-                    $err             = true;
-                    $_ctx->kutrl_msg = __('Short links are limited to this blog URL.');
+                    $err                          = true;
+                    dcCore::app()->ctx->kutrl_msg = __('Short links are limited to this blog URL.');
                 }
             }
             if (!$err) {
                 if ($kut->isServiceUrl($url)) {
-                    $err             = true;
-                    $_ctx->kutrl_msg = __('This link is already a short link.');
+                    $err                          = true;
+                    dcCore::app()->ctx->kutrl_msg = __('This link is already a short link.');
                 }
             }
             if (!$err) {
@@ -184,7 +182,7 @@ class urlKutrl extends dcUrlHandlers
                     $url     = $rs->url;
                     $new_url = $kut->url_base . $rs->hash;
 
-                    $_ctx->kutrl_msg = sprintf(
+                    dcCore::app()->ctx->kutrl_msg = sprintf(
                         __('Short link for %s is %s'),
                         html::escapeHTML($url),
                         '<a href="' . $new_url . '">' . $new_url . '</a>'
@@ -193,28 +191,28 @@ class urlKutrl extends dcUrlHandlers
             }
             if (!$err) {
                 if (false === ($rs = $kut->hash($url))) {
-                    $err             = true;
-                    $_ctx->kutrl_msg = __('Failed to create short link.');
+                    $err                          = true;
+                    dcCore::app()->ctx->kutrl_msg = __('Failed to create short link.');
                 } else {
                     $url     = $rs->url;
                     $new_url = $kut->url_base . $rs->hash;
 
-                    $_ctx->kutrl_msg = sprintf(
+                    dcCore::app()->ctx->kutrl_msg = sprintf(
                         __('Short link for %s is %s'),
                         html::escapeHTML($url),
                         '<a href="' . $new_url . '">' . $new_url . '</a>'
                     );
-                    $core->blog->triggerBlog();
+                    dcCore::app()->blog->triggerBlog();
 
                     # ex: Send new url to messengers
                     if (!empty($rs)) {
-                        $core->callBehavior('publicAfterKutrlCreate', $core, $rs, __('New public short URL'));
+                        dcCore::app()->callBehavior('publicAfterKutrlCreate', $rs, __('New public short URL'));
                     }
                 }
             }
         }
 
-        $core->tpl->setPath($core->tpl->getPath(), dirname(__FILE__) . '/default-templates');
+        dcCore::app()->tpl->setPath(dcCore::app()->tpl->getPath(), __DIR__ . '/default-templates');
         self::serveDocument('kutrl.html');
 
         return null;
@@ -222,28 +220,24 @@ class urlKutrl extends dcUrlHandlers
 
     protected static function kutrl404()
     {
-        global $core;
-
-        if (!$core->blog->settings->kUtRL->kutrl_srv_local_404_active) {
+        if (!dcCore::app()->blog->settings->kUtRL->kutrl_srv_local_404_active) {
             self::p404();
 
             return null;
         }
 
-        $core->tpl->setPath($core->tpl->getPath(), dirname(__FILE__) . '/default-templates');
-        $_ctx = & $GLOBALS['_ctx'];
-        $core = $GLOBALS['core'];
+        dcCore::app()->tpl->setPath(dcCore::app()->tpl->getPath(), __DIR__ . '/default-templates');
 
         header('Content-Type: text/html; charset=UTF-8');
         http::head(404, 'Not Found');
-        $core->url->type    = '404';
-        $_ctx->current_tpl  = 'kutrl404.html';
-        $_ctx->content_type = 'text/html';
+        dcCore::app()->url->type         = '404';
+        dcCore::app()->ctx->current_tpl  = 'kutrl404.html';
+        dcCore::app()->ctx->content_type = 'text/html';
 
-        echo $core->tpl->getData($_ctx->current_tpl);
+        echo dcCore::app()->tpl->getData(dcCore::app()->ctx->current_tpl);
 
         # --BEHAVIOR-- publicAfterDocument
-        $core->callBehavior('publicAfterDocument', $core);
+        dcCore::app()->callBehavior('publicAfterDocumentV2');
         exit;
     }
 }
@@ -259,11 +253,11 @@ class pubKutrl
         'EntryURL',
         'EntryCategoryURL',
         'CommentAuthorURL',
-        'CommentPostURL'
+        'CommentPostURL',
     ];
 
     # Disable URL shoretning on filtered tag
-    public static function templateBeforeValue($core, $tag, $attr)
+    public static function templateBeforeValue($tag, $attr)
     {
         if (!empty($attr['disable_kutrl']) && in_array($tag, pubKutrl::$know_tags)) {
             return '<?php $GLOBALS["disable_kutrl"] = true; ?>';
@@ -273,7 +267,7 @@ class pubKutrl
     }
 
     # Re unable it after tag
-    public static function templateAfterValue($core, $tag, $attr)
+    public static function templateAfterValue($tag, $attr)
     {
         if (!empty($attr['disable_kutrl']) && in_array($tag, pubKutrl::$know_tags)) {
             return '<?php $GLOBALS["disable_kutrl"] = false; ?>';
@@ -283,7 +277,7 @@ class pubKutrl
     }
 
     # Replace long urls on the fly (on filter) for default tags
-    public static function publicBeforeContentFilter($core, $tag, $args)
+    public static function publicBeforeContentFilter($tag, $args)
     {
         # Unknow tag
         if (!in_array($tag, pubKutrl::$know_tags)) {
@@ -292,53 +286,50 @@ class pubKutrl
         # URL shortening is disabled by tag attribute
         if (empty($GLOBALS['disable_kutrl'])) {
             # kUtRL is not activated
-            if (!$core->blog->settings->kUtRL->kutrl_active
-                || !$core->blog->settings->kUtRL->kutrl_tpl_active
+            if (!dcCore::app()->blog->settings->kUtRL->kutrl_active
+                || !dcCore::app()->blog->settings->kUtRL->kutrl_tpl_active
             ) {
                 return null;
             }
 
-            global $_ctx;
-
             # Oups
-            if (!$_ctx->exists('kutrl')) {
+            if (!dcCore::app()->ctx->exists('kutrl')) {
                 return null;
             }
             # Existing
-            if (false !== ($kutrl_rs = $_ctx->kutrl->isKnowUrl($args[0]))) {
-                $args[0] = $_ctx->kutrl->url_base . $kutrl_rs->hash;
+            if (false !== ($kutrl_rs = dcCore::app()->ctx->kutrl->isKnowUrl($args[0]))) {
+                $args[0] = dcCore::app()->ctx->kutrl->url_base . $kutrl_rs->hash;
             # New
-            } elseif (false !== ($kutrl_rs = $_ctx->kutrl->hash($args[0]))) {
-                $args[0] = $_ctx->kutrl->url_base . $kutrl_rs->hash;
+            } elseif (false !== ($kutrl_rs = dcCore::app()->ctx->kutrl->hash($args[0]))) {
+                $args[0] = dcCore::app()->ctx->kutrl->url_base . $kutrl_rs->hash;
 
                 # ex: Send new url to messengers
                 if (!empty($kutrl_rs)) {
-                    $core->callBehavior('publicAfterKutrlCreate', $core, $kutrl_rs, __('New public short URL'));
+                    dcCore::app()->callBehavior('publicAfterKutrlCreate', $kutrl_rs, __('New public short URL'));
                 }
             }
         }
     }
 
-    public static function publicBeforeDocument($core)
+    public static function publicBeforeDocument()
     {
-        global $_ctx;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         # Passive : all kutrl tag return long url
-        $_ctx->kutrl_passive = (bool) $s->kutrl_tpl_passive;
+        dcCore::app()->ctx->kutrl_passive = (bool) $s->kutrl_tpl_passive;
 
         if (!$s->kutrl_active || !$s->kutrl_tpl_service) {
             return null;
         }
-        if (null === ($kut = kutrl::quickPlace('tpl'))) {
+        if (null === ($kut = kUtRL::quickPlace('tpl'))) {
             return null;
         }
-        $_ctx->kutrl = $kut;
+        dcCore::app()->ctx->kutrl = $kut;
     }
 
     public static function publicHeadContent($core)
     {
-        $css = $core->blog->settings->kUtRL->kutrl_srv_local_css;
+        $css = dcCore::app()->blog->settings->kUtRL->kutrl_srv_local_css;
         if ($css) {
             echo
             "\n<!-- CSS for kUtRL --> \n" .
@@ -353,9 +344,9 @@ class tplKutrl
 {
     public static function pageURL($attr)
     {
-        $f = $GLOBALS['core']->tpl->getFilters($attr);
+        $f = dcCore::app()->tpl->getFilters($attr);
 
-        return '<?php echo ' . sprintf($f, '$core->blog->url.$core->url->getBase("kutrl")') . '; ?>';
+        return '<?php echo ' . sprintf($f, 'dcCore::app()->blog->url.dcCore::app()->url->getBase("kutrl")') . '; ?>';
     }
 
     public static function pageIf($attr, $content)
@@ -364,7 +355,7 @@ class tplKutrl
 
         if (isset($attr['is_active'])) {
             $sign = (bool) $attr['is_active'] ? '' : '!';
-            $if[] = $sign . '$core->blog->settings->kUtRL->kutrl_srv_local_public';
+            $if[] = $sign . 'dcCore::app()->blog->settings->kUtRL->kutrl_srv_local_public';
         }
         if (empty($if)) {
             return $content;
@@ -382,7 +373,7 @@ class tplKutrl
 
         if (isset($attr['has_message'])) {
             $sign = (bool) $attr['has_message'] ? '!' : '=';
-            $if[] = '"" ' . $sign . '= $_ctx->kutrl_msg';
+            $if[] = '"" ' . $sign . '= dcCore::app()->ctx->kutrl_msg';
         }
         if (empty($if)) {
             return $content;
@@ -396,19 +387,19 @@ class tplKutrl
 
     public static function pageMsg($attr)
     {
-        return '<?php echo $_ctx->kutrl_msg; ?>';
+        return '<?php echo dcCore::app()->ctx->kutrl_msg; ?>';
     }
 
     public static function humanField($attr)
     {
-        return "<?php echo sprintf(__('Confirm by writing \"%s\" in next field:'),\$_ctx->kutrl_hmf); ?>";
+        return "<?php echo sprintf(__('Confirm by writing \"%s\" in next field:'),dcCore::app()->ctx->kutrl_hmf); ?>";
     }
 
     public static function humanFieldProtect($attr)
     {
         return
-        '<input type="hidden" name="hmfp" id="hmfp" value="<?php echo $_ctx->kutrl_hmfp; ?>" />' .
-        '<?php echo $core->formNonce(); ?>';
+        '<input type="hidden" name="hmfp" id="hmfp" value="<?php echo dcCore::app()->ctx->kutrl_hmfp; ?>" />' .
+        '<?php echo dcCore::app()->formNonce(); ?>';
     }
 
     public static function AttachmentKutrlIf($attr, $content)
@@ -423,52 +414,52 @@ class tplKutrl
 
     public static function MediaKutrlIf($attr, $content)
     {
-        return self::genericKutrlIf('$_ctx->file_url', $attr, $content);
+        return self::genericKutrlIf('dcCore::app()->ctx->file_url', $attr, $content);
     }
 
     public static function MediaKutrl($attr)
     {
-        return self::genericKutrl('$_ctx->file_url', $attr);
+        return self::genericKutrl('dcCore::app()->ctx->file_url', $attr);
     }
 
     public static function EntryAuthorKutrlIf($attr, $content)
     {
-        return self::genericKutrlIf('$_ctx->posts->user_url', $attr, $content);
+        return self::genericKutrlIf('dcCore::app()->ctx->posts->user_url', $attr, $content);
     }
 
     public static function EntryAuthorKutrl($attr)
     {
-        return self::genericKutrl('$_ctx->posts->user_url', $attr);
+        return self::genericKutrl('dcCore::app()->ctx->posts->user_url', $attr);
     }
 
     public static function EntryKutrlIf($attr, $content)
     {
-        return self::genericKutrlIf('$_ctx->posts->getURL()', $attr, $content);
+        return self::genericKutrlIf('dcCore::app()->ctx->posts->getURL()', $attr, $content);
     }
 
     public static function EntryKutrl($attr)
     {
-        return self::genericKutrl('$_ctx->posts->getURL()', $attr);
+        return self::genericKutrl('dcCore::app()->ctx->posts->getURL()', $attr);
     }
 
     public static function CommentAuthorKutrlIf($attr, $content)
     {
-        return self::genericKutrlIf('$_ctx->comments->getAuthorURL()', $attr, $content);
+        return self::genericKutrlIf('dcCore::app()->ctx->comments->getAuthorURL()', $attr, $content);
     }
 
     public static function CommentAuthorKutrl($attr)
     {
-        return self::genericKutrl('$_ctx->comments->getAuthorURL()', $attr);
+        return self::genericKutrl('dcCore::app()->ctx->comments->getAuthorURL()', $attr);
     }
 
     public static function CommentPostKutrlIf($attr, $content)
     {
-        return self::genericKutrlIf('$_ctx->comments->getPostURL()', $attr, $content);
+        return self::genericKutrlIf('dcCore::app()->ctx->comments->getPostURL()', $attr, $content);
     }
 
     public static function CommentPostKutrl($attr)
     {
-        return self::genericKutrl('$_ctx->comments->getPostURL()', $attr);
+        return self::genericKutrl('dcCore::app()->ctx->comments->getPostURL()', $attr);
     }
 
     protected static function genericKutrlIf($str, $attr, $content)
@@ -477,15 +468,15 @@ class tplKutrl
 
         if (isset($attr['is_active'])) {
             $sign = (bool) $attr['is_active'] ? '' : '!';
-            $if[] = $sign . '$_ctx->exists("kutrl")';
+            $if[] = $sign . 'dcCore::app()->ctx->exists("kutrl")';
         }
         if (isset($attr['passive_mode'])) {
             $sign = (bool) $attr['passive_mode'] ? '' : '!';
-            $if[] = $sign . '$_ctx->kutrl_passive';
+            $if[] = $sign . 'dcCore::app()->ctx->kutrl_passive';
         }
         if (isset($attr['has_kutrl'])) {
             $sign = (bool) $attr['has_kutrl'] ? '!' : '=';
-            $if[] = '($_ctx->exists("kutrl") && false ' . $sign . '== $_ctx->kutrl->select(' . $str . ',null,null,"kutrl"))';
+            $if[] = '(dcCore::app()->ctx->exists("kutrl") && false ' . $sign . '== dcCore::app()->ctx->kutrl->select(' . $str . ',null,null,"kutrl"))';
         }
         if (empty($if)) {
             return $content;
@@ -499,32 +490,32 @@ class tplKutrl
 
     protected static function genericKutrl($str, $attr)
     {
-        $f = $GLOBALS['core']->tpl->getFilters($attr);
+        $f = dcCore::app()->tpl->getFilters($attr);
 
         return
         "<?php \n" .
         # Preview
-        "if (\$_ctx->preview) { \n" .
+        "if (dcCore::app()->ctx->preview) { \n" .
         ' echo ' . sprintf($f, $str) . '; ' .
         "} else { \n" .
         # Disable
-        "if (!\$_ctx->exists('kutrl')) { \n" .
+        "if (!dcCore::app()->ctx->exists('kutrl')) { \n" .
         # Passive mode
-        ' if ($_ctx->kutrl_passive) { ' .
+        ' if (dcCore::app()->ctx->kutrl_passive) { ' .
         '  echo ' . sprintf($f, $str) . '; ' .
         " } \n" .
         "} else { \n" .
         # Existing
-        ' if (false !== ($kutrl_rs = $_ctx->kutrl->isKnowUrl(' . $str . '))) { ' .
-        '  echo ' . sprintf($f, '$_ctx->kutrl->url_base.$kutrl_rs->hash') . '; ' .
+        ' if (false !== ($kutrl_rs = dcCore::app()->ctx->kutrl->isKnowUrl(' . $str . '))) { ' .
+        '  echo ' . sprintf($f, 'dcCore::app()->ctx->kutrl->url_base.$kutrl_rs->hash') . '; ' .
         " } \n" .
         # New
-        ' elseif (false !== ($kutrl_rs = $_ctx->kutrl->hash(' . $str . '))) { ' .
-        '  echo ' . sprintf($f, '$_ctx->kutrl->url_base.$kutrl_rs->hash') . '; ' .
+        ' elseif (false !== ($kutrl_rs = dcCore::app()->ctx->kutrl->hash(' . $str . '))) { ' .
+        '  echo ' . sprintf($f, 'dcCore::app()->ctx->kutrl->url_base.$kutrl_rs->hash') . '; ' .
 
         # ex: Send new url to messengers
         ' if (!empty($kutrl_rs)) { ' .
-        "  \$core->callBehavior('publicAfterKutrlCreate',\$core,\$kutrl_rs,__('New public short URL')); " .
+        "  dcCore::app()->callBehavior('publicAfterKutrlCreate',\$kutrl_rs,__('New public short URL')); " .
         " } \n" .
 
         " } \n" .

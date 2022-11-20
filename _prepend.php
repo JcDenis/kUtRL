@@ -32,66 +32,66 @@ if (!defined('SHORTEN_SERVICE_ENCODE')) {
 }
 
 # Main class
-$d                            = dirname(__FILE__) . '/inc/';
-$__autoload['kutrl']          = $d . 'class.kutrl.php';
-$__autoload['kutrlService']   = $d . 'lib.kutrl.srv.php';
-$__autoload['kutrlLog']       = $d . 'lib.kutrl.log.php';
-$__autoload['kutrlLinksList'] = $d . 'lib.kutrl.lst.php';
+$d = __DIR__ . '/inc/';
+Clearbricks::lib()->autoload(['kUtRL' => $d . 'class.kutrl.php']);
+Clearbricks::lib()->autoload(['kutrlService' => $d . 'lib.kutrl.srv.php']);
+Clearbricks::lib()->autoload(['kutrlLog' => $d . 'lib.kutrl.log.php']);
+Clearbricks::lib()->autoload(['kutrlLinkslist' => $d . 'lib.kutrl.lst.php']);
 
 # Services
-$__autoload['defaultKutrlService'] = $d . 'services/class.default.service.php';
-$core->addBehavior('kutrlService', function () { return ['default','defaultKutrlService']; });
+Clearbricks::lib()->autoload(['defaultKutrlService' => $d . 'services/class.default.service.php']);
+dcCore::app()->addBehavior('kutrlService', function () { return ['default','defaultKutrlService']; });
 if (!defined('SHORTEN_SERVICE_DISABLE_CUSTOM')) {
-    $__autoload['customKutrlService'] = $d . 'services/class.custom.service.php';
-    $core->addBehavior('kutrlService', function () { return ['custom','customKutrlService']; });
+    Clearbricks::lib()->autoload(['customKutrlService' => $d . 'services/class.custom.service.php']);
+    dcCore::app()->addBehavior('kutrlService', function () { return ['custom','customKutrlService']; });
 }
 if (!defined('SHORTEN_SERVICE_DISABLE_LOCAL')) {
-    $__autoload['localKutrlService'] = $d . 'services/class.local.service.php';
-    $core->addBehavior('kutrlService', function () { return ['local','localKutrlService']; });
+    Clearbricks::lib()->autoload(['localKutrlService' => $d . 'services/class.local.service.php']);
+    dcCore::app()->addBehavior('kutrlService', function () { return ['local','localKutrlService']; });
 }
 if (!defined('SHORTEN_SERVICE_DISABLE_BILBOLINKS')) {
-    $__autoload['bilbolinksKutrlService'] = $d . 'services/class.bilbolinks.service.php';
-    $core->addBehavior('kutrlService', function () { return ['bilbolinks','bilbolinksKutrlService']; });
+    Clearbricks::lib()->autoload(['bilbolinksKutrlService' => $d . 'services/class.bilbolinks.service.php']);
+    dcCore::app()->addBehavior('kutrlService', function () { return ['bilbolinks','bilbolinksKutrlService']; });
 }
 if (!defined('SHORTEN_SERVICE_DISABLE_BITLY')) {
-    $__autoload['bitlyKutrlService'] = $d . 'services/class.bitly.service.php';
-    $core->addBehavior('kutrlService', function () { return ['bitly','bitlyKutrlService']; });
+    Clearbricks::lib()->autoload(['bitlyKutrlService' => $d . 'services/class.bitly.service.php']);
+    dcCore::app()->addBehavior('kutrlService', function () { return ['bitly','bitlyKutrlService']; });
 }
 //if (!defined('SHORTEN_SERVICE_DISABLE_GOOGL')) {
-//    $__autoload['googlKutrlService'] = $d . 'services/class.googl.service.php';
-//    $core->addBehavior('kutrlService', function() { return ["googl","googlKutrlService"]; } );
+//    Clearbricks::lib()->autoload(['googlKutrlService' => $d . 'services/class.googl.service.php']);
+//    dcCore::app()->addBehavior('kutrlService', function() { return ["googl","googlKutrlService"]; } );
 //}
 if (!defined('SHORTEN_SERVICE_DISABLE_ISGD')) {
-    $__autoload['isgdKutrlService'] = $d . 'services/class.isgd.service.php';
-    $core->addBehavior('kutrlService', function () { return ['isgd','isgdKutrlService']; });
+    Clearbricks::lib()->autoload(['isgdKutrlService' => $d . 'services/class.isgd.service.php']);
+    dcCore::app()->addBehavior('kutrlService', function () { return ['isgd','isgdKutrlService']; });
 }
 //if (!defined('SHORTEN_SERVICE_DISABLE_SHORTTO')) {
-//    $__autoload['shorttoKutrlService'] = $d . 'services/class.shortto.service.php';
-//    $core->addBehavior('kutrlService', function() { return ["shortto","shorttoKutrlService"]; } );
+//    Clearbricks::lib()->autoload(['shorttoKutrlService' => $d . 'services/class.shortto.service.php']);
+//    dcCore::app()->addBehavior('kutrlService', function() { return ["shortto","shorttoKutrlService"]; } );
 //}
 //if (!defined('SHORTEN_SERVICE_DISABLE_TRIM')) {
-//    $__autoload['trimKutrlService'] = $d . 'services/class.trim.service.php';
-//    $core->addBehavior('kutrlService', function() { return ["trim","trimKutrlService"]; } );
+//    Clearbricks::lib()->autoload(['trimKutrlService' => $d . 'services/class.trim.service.php']);
+//    dcCore::app()->addBehavior('kutrlService', function() { return ["trim","trimKutrlService"]; } );
 //}
 if (!defined('SHORTEN_SERVICE_DISABLE_YOURLS')) {
-    $__autoload['yourlsKutrlService'] = $d . 'services/class.yourls.service.php';
-    $core->addBehavior('kutrlService', function () { return ['yourls','yourlsKutrlService']; });
+    Clearbricks::lib()->autoload(['yourlsKutrlService' => $d . 'services/class.yourls.service.php']);
+    dcCore::app()->addBehavior('kutrlService', function () { return ['yourls','yourlsKutrlService']; });
 }
 //if (!defined('SHORTEN_SERVICE_DISABLE_SUPR')) {
-//    $__autoload['suprKutrlService'] = $d . 'services/class.supr.service.php';
-//    $core->addBehavior('kutrlService', function() { return ["supr","suprKutrlService"]; } );
+//    Clearbricks::lib()->autoload(['suprKutrlService' => $d . 'services/class.supr.service.php']);
+//    dcCore::app()->addBehavior('kutrlService', function() { return ["supr","suprKutrlService"]; } );
 //}
 
 # Shorten url passed through wiki functions
-$__autoload['kutrlWiki'] = $d . 'lib.wiki.kutrl.php';
-$core->addBehavior('coreInitWikiPost', ['kutrlWiki','coreInitWiki']);
-$core->addBehavior('coreInitWikiComment', ['kutrlWiki','coreInitWiki']);
-$core->addBehavior('coreInitWikiSimpleComment', ['kutrlWiki','coreInitWiki']);
+Clearbricks::lib()->autoload(['kutrlWiki' => $d . 'lib.wiki.kutrl.php']);
+dcCore::app()->addBehavior('coreInitWikiPost', ['kutrlWiki','coreInitWiki']);
+dcCore::app()->addBehavior('coreInitWikiComment', ['kutrlWiki','coreInitWiki']);
+dcCore::app()->addBehavior('coreInitWikiSimpleComment', ['kutrlWiki','coreInitWiki']);
 
 # Public page
-$core->url->register('kutrl', 'go', '^go(/(.*?)|)$', ['urlKutrl', 'redirectUrl']);
+dcCore::app()->url->register('kutrl', 'go', '^go(/(.*?)|)$', ['urlKutrl', 'redirectUrl']);
 
 # Add kUtRL events on plugin activityReport
-if (defined('ACTIVITY_REPORT')) {
+if (defined('ACTIVITY_REPORT_V2')) {
     require_once $d . 'lib.kutrl.activityreport.php';
 }

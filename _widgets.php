@@ -14,8 +14,8 @@ if (!defined('DC_RC_PATH')) {
     return null;
 }
 
-$core->addBehavior('initWidgets', ['widgetKutrl', 'adminShorten']);
-$core->addBehavior('initWidgets', ['widgetKutrl', 'adminRank']);
+dcCore::app()->addBehavior('initWidgets', ['widgetKutrl', 'adminShorten']);
+dcCore::app()->addBehavior('initWidgets', ['widgetKutrl', 'adminRank']);
 
 class widgetKutrl
 {
@@ -64,7 +64,7 @@ class widgetKutrl
                     __('All')         => '-',
                     __('Mini URL')    => 'localnormal',
                     __('Custom URL')  => 'localcustom',
-                    __('Semi-custom') => 'localmix'
+                    __('Semi-custom') => 'localmix',
                 ]
             )
             ->setting(
@@ -81,7 +81,7 @@ class widgetKutrl
                 [
                     __('Date') => 'kut_dt',
                     __('Rank') => 'kut_counter',
-                    __('Hash') => 'kut_hash'
+                    __('Hash') => 'kut_hash',
                 ]
             )
             ->setting(
@@ -91,7 +91,7 @@ class widgetKutrl
                 'combo',
                 [
                     __('Ascending')  => 'asc',
-                    __('Descending') => 'desc'
+                    __('Descending') => 'desc',
                 ]
             )
             ->setting(
@@ -114,13 +114,12 @@ class widgetKutrl
 
     public static function publicShorten($w)
     {
-        global $core;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         if (!$s->kutrl_active
          || !$s->kutrl_srv_local_public
-         || ($w->homeonly == 1 && !$core->url->isHome($core->url->type)) || ($w->homeonly == 2 && $core->url->isHome($core->url->type))
-         || $core->url->type == 'kutrl') {
+         || ($w->homeonly == 1 && !dcCore::app()->url->isHome(dcCore::app()->url->type)) || ($w->homeonly == 2 && dcCore::app()->url->isHome(dcCore::app()->url->type))
+         || dcCore::app()->url->type == 'kutrl') {
             return null;
         }
 
@@ -133,7 +132,7 @@ class widgetKutrl
             '',
             ($w->title ? $w->renderTitle(html::escapeHTML($w->title)) : '') .
                 '<form name="shortenkutrlwidget" method="post" action="' .
-                 $core->blog->url . $core->url->getBase('kutrl') . '">' .
+                 dcCore::app()->blog->url . dcCore::app()->url->getBase('kutrl') . '">' .
                 '<p><label>' .
                  __('Long link:') . '<br />' .
                  form::field('longurl', 20, 255, '') .
@@ -144,7 +143,7 @@ class widgetKutrl
                 '</label></p>' .
                 '<p><input class="submit" type="submit" name="submiturl" value="' . __('Shorten') . '" />' .
                 form::hidden('hmfp', $hmfp) .
-                $core->formNonce() .
+                dcCore::app()->formNonce() .
                 '</p>' .
                 '</form>'
         );
@@ -152,23 +151,22 @@ class widgetKutrl
 
     public static function publicRank($w)
     {
-        global $core;
-        $s = $core->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->kUtRL;
 
         if (!$s->kutrl_active
-         || ($w->homeonly == 1 && !$core->url->isHome($core->url->type)) || ($w->homeonly == 2 && $core->url->isHome($core->url->type))) {
+         || ($w->homeonly == 1 && !dcCore::app()->url->isHome(dcCore::app()->url->type)) || ($w->homeonly == 2 && dcCore::app()->url->isHome(dcCore::app()->url->type))) {
             return null;
         }
 
         $type = in_array($w->type, ['localnormal', 'localmix', 'localcustom']) ?
             "AND kut_type ='" . $w->type . "' " :
-            'AND kut_type ' . $core->con->in(['localnormal', 'localmix', 'localcustom']) . ' ';
+            'AND kut_type ' . dcCore::app()->con->in(['localnormal', 'localmix', 'localcustom']) . ' ';
 
         $hide = (bool) $w->hideempty ? 'AND kut_counter > 0 ' : '';
 
         $more = '';
         if ($w->type == 'localmix' && '' != $w->mixprefix) {
-            $more = "AND kut_hash LIKE '" . $core->con->escape($w->mixprefix) . "%' ";
+            $more = "AND kut_hash LIKE '" . dcCore::app()->con->escape($w->mixprefix) . "%' ";
         }
 
         $order = ($w->sortby && in_array($w->sortby, ['kut_dt', 'kut_counter', 'kut_hash'])) ?
@@ -176,12 +174,12 @@ class widgetKutrl
 
         $order .= $w->sort == 'desc' ? ' DESC' : ' ASC';
 
-        $limit = $core->con->limit(abs((int) $w->limit));
+        $limit = dcCore::app()->con->limit(abs((int) $w->limit));
 
-        $rs = $core->con->select(
+        $rs = dcCore::app()->con->select(
             'SELECT kut_counter, kut_hash ' .
-            'FROM ' . $core->prefix . 'kutrl ' .
-            "WHERE blog_id='" . $core->con->escape($core->blog->id) . "' " .
+            'FROM ' . dcCore::app()->prefix . 'kutrl ' .
+            "WHERE blog_id='" . dcCore::app()->con->escape(dcCore::app()->blog->id) . "' " .
             "AND kut_service = 'local' " .
             $type . $hide . $more . 'ORDER BY ' . $order . $limit
         );
@@ -197,7 +195,7 @@ class widgetKutrl
             $rank = '<span class="rankkutrl-rank">' . $i . '</span>';
 
             $hash    = $rs->kut_hash;
-            $url     = $core->blog->url . $core->url->getBase('kutrl') . '/' . $hash;
+            $url     = dcCore::app()->blog->url . dcCore::app()->url->getBase('kutrl') . '/' . $hash;
             $cut_len = - abs((int) $w->urllen);
 
             if (strlen($url) > $cut_len) {
@@ -217,7 +215,7 @@ class widgetKutrl
             }
 
             $content .= '<li><a href="' .
-                $core->blog->url . $core->url->getBase('kutrl') . '/' . $rs->kut_hash .
+                dcCore::app()->blog->url . dcCore::app()->url->getBase('kutrl') . '/' . $rs->kut_hash .
                 '">' .
                 str_replace(
                     ['%rank%', '%hash%', '%url%', '%count%', '%counttext%'],

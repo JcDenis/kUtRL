@@ -12,15 +12,13 @@
  */
 class kutrlLinkslist
 {
-    protected $core;
     protected $rs;
     protected $rs_count;
     protected $html_prev;
     protected $html_next;
 
-    public function __construct(dcCore $core, $rs, $rs_count)
+    public function __construct($rs, $rs_count)
     {
-        $this->core      = &$core;
         $this->rs        = &$rs;
         $this->rs_count  = $rs_count;
         $this->html_prev = __('&#171; prev.');
@@ -29,7 +27,7 @@ class kutrlLinkslist
 
     public function userColumns($type, $cols)
     {
-        $cols_user = @$this->core->auth->user_prefs->interface->cols;
+        $cols_user = @dcCore::app()->auth->user_prefs->interface->cols;
         if (is_array($cols_user) || $cols_user instanceof ArrayObject) {
             if (isset($cols_user[$type])) {
                 foreach ($cols_user[$type] as $cn => $cd) {
@@ -62,7 +60,7 @@ class kutrlLinkslist
                 'kut_url'     => '<th colspan="2" class="first">' . __('Link') . '</th>',
                 'kut_hash'    => '<th scope="col">' . __('Hash') . '</th>',
                 'kut_dt'      => '<th scope="col">' . __('Date') . '</th>',
-                'kut_service' => '<th scope="col">' . __('Service') . '</th>'
+                'kut_service' => '<th scope="col">' . __('Service') . '</th>',
             ];
             $cols = new ArrayObject($cols);
             $this->userColumns('kUtRL', $cols);
@@ -101,7 +99,7 @@ class kutrlLinkslist
         $type = $this->rs->kut_type;
         $hash = $this->rs->kut_hash;
 
-        if (null !== ($o = kutrl::quickService($type))) {
+        if (null !== ($o = kUtRL::quickService($type))) {
             $type = '<a href="' . $o->home . '" title="' . $o->name . '">' . $o->name . '</a>';
             $hash = '<a href="' . $o->url_base . $hash . '" title="' . $o->url_base . $hash . '">' . $hash . '</a>';
         }
@@ -117,11 +115,11 @@ class kutrlLinkslist
                     $hash .
                 '</td>',
             'kut_dt' => '<td class="nowrap count">' .
-                    dt::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, $this->core->auth->getInfo('user_tz')) .
+                    dt::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, dcCore::app()->auth->getInfo('user_tz')) .
                 '</td>',
             'kut_service' => '<td class="nowrap">' .
                     $type .
-                '</td>'
+                '</td>',
         ];
 
         $cols = new ArrayObject($cols);
