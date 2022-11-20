@@ -4,6 +4,9 @@ xxx.xx.xx
 - [ ] Add public page of the list of know urls and in/visible status
 - [ ] Add passworded links
 
+2022.11.20
+- fix compatibility with Dotclear 2.24 (required)
+
 2021.11.06
 - never fix breaking comments or complexe public url (add warning)
 - fix permissions (dc 2.20)

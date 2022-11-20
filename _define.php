@@ -18,7 +18,7 @@ $this->registerModule(
     'Links shortener',
     'Use, create and serve short url on your blog',
     'Jean-Christian Denis and contributors',
-    '2022.11.12',
+    '2022.11.20',
     [
         'requires'    => [['core', '2.24']],
         'permissions' => dcCore::app()->auth->makePermissions([
