@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: kUtRL 2021.09.16\n"
+"Project-Id-Version: kUtRL 2022.11.12\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-10-26T21:17:38+00:00\n"
-"Last-Translator: Jean-Christian Denis\n"
+"PO-Revision-Date: 2022-11-20T16:20:38+00:00\n"
+"Last-Translator: Jean-Crhistian Denis\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -46,14 +46,14 @@ msgstr "suivi %s fois"
 msgid "Delete short link"
 msgstr "Effacer un lien court"
 
+msgid "No enough right"
+msgstr "Privilèges insuffisants"
+
+msgid "Posts short links have been created."
+msgstr "Les liens courts des billets ont été créé."
+
 msgid "Disabled"
 msgstr "Désactiver"
-
-msgid "Configuration successfully saved"
-msgstr "Configuration sauvegardée avec succès"
-
-msgid "Plugin activation"
-msgstr "Activation"
 
 msgid "Enable plugin"
 msgstr "Activer le plugin"
@@ -217,15 +217,6 @@ msgstr "Recopier \"%s\" dans le champs suivant pour montrer que vous n'êtes pas
 msgid "Shorten"
 msgstr "Raccourir"
 
-msgid "URL not found"
-msgstr "Lien non trouvé"
-
-msgid "The URL you are looking for does not exist."
-msgstr "Le liens que vous recherchez n'existe pas."
-
-msgid "Create your own short URL"
-msgstr "Créer votre propre lien court"
-
 msgid "Plugin kUtRL"
 msgstr "Extension kUtRL"
 
@@ -268,29 +259,14 @@ msgstr "Le service n'est pas disponible."
 msgid "Service rate limit exceeded."
 msgstr "La limitation d'envoie au service est atteinte."
 
-msgid "Login:"
-msgstr "Identifiant :"
-
-msgid "This is your login to sign up to %s"
-msgstr "C'est votre identifiant pour vous connecter sur %s"
-
 msgid "API Key:"
 msgstr "Clé API :"
 
 msgid "This is your personnal %s API key. You can find it on your account page."
 msgstr "C'est votre clé personnelle de l'API %s. Vous pouvez la trouver sur la page de votre compte."
 
-msgid "Publish history"
-msgstr "Publier l'historique"
-
-msgid "This publish all short links on your bit.ly public page."
-msgstr "Ceci publie tous vos liens sur votre page public bit.ly"
-
 msgid "Failed to call service."
 msgstr "Impossible d'appeler le service."
-
-msgid "An error occured with code %s and message \"%s\""
-msgstr "Une erreur est survenu avec le code \"%s\" et le message \"%s\""
 
 msgid "You can set a configurable service."
 msgstr "Vous pouvez configurer un service particulier."
@@ -394,6 +370,15 @@ msgstr "Le lien court personnalisé n'est pas valide."
 msgid "Failed to save link."
 msgstr "Impossible d'enregistrer le lien."
 
+msgid "Login:"
+msgstr "Identifiant :"
+
+msgid "This is your login to sign up to %s"
+msgstr "C'est votre identifiant pour vous connecter sur %s"
+
+msgid "An error occured with code %s and message \"%s\""
+msgstr "Une erreur est survenu avec le code \"%s\" et le message \"%s\""
+
 msgid "This is your login to sign up to tr.im."
 msgstr "Ceci est votre login d'inscription sur tr.im."
 
@@ -453,6 +438,30 @@ msgstr "Uniquement si vous souhaitez un lien court personnalisé."
 
 msgid "You can use \"bob!!\" if you want a semi-custom link, it starts with \"bob\" and \"!!\" will be replaced by an increment value."
 msgstr "Vous pouvez utiliser \"bob!!\" si vous souhaitez un lien semi-personnalisé, il commencera par \"bob\" et \"!!\" sera remplacé par une valeur incrémentale."
+
+msgid "Delete selected short links"
+msgstr "Effacer les liens court sélectionnés"
+
+msgid "Configuration successfully saved"
+msgstr "Configuration sauvegardée avec succès"
+
+msgid "Plugin activation"
+msgstr "Activation"
+
+msgid "URL not found"
+msgstr "Lien non trouvé"
+
+msgid "The URL you are looking for does not exist."
+msgstr "Le liens que vous recherchez n'existe pas."
+
+msgid "Create your own short URL"
+msgstr "Créer votre propre lien court"
+
+msgid "Publish history"
+msgstr "Publier l'historique"
+
+msgid "This publish all short links on your bit.ly public page."
+msgstr "Ceci publie tous vos liens sur votre page public bit.ly"
 
 msgid "Use, create and serve short url on your blog"
 msgstr "Utiliser, créer et servir des liens court sur votre blog"
