@@ -20,7 +20,7 @@ Create short URL on its own or from external services.
 
   * admin permission to configure
   * no permissions to shorten links on the fly
-  * Dotclear 2.20
+  * Dotclear 2.24
 
 ## USAGE
 
