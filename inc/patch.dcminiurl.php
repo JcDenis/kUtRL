@@ -35,7 +35,7 @@ class dcMiniUrl2kUtRL
     public function __construct()
     {
         $this->con  = dcCore::app()->con;
-        $this->k_tb = dcCore::app()->prefix . 'kutrl';
+        $this->k_tb = dcCore::app()->prefix . initkUtRL::KURL_TABLE_NAME;
         $this->m_tb = dcCore::app()->prefix . 'miniurl';
     }
 

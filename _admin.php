@@ -22,9 +22,9 @@ require_once __DIR__ . '/_widgets.php';
 dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
     __('Links shortener'),
     dcCore::app()->adminurl->get('admin.plugin.kUtRL'),
-    dcPage::getPF('kUtRL/icon.png'),
+    urldecode(dcPage::getPF('kUtRL/icon.svg')),
     preg_match('/' . preg_quote(dcCore::app()->adminurl->get('admin.plugin.kUtRL')) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
-    dcCore::app()->auth->check(dcAuth::PERMISSION_ADMIN, dcCore::app()->blog->id)
+    dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_ADMIN]), dcCore::app()->blog->id)
 );
 
 # Admin behaviors
@@ -69,7 +69,7 @@ class adminKutrl
                 'url'         => dcCore::app()->adminurl->get('admin.plugin.kUtRL'),
                 'small-icon'  => dcPage::getPF('kUtRL/icon.png'),
                 'large-icon'  => dcPage::getPF('kUtRL/icon-b.png'),
-                'permissions' => 'admin',
+                'permissions' => dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_ADMIN]),
             ]
         );
     }
@@ -263,7 +263,7 @@ class adminKutrl
         $s = dcCore::app()->blog->settings->kUtRL;
 
         if (!$s->kutrl_active
-         || !dcCore::app()->auth->check(dcAuth::PERMISSION_ADMIN, dcCore::app()->blog->id)) {
+         || !dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_ADMIN]), dcCore::app()->blog->id)) {
             return null;
         }
 
@@ -290,7 +290,7 @@ class adminKutrl
         }
 
         # No right
-        if (!dcCore::app()->auth->check(dcAuth::PERMISSION_ADMIN, dcCore::app()->blog->id)) {
+        if (!dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_ADMIN]), dcCore::app()->blog->id)) {
             throw new Exception(__('No enough right'));
         }
 
@@ -313,7 +313,7 @@ class adminKutrl
         }
 
         # No right
-        if (!dcCore::app()->auth->check(dcAuth::PERMISSION_ADMIN, dcCore::app()->blog->id)) {
+        if (!dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_ADMIN]), dcCore::app()->blog->id)) {
             throw new Exception(__('No enough right'));
         }
 
@@ -337,7 +337,7 @@ class backupKutrl
             'kutrl',
             'SELECT kut_id, blog_id, kut_service, kut_type, ' .
             'kut_hash, kut_url, kut_dt, kut_password, kut_counter ' .
-            'FROM ' . dcCore::app()->prefix . 'kutrl ' .
+            'FROM ' . dcCore::app()->prefix . initkUtRL::KURL_TABLE_NAME . ' ' .
             "WHERE blog_id = '" . $blog_id . "' "
         );
     }
@@ -349,7 +349,7 @@ class backupKutrl
 
     public static function importInit($bk)
     {
-        $bk->cur_kutrl = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'kutrl');
+        $bk->cur_kutrl = dcCore::app()->con->openCursor(dcCore::app()->prefix . initkUtRL::KURL_TABLE_NAME);
         $bk->kutrl     = new kutrlLog();
     }
 

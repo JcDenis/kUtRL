@@ -31,7 +31,7 @@ $this->addUserAction(
     /* action */
     'delete',
     /* ns */
-    'kutrl',
+    initkUtRL::KURL_TABLE_NAME,
     /* description */
     __('delete table')
 );

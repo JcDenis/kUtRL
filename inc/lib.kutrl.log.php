@@ -20,7 +20,7 @@ class kutrlLog
 
     public function __construct()
     {
-        $this->table = dcCore::app()->prefix . 'kutrl';
+        $this->table = dcCore::app()->prefix . initkUtRL::KURL_TABLE_NAME;
         $this->blog  = dcCore::app()->con->escape(dcCore::app()->blog->id);
         $this->con   = dcCore::app()->con;
     }

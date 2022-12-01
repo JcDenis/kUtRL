@@ -33,10 +33,12 @@ if (!defined('SHORTEN_SERVICE_ENCODE')) {
 
 # Main class
 $d = __DIR__ . '/inc/';
-Clearbricks::lib()->autoload(['kUtRL' => $d . 'class.kutrl.php']);
-Clearbricks::lib()->autoload(['kutrlService' => $d . 'lib.kutrl.srv.php']);
-Clearbricks::lib()->autoload(['kutrlLog' => $d . 'lib.kutrl.log.php']);
-Clearbricks::lib()->autoload(['kutrlLinkslist' => $d . 'lib.kutrl.lst.php']);
+Clearbricks::lib()->autoload([
+    'kUtRL'          => $d . 'class.kutrl.php',
+    'kutrlService'   => $d . 'lib.kutrl.srv.php',
+    'kutrlLog'       => $d . 'lib.kutrl.log.php',
+    'kutrlLinkslist' => $d . 'lib.kutrl.lst.php',
+]);
 
 # Services
 Clearbricks::lib()->autoload(['defaultKutrlService' => $d . 'services/class.default.service.php']);

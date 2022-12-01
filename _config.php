@@ -15,7 +15,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 # Check user perms
-dcPage::check(dcAuth::PERMISSION_ADMIN);
+dcPage::check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_ADMIN]));
 
 # Settings
 $s = dcCore::app()->blog->settings->kUtRL;

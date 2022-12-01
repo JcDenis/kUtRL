@@ -178,7 +178,7 @@ class widgetKutrl
 
         $rs = dcCore::app()->con->select(
             'SELECT kut_counter, kut_hash ' .
-            'FROM ' . dcCore::app()->prefix . 'kutrl ' .
+            'FROM ' . dcCore::app()->prefix . initkUtRL::KURL_TABLE_NAME . ' ' .
             "WHERE blog_id='" . dcCore::app()->con->escape(dcCore::app()->blog->id) . "' " .
             "AND kut_service = 'local' " .
             $type . $hide . $more . 'ORDER BY ' . $order . $limit

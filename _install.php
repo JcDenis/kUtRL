@@ -27,7 +27,7 @@ if (version_compare($old_version, $new_version, '>=')) {
 try {
     # Table
     $t = new dbStruct(dcCore::app()->con, dcCore::app()->prefix);
-    $t->kutrl
+    $t->{initkUtRL::KURL_TABLE_NAME}
         ->kut_id('bigint', 0, false)
         ->blog_id('varchar', 32, false)
         ->kut_service('varchar', 32, false, "'kUtRL'")
