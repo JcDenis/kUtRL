@@ -14,17 +14,16 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
 
-# Get new version
-$new_version = dcCore::app()->plugins->moduleInfo('kUtRL', 'version');
-$old_version = dcCore::app()->getVersion('kUtRL');
-
-# Compare versions
-if (version_compare($old_version, $new_version, '>=')) {
-    return null;
-}
-
-# Install or update
 try {
+    # Compare versions
+    if (version_compare(
+        dcCore::app()->getVersion('kUtRL'), 
+        dcCore::app()->plugins->moduleInfo('kUtRL', 'version'), 
+        '>='
+    )) {
+        return null;
+    }
+
     # Table
     $t = new dbStruct(dcCore::app()->con, dcCore::app()->prefix);
     $t->{initkUtRL::KURL_TABLE_NAME}
@@ -72,9 +71,6 @@ try {
     $s->put('kutrl_srv_yourls_base', '', 'string', 'URL of YOURLS service', false, true);
     $s->put('kutrl_srv_yourls_username', '', 'string', 'User name to YOURLS service', false, true);
     $s->put('kutrl_srv_yourls_password', '', 'string', 'User password to YOURLS service', false, true);
-
-    # Version
-    dcCore::app()->setVersion('kUtRL', $new_version);
 
     # Get dcMiniUrl records as this plugin do the same
     if (dcCore::app()->plugins->moduleExists('dcMiniUrl')) {
