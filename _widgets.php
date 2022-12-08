@@ -118,7 +118,7 @@ class widgetKutrl
 
         if (!$s->kutrl_active
          || !$s->kutrl_srv_local_public
-         || ($w->homeonly == 1 && !dcCore::app()->url->isHome(dcCore::app()->url->type)) || ($w->homeonly == 2 && dcCore::app()->url->isHome(dcCore::app()->url->type))
+         || !$w->checkHomeOnly(dcCore::app()->url->type)
          || dcCore::app()->url->type == 'kutrl') {
             return null;
         }
@@ -153,8 +153,7 @@ class widgetKutrl
     {
         $s = dcCore::app()->blog->settings->kUtRL;
 
-        if (!$s->kutrl_active
-         || ($w->homeonly == 1 && !dcCore::app()->url->isHome(dcCore::app()->url->type)) || ($w->homeonly == 2 && dcCore::app()->url->isHome(dcCore::app()->url->type))) {
+        if (!$s->kutrl_active || !$w->checkHomeOnly(dcCore::app()->url->type)) {
             return null;
         }
 
