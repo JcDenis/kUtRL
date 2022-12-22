@@ -22,7 +22,7 @@ class kutrlService
 
     public function __construct()
     {
-        $this->settings = dcCore::app()->blog->settings->kUtRL;
+        $this->settings = dcCore::app()->blog->settings->get(basename(dirname(__DIR__)));
         $this->log      = new kutrlLog();
         $this->error    = new dcError();
         //$this->error->setHTMLFormat('%s', "%s\n");
@@ -30,24 +30,24 @@ class kutrlService
         $this->init();
 
         // Force setting
-        $allow_external_url                  = $this->settings->kutrl_allow_external_url;
+        $allow_external_url                  = $this->settings->get('kutrl_allow_external_url');
         $this->config['$allow_external_url'] = null === $allow_external_url ?
             true : $allow_external_url;
 
         $this->config = array_merge(
             [
-                'id'   => 'undefined',
-                'name' => 'undefined',
-                'home' => '',
+                'id'                 => 'undefined',
+                'name'               => 'undefined',
+                'home'               => '',
 
                 'allow_external_url' => true,
                 'allow_custom_hash'  => false,
                 'allow_protocols'    => ['http://'],
 
-                'url_test'    => 'http://dotclear.jcdenis.com/go/kUtRL',
-                'url_api'     => '',
-                'url_base'    => '',
-                'url_min_len' => 0,
+                'url_test'           => 'http://dotclear.jcdenis.com/go/kUtRL',
+                'url_api'            => '',
+                'url_base'           => '',
+                'url_min_len'        => 0,
             ],
             $this->config
         );

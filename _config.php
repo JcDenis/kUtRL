@@ -18,7 +18,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 dcPage::check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_ADMIN]));
 
 # Settings
-$s = dcCore::app()->blog->settings->kUtRL;
+$s = dcCore::app()->blog->settings->get(basename(__DIR__));
 
 # Default values
 $img_green = '<img src="images/check-on.png" alt="ok" />';
@@ -32,15 +32,15 @@ foreach (kUtRL::getServices() as $service_id => $service) {
 $ext_services_combo = array_merge([__('Disabled') => ''], $services_combo);
 $lst_services_combo = array_merge(['-' => ''], $services_combo);
 
-$s_active              = (bool) $s->kutrl_active;
-$s_plugin_service      = (string) $s->kutrl_plugin_service;
-$s_admin_service       = (string) $s->kutrl_admin_service;
-$s_tpl_service         = (string) $s->kutrl_tpl_service;
-$s_wiki_service        = (string) $s->kutrl_wiki_service;
-$s_allow_external_url  = (bool) $s->kutrl_allow_external_url;
-$s_tpl_passive         = (bool) $s->kutrl_tpl_passive;
-$s_tpl_active          = (bool) $s->kutrl_tpl_active;
-$s_admin_entry_default = (string) $s->kutrl_admin_entry_default;
+$s_active              = (bool) $s->get('kutrl_active');
+$s_plugin_service      = (string) $s->get('kutrl_plugin_service');
+$s_admin_service       = (string) $s->get('kutrl_admin_service');
+$s_tpl_service         = (string) $s->get('kutrl_tpl_service');
+$s_wiki_service        = (string) $s->get('kutrl_wiki_service');
+$s_allow_external_url  = (bool) $s->get('kutrl_allow_external_url');
+$s_tpl_passive         = (bool) $s->get('kutrl_tpl_passive');
+$s_tpl_active          = (bool) $s->get('kutrl_tpl_active');
+$s_admin_entry_default = (string) $s->get('kutrl_admin_entry_default');
 
 if (!empty($_POST['save'])) {
     try {
@@ -79,7 +79,7 @@ if (!empty($_POST['save'])) {
 
         dcCore::app()->adminurl->redirect(
             'admin.plugins',
-            ['module' => 'kUtRL', 'conf' => 1, 'chk' => 1, 'redir' => dcCore::app()->admin->list->getRedir()]
+            ['module' => basename(__DIR__), 'conf' => 1, 'chk' => 1, 'redir' => dcCore::app()->admin->list->getRedir()]
         );
     } catch (Exception $e) {
         dcCore::app()->error->add($e->getMessage());

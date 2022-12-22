@@ -17,7 +17,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 try {
     # Compare versions
     if (!dcCore::app()->newVersion(
-        basename(__DIR__), 
+        basename(__DIR__),
         dcCore::app()->plugins->moduleInfo(basename(__DIR__), 'version')
     )) {
         return null;
@@ -46,8 +46,8 @@ try {
     $changes = $ti->synchronize($t);
 
     # Settings
-    dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
-    $s = dcCore::app()->blog->settings->__get(basename(__DIR__));
+    $s = dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
+
     $s->put('kutrl_active', false, 'boolean', 'Enabled kutrl plugin', false, true);
     $s->put('kutrl_plugin_service', 'default', 'string', 'Service to use to shorten links on third part plugins', false, true);
     $s->put('kutrl_admin_service', 'local', 'string', 'Service to use to shorten links on admin', false, true);

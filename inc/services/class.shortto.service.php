@@ -17,9 +17,9 @@ if (!defined('DC_RC_PATH')) {
 class shorttoKutrlService extends kutrlService
 {
     protected $config = [
-        'id'   => 'shortto',
-        'name' => 'short.to',
-        'home' => 'http://short.to',
+        'id'          => 'shortto',
+        'name'        => 'short.to',
+        'home'        => 'http://short.to',
 
         'url_api'     => 'http://short.to/s.txt',
         'url_base'    => 'http://short.to/',

@@ -17,9 +17,9 @@ if (!defined('DC_RC_PATH')) {
 class isgdKutrlService extends kutrlService
 {
     protected $config = [
-        'id'   => 'isgd',
-        'name' => 'is.gd',
-        'home' => 'http://is.gd/',
+        'id'             => 'isgd',
+        'name'           => 'is.gd',
+        'home'           => 'http://is.gd/',
 
         'url_api'        => 'http://is.gd/api.php',
         'url_base'       => 'http://is.gd/',

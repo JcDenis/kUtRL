@@ -17,9 +17,9 @@ if (!defined('DC_RC_PATH')) {
 class trimKutrlService extends kutrlService
 {
     protected $config = [
-        'id'   => 'trim',
-        'name' => 'tr.im',
-        'home' => 'http://tr.im',
+        'id'          => 'trim',
+        'name'        => 'tr.im',
+        'home'        => 'http://tr.im',
 
         'url_api'     => 'http://api.tr.im/v1/',
         'url_base'    => 'http://tr.im/',
@@ -35,10 +35,10 @@ class trimKutrlService extends kutrlService
 
     protected function init()
     {
-        $this->args['username'] = $this->settings->kutrl_srv_trim_username;
-        $this->args['password'] = $this->settings->kutrl_srv_trim_password;
+        $this->args['username'] = $this->settings->get('kutrl_srv_trim_username');
+        $this->args['password'] = $this->settings->get('kutrl_srv_trim_password');
 
-        $this->api_rate_time = (int) $this->settings->kutrl_srv_trim_apiratetime;
+        $this->api_rate_time = (int) $this->settings->get('kutrl_srv_trim_apiratetime');
     }
 
     public function saveSettings()
@@ -51,13 +51,13 @@ class trimKutrlService extends kutrlService
     {
         echo
         '<p><label class="classic">' . __('Login:') . '<br />' .
-        form::field(['kutrl_srv_trim_username'], 50, 255, $this->settings->kutrl_srv_trim_username) .
+        form::field(['kutrl_srv_trim_username'], 50, 255, $this->settings->get('kutrl_srv_trim_username')) .
         '</label></p>' .
         '<p class="form-note">' .
         __('This is your login to sign up to tr.im.') .
         '</p>' .
         '<p><label class="classic">' . __('Password:') . '<br />' .
-        form::field(['kutrl_srv_trim_password'], 50, 255, $this->settings->kutrl_srv_trim_password) .
+        form::field(['kutrl_srv_trim_password'], 50, 255, $this->settings->get('kutrl_srv_trim_password')) .
         '</label></p>' .
         '<p class="form-note">' .
         __('This is your password to sign up to tr.im.') .

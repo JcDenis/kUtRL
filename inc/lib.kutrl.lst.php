@@ -105,16 +105,16 @@ class kutrlLinkslist
         }
 
         $cols = [
-            'check' => '<td class="nowrap">' .
-                    form::checkbox(['entries[]'], $this->rs->kut_id, ['checked' => isset($entries[$this->rs->kut_id])]) .
+            'check'       => '<td class="nowrap">' .
+                    form::checkbox(['entries[]'], $this->rs->kut_id, ['checked' => $checked]) .
                 '</td>',
-            'kut_url' => '<td class="maximal" scope="row">' .
+            'kut_url'     => '<td class="maximal" scope="row">' .
                 '<a href="' . $this->rs->kut_url . '">' . $this->rs->kut_url . '</a>' .
                 '</td>',
-            'kut_hash' => '<td class="nowrap">' .
+            'kut_hash'    => '<td class="nowrap">' .
                     $hash .
                 '</td>',
-            'kut_dt' => '<td class="nowrap count">' .
+            'kut_dt'      => '<td class="nowrap count">' .
                     dt::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, dcCore::app()->auth->getInfo('user_tz')) .
                 '</td>',
             'kut_service' => '<td class="nowrap">' .

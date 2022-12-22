@@ -175,7 +175,7 @@ if ($part == 'link') {
     ]) .
     dcPage::notices();
 
-    if (null === $kut) {
+    if (!isset($kut) || null === $kut) {
         echo '<p>' . __('You must set an admin service.') . '</p>';
     } else {
         echo '

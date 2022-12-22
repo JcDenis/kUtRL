@@ -17,13 +17,13 @@ if (!defined('DC_RC_PATH')) {
 class bitlyKutrlService extends kutrlService
 {
     protected $config = [
-        'id'   => 'bitly',
-        'name' => 'bit.ly',
-        'home' => 'https://bit.ly',
+        'id'              => 'bitly',
+        'name'            => 'bit.ly',
+        'home'            => 'https://bit.ly',
 
-        'url_api'     => 'https://api-ssl.bitly.com/v4/',
-        'url_base'    => 'https://bit.ly/',
-        'url_min_len' => 25,
+        'url_api'         => 'https://api-ssl.bitly.com/v4/',
+        'url_base'        => 'https://bit.ly/',
+        'url_min_len'     => 25,
 
         'allow_protocols' => ['http://', 'https://'],
     ];

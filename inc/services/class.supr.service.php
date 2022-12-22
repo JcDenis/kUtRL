@@ -17,9 +17,9 @@ if (!defined('DC_RC_PATH')) {
 class suprKutrlService extends kutrlService
 {
     protected $config = [
-        'id'   => 'supr',
-        'name' => 'su.pr StumbleUpon',
-        'home' => 'http://su.pr',
+        'id'          => 'supr',
+        'name'        => 'su.pr StumbleUpon',
+        'home'        => 'http://su.pr',
 
         'url_api'     => 'http://su.pr/api/',
         'url_base'    => 'http://su.pr/',
@@ -35,8 +35,8 @@ class suprKutrlService extends kutrlService
 
     protected function init()
     {
-        $this->args['login']  = $this->settings->kutrl_srv_supr_login;
-        $this->args['apiKey'] = $this->settings->kutrl_srv_supr_apikey;
+        $this->args['login']  = $this->settings->get('kutrl_srv_supr_login');
+        $this->args['apiKey'] = $this->settings->get('kutrl_srv_supr_apikey');
     }
 
     public function saveSettings()
@@ -49,13 +49,13 @@ class suprKutrlService extends kutrlService
     {
         echo
         '<p><label class="classic">' . __('Login:') . '<br />' .
-        form::field(['kutrl_srv_supr_login'], 50, 255, $this->settings->kutrl_srv_supr_login) .
+        form::field(['kutrl_srv_supr_login'], 50, 255, $this->settings->get('kutrl_srv_supr_login')) .
         '</label></p>' .
         '<p class="form-note">' .
         sprintf(__('This is your login to sign up to %s'), $this->config['name']) .
         '</p>' .
         '<p><label class="classic">' . __('API Key:') . '<br />' .
-        form::field(['kutrl_srv_supr_apikey'], 50, 255, $this->settings->kutrl_srv_supr_apikey) .
+        form::field(['kutrl_srv_supr_apikey'], 50, 255, $this->settings->get('kutrl_srv_supr_apikey')) .
         '</label></p>' .
         '<p class="form-note">' .
         sprintf(__('This is your personnal %s API key. You can find it on your account page.'), $this->config['name']) .

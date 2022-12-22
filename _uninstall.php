@@ -20,7 +20,7 @@ $this->addUserAction(
     /* action */
     'delete_all',
     /* ns */
-    'kUtRL',
+    basename(__DIR__),
     /* description */
     __('delete all settings')
 );
@@ -42,7 +42,7 @@ $this->addUserAction(
     /* action */
     'delete',
     /* ns */
-    'kUtRL',
+    basename(__DIR__),
     /* description */
     __('delete plugin files')
 );
@@ -53,7 +53,7 @@ $this->addUserAction(
     /* action */
     'delete',
     /* ns */
-    'kUtRL',
+    basename(__DIR__),
     /* description */
     __('delete the version number')
 );
@@ -67,7 +67,7 @@ $this->addDirectAction(
     /* action */
     'delete_all',
     /* ns */
-    'kUtRL',
+    basename(__DIR__),
     /* description */
     sprintf(__('delete all %s settings'), 'kUtRL')
 );
@@ -78,7 +78,7 @@ $this->addDirectAction(
     /* action */
     'delete',
     /* ns */
-    'kUtRL',
+    basename(__DIR__),
     /* description */
     sprintf(__('delete %s version number'), 'kUtRL')
 );
@@ -89,7 +89,7 @@ $this->addDirectAction(
     /* action */
     'delete',
     /* ns */
-    'kUtRL',
+    basename(__DIR__),
     /* description */
     sprintf(__('delete %s plugin files'), 'kUtRL')
 );

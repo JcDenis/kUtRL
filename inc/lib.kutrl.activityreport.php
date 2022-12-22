@@ -16,24 +16,16 @@ if (!defined('DC_RC_PATH')) {
     return null;
 }
 
-dcCore::app()->activityReport->addGroup('kutrl', __('Plugin kUtRL'));
+dcCore::app()->__get('activityReport')->addGroup('kutrl', __('Plugin kUtRL'));
 
 # from BEHAVIOR kutrlAfterCreateShortUrl in kUtRL/inc/lib.kutrl.srv.php
-dcCore::app()->activityReport->addAction(
+dcCore::app()->__get('activityReport')->addAction(
     'kutrl',
     'create',
     __('Short link creation'),
     __('New short link of type "%s" and hash "%s" was created.'),
     'kutrlAfterCreateShortUrl',
-    ['kutrlActivityReportBehaviors', 'kutrlCreate']
-);
-
-class kutrlActivityReportBehaviors
-{
-    public static function kutrlCreate($rs)
-    {
-        $logs = [$rs->type,$rs->hash];
-
-        dcCore::app()->activityReport->addLog('kutrl', 'create', $logs);
+    function ($rs) {
+        dcCore::app()->__get('activityReport')->addLog('kutrl', 'create', [$rs->type, $rs->hash]);
     }
-}
+);

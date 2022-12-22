@@ -24,16 +24,16 @@ class defaultKutrlService extends kutrlService
     protected function init()
     {
         $this->config = [
-            'id'   => 'default',
-            'name' => 'Default',
-            'home' => '',
+            'id'          => 'default',
+            'name'        => 'Default',
+            'home'        => '',
 
             'url_api'     => SHORTEN_SERVICE_API,
             'url_base'    => SHORTEN_SERVICE_BASE,
             'url_min_len' => strlen(SHORTEN_SERVICE_BASE) + 2,
 
-            'url_param'  => SHORTEN_SERVICE_PARAM,
-            'url_encode' => SHORTEN_SERVICE_ENCODE,
+            'url_param'   => SHORTEN_SERVICE_PARAM,
+            'url_encode'  => SHORTEN_SERVICE_ENCODE,
         ];
     }
 

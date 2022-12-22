@@ -114,10 +114,10 @@ class widgetKutrl
 
     public static function publicShorten($w)
     {
-        $s = dcCore::app()->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->get(basename(__DIR__));
 
-        if (!$s->kutrl_active
-         || !$s->kutrl_srv_local_public
+        if (!$s->get('kutrl_active')
+         || !$s->get('kutrl_srv_local_public')
          || !$w->checkHomeOnly(dcCore::app()->url->type)
          || dcCore::app()->url->type == 'kutrl') {
             return null;
@@ -151,9 +151,9 @@ class widgetKutrl
 
     public static function publicRank($w)
     {
-        $s = dcCore::app()->blog->settings->kUtRL;
+        $s = dcCore::app()->blog->settings->get(basename(__DIR__));
 
-        if (!$s->kutrl_active || !$w->checkHomeOnly(dcCore::app()->url->type)) {
+        if (!$s->get('kutrl_active') || !$w->checkHomeOnly(dcCore::app()->url->type)) {
             return null;
         }
 

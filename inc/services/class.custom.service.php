@@ -23,7 +23,7 @@ class customKutrlService extends kutrlService
 
     protected function init()
     {
-        $config = unserialize(base64_decode((string) $this->settings->kutrl_srv_custom));
+        $config = unserialize(base64_decode((string) $this->settings->get('kutrl_srv_custom')));
         if (!is_array($config)) {
             $config = [];
         }
@@ -55,7 +55,7 @@ class customKutrlService extends kutrlService
             'url_param'  => '',
             'url_encode' => true,
         ];
-        $config = unserialize(base64_decode((string) $this->settings->kutrl_srv_custom));
+        $config = unserialize(base64_decode((string) $this->settings->get('kutrl_srv_custom')));
         if (!is_array($config)) {
             $config = [];
         }

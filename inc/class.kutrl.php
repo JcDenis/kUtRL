@@ -63,7 +63,7 @@ class kUtRL
             if (!in_array($place, ['tpl', 'wiki', 'admin', 'plugin'])) {
                 return null;
             }
-            $id = dcCore::app()->blog->settings->kUtRL->get('kutrl_' . $place . '_service');
+            $id = dcCore::app()->blog->settings->get(basename(dirname(__DIR__)))->get('kutrl_' . $place . '_service');
             if (!empty($id)) {
                 return self::quickService($id);
             }
