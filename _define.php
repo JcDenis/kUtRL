@@ -18,7 +18,7 @@ $this->registerModule(
     'Links shortener',
     'Use, create and serve short url on your blog',
     'Jean-Christian Denis and contributors',
-    '2022.11.20',
+    '2022.12.22',
     [
         'requires'    => [['core', '2.24']],
         'permissions' => dcCore::app()->auth->makePermissions([
@@ -26,9 +26,9 @@ $this->registerModule(
             dcAuth::PERMISSION_CONTENT_ADMIN,
             dcAuth::PERMISSION_ADMIN,
         ]),
-        'type'       => 'plugin',
-        'support'    => 'https://github.com/JcDenis/kUtRL',
-        'details'    => 'http://plugins.dotaddict.org/dc2/details/kUtRL',
-        'repository' => 'https://raw.githubusercontent.com/JcDenis/kUtRL/master/dcstore.xml',
+        'type'        => 'plugin',
+        'support'     => 'https://github.com/JcDenis/' . basename(__DIR__),
+        'details'     => 'http://plugins.dotaddict.org/dc2/details/' . basename(__DIR__),
+        'repository'  => 'https://raw.githubusercontent.com/JcDenis/' . basename(__DIR__) . '/master/dcstore.xml',
     ]
 );

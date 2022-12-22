@@ -4,6 +4,15 @@ xxx.xx.xx
 - [ ] Add public page of the list of know urls and in/visible status
 - [ ] Add passworded links
 
+2022.12.22
+- use SVG icon
+- use dc methods for widgets
+- use constant for table name
+- use abstract plugin id and settings namespace
+- change settings id to shortest ones
+- fix install
+- fix permissions
+
 2022.11.20
 - fix compatibility with Dotclear 2.24 (required)
 
