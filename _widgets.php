@@ -116,8 +116,8 @@ class widgetKutrl
     {
         $s = dcCore::app()->blog->settings->get(basename(__DIR__));
 
-        if (!$s->get('kutrl_active')
-         || !$s->get('kutrl_srv_local_public')
+        if (!$s->get('active')
+         || !$s->get('srv_local_public')
          || !$w->checkHomeOnly(dcCore::app()->url->type)
          || dcCore::app()->url->type == 'kutrl') {
             return null;
@@ -153,7 +153,7 @@ class widgetKutrl
     {
         $s = dcCore::app()->blog->settings->get(basename(__DIR__));
 
-        if (!$s->get('kutrl_active') || !$w->checkHomeOnly(dcCore::app()->url->type)) {
+        if (!$s->get('active') || !$w->checkHomeOnly(dcCore::app()->url->type)) {
             return null;
         }
 

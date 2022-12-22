@@ -23,7 +23,7 @@ class kutrlWiki
         # Do nothing on comment preview and post preview
         if (!empty($_POST['preview'])
             || isset(dcCore::app()->ctx) && dcCore::app()->ctx->preview
-            || !dcCore::app()->blog->settings->get(basename(dirname(__DIR__)))->get('kutrl_active')
+            || !dcCore::app()->blog->settings->get(basename(dirname(__DIR__)))->get('active')
         ) {
             return null;
         }
@@ -40,7 +40,7 @@ class kutrlWiki
 
     public static function transform($url, $content)
     {
-        if (!dcCore::app()->blog->settings->get(basename(dirname(__DIR__)))->get('kutrl_active')) {
+        if (!dcCore::app()->blog->settings->get(basename(dirname(__DIR__)))->get('active')) {
             return null;
         }
         if (null === ($kut = kUtRL::quickPlace('wiki'))) {

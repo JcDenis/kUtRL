@@ -35,27 +35,27 @@ class suprKutrlService extends kutrlService
 
     protected function init()
     {
-        $this->args['login']  = $this->settings->get('kutrl_srv_supr_login');
-        $this->args['apiKey'] = $this->settings->get('kutrl_srv_supr_apikey');
+        $this->args['login']  = $this->settings->get('srv_supr_login');
+        $this->args['apiKey'] = $this->settings->get('srv_supr_apikey');
     }
 
     public function saveSettings()
     {
-        $this->settings->put('kutrl_srv_supr_login', $_POST['kutrl_srv_supr_login']);
-        $this->settings->put('kutrl_srv_supr_apikey', $_POST['kutrl_srv_supr_apikey']);
+        $this->settings->put('srv_supr_login', $_POST['kutrl_srv_supr_login']);
+        $this->settings->put('srv_supr_apikey', $_POST['kutrl_srv_supr_apikey']);
     }
 
     public function settingsForm()
     {
         echo
         '<p><label class="classic">' . __('Login:') . '<br />' .
-        form::field(['kutrl_srv_supr_login'], 50, 255, $this->settings->get('kutrl_srv_supr_login')) .
+        form::field(['kutrl_srv_supr_login'], 50, 255, $this->settings->get('srv_supr_login')) .
         '</label></p>' .
         '<p class="form-note">' .
         sprintf(__('This is your login to sign up to %s'), $this->config['name']) .
         '</p>' .
         '<p><label class="classic">' . __('API Key:') . '<br />' .
-        form::field(['kutrl_srv_supr_apikey'], 50, 255, $this->settings->get('kutrl_srv_supr_apikey')) .
+        form::field(['kutrl_srv_supr_apikey'], 50, 255, $this->settings->get('srv_supr_apikey')) .
         '</label></p>' .
         '<p class="form-note">' .
         sprintf(__('This is your personnal %s API key. You can find it on your account page.'), $this->config['name']) .

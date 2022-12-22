@@ -30,7 +30,7 @@ class kutrlService
         $this->init();
 
         // Force setting
-        $allow_external_url                  = $this->settings->get('kutrl_allow_external_url');
+        $allow_external_url                  = $this->settings->get('allow_external_url');
         $this->config['$allow_external_url'] = null === $allow_external_url ?
             true : $allow_external_url;
 
@@ -44,7 +44,7 @@ class kutrlService
                 'allow_custom_hash'  => false,
                 'allow_protocols'    => ['http://'],
 
-                'url_test'           => 'http://dotclear.jcdenis.com/go/kUtRL',
+                'url_test'           => 'http://github.com/JcDenis/kUtRL/releases',
                 'url_api'            => '',
                 'url_base'           => '',
                 'url_min_len'        => 0,
@@ -218,7 +218,7 @@ class kutrlService
     {
         $url    = (string) $server;
         $client = netHttp::initClient($url, $url);
-        $client->setUserAgent('kUtRL - http://kutrl.fr');
+        $client->setUserAgent('kUtRL - https://github.com/JcDenis/kUtRL');
         $client->setPersistReferers(false);
 
         if (is_array($headers) && !empty($headers)) {

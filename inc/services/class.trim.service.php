@@ -35,29 +35,29 @@ class trimKutrlService extends kutrlService
 
     protected function init()
     {
-        $this->args['username'] = $this->settings->get('kutrl_srv_trim_username');
-        $this->args['password'] = $this->settings->get('kutrl_srv_trim_password');
+        $this->args['username'] = $this->settings->get('srv_trim_username');
+        $this->args['password'] = $this->settings->get('srv_trim_password');
 
-        $this->api_rate_time = (int) $this->settings->get('kutrl_srv_trim_apiratetime');
+        $this->api_rate_time = (int) $this->settings->get('srv_trim_apiratetime');
     }
 
     public function saveSettings()
     {
-        $this->settings->put('kutrl_srv_trim_username', $_POST['kutrl_srv_trim_username']);
-        $this->settings->put('kutrl_srv_trim_password', $_POST['kutrl_srv_trim_password']);
+        $this->settings->put('srv_trim_username', $_POST['kutrl_srv_trim_username']);
+        $this->settings->put('srv_trim_password', $_POST['kutrl_srv_trim_password']);
     }
 
     public function settingsForm()
     {
         echo
         '<p><label class="classic">' . __('Login:') . '<br />' .
-        form::field(['kutrl_srv_trim_username'], 50, 255, $this->settings->get('kutrl_srv_trim_username')) .
+        form::field(['kutrl_srv_trim_username'], 50, 255, $this->settings->get('srv_trim_username')) .
         '</label></p>' .
         '<p class="form-note">' .
         __('This is your login to sign up to tr.im.') .
         '</p>' .
         '<p><label class="classic">' . __('Password:') . '<br />' .
-        form::field(['kutrl_srv_trim_password'], 50, 255, $this->settings->get('kutrl_srv_trim_password')) .
+        form::field(['kutrl_srv_trim_password'], 50, 255, $this->settings->get('srv_trim_password')) .
         '</label></p>' .
         '<p class="form-note">' .
         __('This is your password to sign up to tr.im.') .
@@ -106,7 +106,7 @@ class trimKutrlService extends kutrlService
 
         # API rate limit
         if ($r['code'] == 425) {
-            $this->settings->put('kutrl_srv_trim_apiratetime', time());
+            $this->settings->put('srv_trim_apiratetime', time());
 
             $this->error->add(__('Service rate limit exceeded.'));
 

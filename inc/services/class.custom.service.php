@@ -23,14 +23,14 @@ class customKutrlService extends kutrlService
 
     protected function init()
     {
-        $config = unserialize(base64_decode((string) $this->settings->get('kutrl_srv_custom')));
+        $config = json_decode((string) $this->settings->get('srv_custom'), true);
         if (!is_array($config)) {
             $config = [];
         }
 
-        $this->config['url_api']    = !empty($config['url_api']) ? $config['url_api'] : '';
-        $this->config['url_base']   = !empty($config['url_base']) ? $config['url_base'] : '';
-        $this->config['url_param']  = !empty($config['url_param']) ? $config['url_param'] : '';
+        $this->config['url_api']    = $config['url_api']   ?? '';
+        $this->config['url_base']   = $config['url_base']  ?? '';
+        $this->config['url_param']  = $config['url_param'] ?? '';
         $this->config['url_encode'] = !empty($config['url_api']);
 
         $this->config['url_min_length'] = strlen($this->url_base) + 2;
@@ -44,7 +44,7 @@ class customKutrlService extends kutrlService
             'url_param'  => $_POST['kutrl_srv_custom_url_param'],
             'url_encode' => !empty($_POST['kutrl_srv_custom_url_encode']),
         ];
-        $this->settings->put('kutrl_srv_custom', base64_encode(serialize($config)));
+        $this->settings->put('srv_custom', json_encode($config));
     }
 
     public function settingsForm()
@@ -55,7 +55,7 @@ class customKutrlService extends kutrlService
             'url_param'  => '',
             'url_encode' => true,
         ];
-        $config = unserialize(base64_decode((string) $this->settings->get('kutrl_srv_custom')));
+        $config = json_decode((string) $this->settings->get('srv_custom'), true);
         if (!is_array($config)) {
             $config = [];
         }

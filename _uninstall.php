@@ -69,7 +69,7 @@ $this->addDirectAction(
     /* ns */
     basename(__DIR__),
     /* description */
-    sprintf(__('delete all %s settings'), 'kUtRL')
+    sprintf(__('delete all %s settings'), basename(__DIR__))
 );
 
 $this->addDirectAction(
@@ -80,7 +80,7 @@ $this->addDirectAction(
     /* ns */
     basename(__DIR__),
     /* description */
-    sprintf(__('delete %s version number'), 'kUtRL')
+    sprintf(__('delete %s version number'), basename(__DIR__))
 );
 
 $this->addDirectAction(
@@ -91,5 +91,5 @@ $this->addDirectAction(
     /* ns */
     basename(__DIR__),
     /* description */
-    sprintf(__('delete %s plugin files'), 'kUtRL')
+    sprintf(__('delete %s plugin files'), basename(__DIR__))
 );

@@ -51,7 +51,7 @@ class urlKutrl extends dcUrlHandlers
     public static function redirectUrl($args)
     {
         # Not active, go to default 404
-        if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_active')) {
+        if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('active')) {
             self::p404();
 
             return null;
@@ -112,13 +112,13 @@ class urlKutrl extends dcUrlHandlers
         $s = dcCore::app()->blog->settings->get(basename(__DIR__));
 
         # Not active, go to default 404
-        if (!$s->get('kutrl_active')) {
+        if (!$s->get('active')) {
             self::p404();
 
             return null;
         }
         # Public page not active, go to kutrl 404
-        if (!$s->get('kutrl_srv_local_public')) {
+        if (!$s->get('srv_local_public')) {
             self::kutrl404();
 
             return null;
@@ -218,7 +218,7 @@ class urlKutrl extends dcUrlHandlers
 
     protected static function kutrl404()
     {
-        if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_srv_local_404_active')) {
+        if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('srv_local_404_active')) {
             self::p404();
 
             return null;
@@ -284,8 +284,8 @@ class pubKutrl
         # URL shortening is disabled by tag attribute
         if (true !== dcCore::app()->ctx->__get('disable_kutrl')) {
             # kUtRL is not activated
-            if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_active')
-                || !dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_tpl_active')
+            if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('active')
+                || !dcCore::app()->blog->settings->get(basename(__DIR__))->get('tpl_active')
             ) {
                 return null;
             }
@@ -314,9 +314,9 @@ class pubKutrl
         $s = dcCore::app()->blog->settings->get(basename(__DIR__));
 
         # Passive : all kutrl tag return long url
-        dcCore::app()->ctx->kutrl_passive = (bool) $s->get('kutrl_tpl_passive');
+        dcCore::app()->ctx->kutrl_passive = (bool) $s->get('tpl_passive');
 
-        if (!$s->get('kutrl_active') || !$s->get('kutrl_tpl_service')) {
+        if (!$s->get('active') || !$s->get('tpl_service')) {
             return null;
         }
         if (null === ($kut = kUtRL::quickPlace('tpl'))) {
@@ -327,7 +327,7 @@ class pubKutrl
 
     public static function publicHeadContent($_)
     {
-        $css = dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_srv_local_css');
+        $css = dcCore::app()->blog->settings->get(basename(__DIR__))->get('srv_local_css');
         if ($css) {
             echo
             "\n<!-- CSS for kUtRL --> \n" .
@@ -353,7 +353,7 @@ class tplKutrl
 
         if (isset($attr['is_active'])) {
             $sign = (bool) $attr['is_active'] ? '' : '!';
-            $if[] = $sign . 'dcCore::app()->blog->settings->get("kUtRL")->get("kutrl_srv_local_public")';
+            $if[] = $sign . 'dcCore::app()->blog->settings->get("' . basename(__DIR__) . '")->get("srv_local_public")';
         }
         if (empty($if)) {
             return $content;

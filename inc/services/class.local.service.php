@@ -26,7 +26,7 @@ class localKutrlService extends kutrlService
 
     protected function init()
     {
-        $protocols                       = (string) $this->settings->get('kutrl_srv_local_protocols');
+        $protocols                       = (string) $this->settings->get('srv_local_protocols');
         $this->config['allow_protocols'] = empty($protocols) ? [] : explode(',', $protocols);
 
         $this->config['url_base']    = dcCore::app()->blog->url . dcCore::app()->url->getBase('kutrl') . '/';
@@ -35,10 +35,10 @@ class localKutrlService extends kutrlService
 
     public function saveSettings()
     {
-        $this->settings->put('kutrl_srv_local_protocols', $_POST['kutrl_srv_local_protocols'], 'string');
-        $this->settings->put('kutrl_srv_local_public', isset($_POST['kutrl_srv_local_public']), 'boolean');
-        $this->settings->put('kutrl_srv_local_css', $_POST['kutrl_srv_local_css'], 'string');
-        $this->settings->put('kutrl_srv_local_404_active', isset($_POST['kutrl_srv_local_404_active']), 'boolean');
+        $this->settings->put('srv_local_protocols', $_POST['kutrl_srv_local_protocols'], 'string');
+        $this->settings->put('srv_local_public', isset($_POST['kutrl_srv_local_public']), 'boolean');
+        $this->settings->put('srv_local_css', $_POST['kutrl_srv_local_css'], 'string');
+        $this->settings->put('srv_local_404_active', isset($_POST['kutrl_srv_local_404_active']), 'boolean');
     }
 
     public function settingsForm()
@@ -49,7 +49,7 @@ class localKutrlService extends kutrlService
         '<p><strong>' . __('Settings:') . '</strong></p>' .
         '<p><label class="classic">' .
         __('Allowed protocols:') . '<br />' .
-        form::field(['kutrl_srv_local_protocols'], 50, 255, $this->settings->get('kutrl_srv_local_protocols')) .
+        form::field(['kutrl_srv_local_protocols'], 50, 255, $this->settings->get('srv_local_protocols')) .
         '</label></p>' .
 
         '<p class="form-note">' .
@@ -57,17 +57,17 @@ class localKutrlService extends kutrlService
         '</p>' .
 
         '<p><label class="classic">' .
-        form::checkbox(['kutrl_srv_local_public'], '1', $this->settings->get('kutrl_srv_local_public')) . ' ' .
+        form::checkbox(['kutrl_srv_local_public'], '1', $this->settings->get('srv_local_public')) . ' ' .
         __('Enable public page for visitors to shorten links') .
         '</label></p>' .
 
         '<p class="area" id="style-area"><label for="_style">' . __('CSS:') . '</label>' .
-        form::textarea('kutrl_srv_local_css', 50, 3, html::escapeHTML($this->settings->get('kutrl_srv_local_css')), '', '2') .
+        form::textarea('kutrl_srv_local_css', 50, 3, html::escapeHTML($this->settings->get('srv_local_css')), '', '2') .
         '</p>' .
         '<p class="form-note">' . __('You can add here special cascading style sheet. Body of page has class "dc-kutrl" and widgets have class "shortenkutrlwidget" and "rankkutrlwidget".') . '</p>' .
 
         '<p><label class="classic">' .
-        form::checkbox(['kutrl_srv_local_404_active'], '1', $this->settings->get('kutrl_srv_local_404_active')) . ' ' .
+        form::checkbox(['kutrl_srv_local_404_active'], '1', $this->settings->get('srv_local_404_active')) . ' ' .
         __('Enable special 404 error public page for unknow urls') .
         '</label></p>' .
         '<p class="form-note">' . __('If this is not activated, the default 404 page of the theme will be display.') . '</p>' .

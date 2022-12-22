@@ -34,19 +34,19 @@ class bitlyKutrlService extends kutrlService
 
     protected function init()
     {
-        $this->args['apiKey'] = $this->settings->kutrl_srv_bitly_apikey;
+        $this->args['apiKey'] = $this->settings->get('srv_bitly_apikey');
     }
 
     public function saveSettings()
     {
-        $this->settings->put('kutrl_srv_bitly_apikey', $_POST['kutrl_srv_bitly_apikey']);
+        $this->settings->put('srv_bitly_apikey', $_POST['kutrl_srv_bitly_apikey']);
     }
 
     public function settingsForm()
     {
         echo
         '<p><label class="classic">' . __('API Key:') . '<br />' .
-        form::field(['kutrl_srv_bitly_apikey'], 50, 255, $this->settings->kutrl_srv_bitly_apikey) .
+        form::field(['kutrl_srv_bitly_apikey'], 50, 255, $this->settings->get('srv_bitly_apikey')) .
         '</label></p>' .
         '<p class="form-note">' .
         sprintf(__('This is your personnal %s API key. You can find it on your account page.'), $this->config['name']) .

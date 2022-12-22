@@ -24,7 +24,7 @@ class bilbolinksKutrlService extends kutrlService
 
     protected function init()
     {
-        $base = (string) $this->settings->get('kutrl_srv_bilbolinks_base');
+        $base = (string) $this->settings->get('srv_bilbolinks_base');
         if (!empty($base) && substr($base, -1, 1) != '/') {
             $base .= '/';
         }
@@ -42,7 +42,7 @@ class bilbolinksKutrlService extends kutrlService
                 $base .= '/';
             }
         }
-        $this->settings->put('kutrl_srv_bilbolinks_base', $base);
+        $this->settings->put('srv_bilbolinks_base', $base);
     }
 
     public function settingsForm()
@@ -50,7 +50,7 @@ class bilbolinksKutrlService extends kutrlService
         echo
         '<p><label class="classic">' .
         __('Url of the service:') . '<br />' .
-        form::field(['kutrl_srv_bilbolinks_base'], 50, 255, $this->settings->get('kutrl_srv_bilbolinks_base')) .
+        form::field(['kutrl_srv_bilbolinks_base'], 50, 255, $this->settings->get('srv_bilbolinks_base')) .
         '</label></p>' .
         '<p class="form-note">' .
         __('This is the root URL of the "bilbolinks" service you want to use. Ex: "http://tux-pla.net/".') .

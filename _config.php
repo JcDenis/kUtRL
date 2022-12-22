@@ -32,15 +32,15 @@ foreach (kUtRL::getServices() as $service_id => $service) {
 $ext_services_combo = array_merge([__('Disabled') => ''], $services_combo);
 $lst_services_combo = array_merge(['-' => ''], $services_combo);
 
-$s_active              = (bool) $s->get('kutrl_active');
-$s_plugin_service      = (string) $s->get('kutrl_plugin_service');
-$s_admin_service       = (string) $s->get('kutrl_admin_service');
-$s_tpl_service         = (string) $s->get('kutrl_tpl_service');
-$s_wiki_service        = (string) $s->get('kutrl_wiki_service');
-$s_allow_external_url  = (bool) $s->get('kutrl_allow_external_url');
-$s_tpl_passive         = (bool) $s->get('kutrl_tpl_passive');
-$s_tpl_active          = (bool) $s->get('kutrl_tpl_active');
-$s_admin_entry_default = (string) $s->get('kutrl_admin_entry_default');
+$s_active              = (bool) $s->get('active');
+$s_plugin_service      = (string) $s->get('plugin_service');
+$s_admin_service       = (string) $s->get('admin_service');
+$s_tpl_service         = (string) $s->get('tpl_service');
+$s_wiki_service        = (string) $s->get('wiki_service');
+$s_allow_external_url  = (bool) $s->get('allow_external_url');
+$s_tpl_passive         = (bool) $s->get('tpl_passive');
+$s_tpl_active          = (bool) $s->get('tpl_active');
+$s_admin_entry_default = (string) $s->get('admin_entry_default');
 
 if (!empty($_POST['save'])) {
     try {
@@ -55,15 +55,15 @@ if (!empty($_POST['save'])) {
         $s_tpl_active          = !empty($_POST['s_tpl_active']);
         $s_admin_entry_default = !empty($_POST['s_admin_entry_default']);
 
-        $s->put('kutrl_active', $s_active);
-        $s->put('kutrl_plugin_service', $s_plugin_service);
-        $s->put('kutrl_admin_service', $s_admin_service);
-        $s->put('kutrl_tpl_service', $s_tpl_service);
-        $s->put('kutrl_wiki_service', $s_wiki_service);
-        $s->put('kutrl_allow_external_url', $s_allow_external_url);
-        $s->put('kutrl_tpl_passive', $s_tpl_passive);
-        $s->put('kutrl_tpl_active', $s_tpl_active);
-        $s->put('kutrl_admin_entry_default', $s_admin_entry_default);
+        $s->put('active', $s_active);
+        $s->put('plugin_service', $s_plugin_service);
+        $s->put('admin_service', $s_admin_service);
+        $s->put('tpl_service', $s_tpl_service);
+        $s->put('wiki_service', $s_wiki_service);
+        $s->put('allow_external_url', $s_allow_external_url);
+        $s->put('tpl_passive', $s_tpl_passive);
+        $s->put('tpl_active', $s_tpl_active);
+        $s->put('admin_entry_default', $s_admin_entry_default);
 
         # services
         foreach (kUtRL::getServices() as $service_id => $service) {

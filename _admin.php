@@ -28,7 +28,7 @@ dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
 );
 
 # Admin behaviors
-if (dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_active')) {
+if (dcCore::app()->blog->settings->get(basename(__DIR__))->get('active')) {
     dcCore::app()->addBehavior('adminDashboardFavoritesV2', ['adminKutrl', 'antispamDashboardFavoritesV2']);
     dcCore::app()->addBehavior('adminColumnsListsV2', ['adminKutrl', 'adminColumnsListsV2']);
     dcCore::app()->addBehavior('adminFiltersListsV2', ['adminKutrl', 'adminFiltersListsV2']);
@@ -106,7 +106,7 @@ class adminKutrl
     {
         $s = dcCore::app()->blog->settings->get(basename(__DIR__));
 
-        if (!$s->get('kutrl_active') || !$s->get('kutrl_admin_service')) {
+        if (!$s->get('active') || !$s->get('active')) {
             return null;
         }
         if (null === ($kut = kUtRL::quickPlace('admin'))) {
@@ -125,7 +125,7 @@ class adminKutrl
         form::hidden(['kutrl_old_post_url'], $post_url);
 
         if (!$rs) {
-            if (empty($_POST['kutrl_old_post_url']) && $s->get('kutrl_admin_entry_default')) {
+            if (empty($_POST['kutrl_old_post_url']) && $s->get('admin_entry_default')) {
                 $chk = true;
             } else {
                 $chk = !empty($_POST['kutrl_create']);
@@ -164,7 +164,7 @@ class adminKutrl
     public static function adminAfterPostUpdate($cur, $post_id)
     {
         # Create: see adminAfterPostCreate
-        if (!empty($_POST['kutrl_create']) || !dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_active')) {
+        if (!empty($_POST['kutrl_create']) || !dcCore::app()->blog->settings->get(basename(__DIR__))->get('active')) {
             return null;
         }
         if (null === ($kut = kUtRL::quickPlace('admin'))) {
@@ -210,7 +210,7 @@ class adminKutrl
 
     public static function adminAfterPostCreate($cur, $post_id)
     {
-        if (empty($_POST['kutrl_create']) || !dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_active')) {
+        if (empty($_POST['kutrl_create']) || !dcCore::app()->blog->settings->get(basename(__DIR__))->get('active')) {
             return null;
         }
 
@@ -238,7 +238,7 @@ class adminKutrl
 
     public static function adminBeforePostDelete($post_id)
     {
-        if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_active')) {
+        if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('active')) {
             return null;
         }
 
@@ -256,7 +256,7 @@ class adminKutrl
 
     public static function adminPostsActions(dcPostsActions $pa)
     {
-        if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('kutrl_active')
+        if (!dcCore::app()->blog->settings->get(basename(__DIR__))->get('active')
          || !dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_ADMIN]), dcCore::app()->blog->id)) {
             return null;
         }

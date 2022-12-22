@@ -31,10 +31,10 @@ class yourlsKutrlService extends kutrlService
 
     protected function init()
     {
-        $this->args['username'] = $this->settings->get('kutrl_srv_yourls_username');
-        $this->args['password'] = $this->settings->get('kutrl_srv_yourls_password');
+        $this->args['username'] = $this->settings->get('srv_yourls_username');
+        $this->args['password'] = $this->settings->get('srv_yourls_password');
 
-        $base = (string) $this->settings->get('kutrl_srv_yourls_base');
+        $base = (string) $this->settings->get('srv_yourls_base');
         //if (!empty($base) && substr($base,-1,1) != '/') $base .= '/';
 
         $this->config['url_api']     = $base;
@@ -44,9 +44,9 @@ class yourlsKutrlService extends kutrlService
 
     public function saveSettings()
     {
-        $this->settings->put('kutrl_srv_yourls_username', $_POST['kutrl_srv_yourls_username']);
-        $this->settings->put('kutrl_srv_yourls_password', $_POST['kutrl_srv_yourls_password']);
-        $this->settings->put('kutrl_srv_yourls_base', $_POST['kutrl_srv_yourls_base']);
+        $this->settings->put('srv_yourls_username', $_POST['kutrl_srv_yourls_username']);
+        $this->settings->put('srv_yourls_password', $_POST['kutrl_srv_yourls_password']);
+        $this->settings->put('srv_yourls_base', $_POST['kutrl_srv_yourls_base']);
     }
 
     public function settingsForm()
@@ -54,19 +54,19 @@ class yourlsKutrlService extends kutrlService
         echo
         '<p><label class="classic">' .
         __('Url of the service:') . '<br />' .
-        form::field(['kutrl_srv_yourls_base'], 50, 255, $this->settings->get('kutrl_srv_yourls_base')) .
+        form::field(['kutrl_srv_yourls_base'], 50, 255, $this->settings->get('srv_yourls_base')) .
         '</label></p>' .
         '<p class="form-note">' .
         __('This is the URL of the YOURLS service you want to use. Ex: "http://www.smaller.org/api.php".') .
         '</p>' .
         '<p><label class="classic">' . __('Login:') . '<br />' .
-        form::field(['kutrl_srv_yourls_username'], 50, 255, $this->settings->get('kutrl_srv_yourls_username')) .
+        form::field(['kutrl_srv_yourls_username'], 50, 255, $this->settings->get('srv_yourls_username')) .
         '</label></p>' .
         '<p class="form-note">' .
         __('This is your user name to sign up to this YOURLS service.') .
         '</p>' .
         '<p><label class="classic">' . __('Password:') . '<br />' .
-        form::field(['kutrl_srv_yourls_password'], 50, 255, $this->settings->get('kutrl_srv_yourls_password')) .
+        form::field(['kutrl_srv_yourls_password'], 50, 255, $this->settings->get('srv_yourls_password')) .
         '</label></p>' .
         '<p class="form-note">' .
         __('This is your password to sign up to this YOURLS service.') .
