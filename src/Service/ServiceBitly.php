@@ -10,20 +10,30 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+declare(strict_types=1);
 
-class bitlyKutrlService extends kutrlService
+namespace Dotclear\Plugin\kUtRL\Service;
+
+use ArrayObject;
+use Dotclear\Helper\Html\Form\{
+    Div,
+    Input,
+    label,
+    Note,
+    Para
+};
+use Dotclear\Plugin\kUtRL\Service;
+
+class ServiceBitly extends Service
 {
     protected $config = [
-        'id'              => 'bitly',
-        'name'            => 'bit.ly',
-        'home'            => 'https://bit.ly',
+        'id'   => 'bitly',
+        'name' => 'bit.ly',
+        'home' => 'https://bit.ly',
 
-        'url_api'         => 'https://api-ssl.bitly.com/v4/',
-        'url_base'        => 'https://bit.ly/',
-        'url_min_len'     => 25,
+        'url_api'     => 'https://api-ssl.bitly.com/v4/',
+        'url_base'    => 'https://bit.ly/',
+        'url_min_len' => 25,
 
         'allow_protocols' => ['http://', 'https://'],
     ];
@@ -32,28 +42,36 @@ class bitlyKutrlService extends kutrlService
         'apiKey' => '',
     ];
 
-    protected function init()
+    protected function init(): void
     {
         $this->args['apiKey'] = $this->settings->get('srv_bitly_apikey');
     }
 
-    public function saveSettings()
+    public function saveSettings(): void
     {
         $this->settings->put('srv_bitly_apikey', $_POST['kutrl_srv_bitly_apikey']);
     }
 
-    public function settingsForm()
+    public function settingsForm(): Div
     {
-        echo
-        '<p><label class="classic">' . __('API Key:') . '<br />' .
-        form::field(['kutrl_srv_bitly_apikey'], 50, 255, $this->settings->get('srv_bitly_apikey')) .
-        '</label></p>' .
-        '<p class="form-note">' .
-        sprintf(__('This is your personnal %s API key. You can find it on your account page.'), $this->config['name']) .
-        '</p>';
+        return (new Div())
+            ->items([
+                (new Para())
+                    ->items([
+                        (new Label(__('API Key:'), Label::OUTSIDE_LABEL_BEFORE))
+                            ->for('kutrl_srv_bitly_apikey'),
+                        (new Input('kutrl_srv_bitly_apikey'))
+                            ->size(50)
+                            ->maxlenght(255)
+                            ->value((string) $this->settings->get('srv_bitly_apikey')),
+                    ]),
+                (new Note())
+                    ->class('form-note')
+                    ->text(sprintf(__('This is your personnal %s API key. You can find it on your account page.'), $this->config['name'])),
+            ]);
     }
 
-    public function testService()
+    public function testService(): bool
     {
         if (empty($this->args['apiKey'])) {
             $this->error->add(__('Service is not well configured.'));
@@ -71,7 +89,7 @@ class bitlyKutrlService extends kutrlService
         return true;
     }
 
-    public function createHash($url, $hash = null)
+    public function createHash(string $url, ?string $hash = null)
     {
         $args = json_encode(['domain' => 'bit.ly', 'long_url' => $url]);
 

@@ -10,186 +10,320 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return;
-}
+declare(strict_types=1);
 
-# Check user perms
-dcPage::check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_ADMIN]));
+namespace Dotclear\Plugin\kUtRL;
 
-# Settings
-$s = dcCore::app()->blog->settings->get(basename(__DIR__));
+use dcCore;
+use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Process;
+use Dotclear\Helper\Html\Form\{
+    Checkbox,
+    Div,
+    Label,
+    Link,
+    Note,
+    Para,
+    Select,
+    Text
+};
+use Exception;
 
-# Default values
-$img_green = '<img src="images/check-on.png" alt="ok" />';
-$img_red   = '<img src="images/check-off.png" alt="fail" />';
+/**
+ * Backend module configuration.
+ */
+class Config extends Process
+{
+    public static function init(): bool
+    {
+        return self::status(My::checkContext(My::CONFIG));
+    }
 
-$services_combo = [];
-foreach (kUtRL::getServices() as $service_id => $service) {
-    $o                            = new $service();
-    $services_combo[__($o->name)] = $o->id;
-}
-$ext_services_combo = array_merge([__('Disabled') => ''], $services_combo);
-$lst_services_combo = array_merge(['-' => ''], $services_combo);
-
-$s_active              = (bool) $s->get('active');
-$s_plugin_service      = (string) $s->get('plugin_service');
-$s_admin_service       = (string) $s->get('admin_service');
-$s_tpl_service         = (string) $s->get('tpl_service');
-$s_wiki_service        = (string) $s->get('wiki_service');
-$s_allow_external_url  = (bool) $s->get('allow_external_url');
-$s_tpl_passive         = (bool) $s->get('tpl_passive');
-$s_tpl_active          = (bool) $s->get('tpl_active');
-$s_admin_entry_default = (string) $s->get('admin_entry_default');
-
-if (!empty($_POST['save'])) {
-    try {
-        # settings
-        $s_active              = !empty($_POST['s_active']);
-        $s_admin_service       = (string) $_POST['s_admin_service'];
-        $s_plugin_service      = (string) $_POST['s_plugin_service'];
-        $s_tpl_service         = (string) $_POST['s_tpl_service'];
-        $s_wiki_service        = (string) $_POST['s_wiki_service'];
-        $s_allow_external_url  = !empty($_POST['s_allow_external_url']);
-        $s_tpl_passive         = !empty($_POST['s_tpl_passive']);
-        $s_tpl_active          = !empty($_POST['s_tpl_active']);
-        $s_admin_entry_default = !empty($_POST['s_admin_entry_default']);
-
-        $s->put('active', $s_active);
-        $s->put('plugin_service', $s_plugin_service);
-        $s->put('admin_service', $s_admin_service);
-        $s->put('tpl_service', $s_tpl_service);
-        $s->put('wiki_service', $s_wiki_service);
-        $s->put('allow_external_url', $s_allow_external_url);
-        $s->put('tpl_passive', $s_tpl_passive);
-        $s->put('tpl_active', $s_tpl_active);
-        $s->put('admin_entry_default', $s_admin_entry_default);
-
-        # services
-        foreach (kUtRL::getServices() as $service_id => $service) {
-            $o = new $service();
-            $o->saveSettings();
+    public static function process(): bool
+    {
+        if (!self::status()) {
+            return false;
         }
 
-        dcCore::app()->blog->triggerBlog();
+        // no action
+        if (empty($_POST['save'])) {
+            return true;
+        }
 
-        dcAdminNotices::addSuccessNotice(
-            __('Configuration successfully updated.')
-        );
+        # Settings
+        $s = My::settings();
 
-        dcCore::app()->adminurl->redirect(
-            'admin.plugins',
-            ['module' => basename(__DIR__), 'conf' => 1, 'chk' => 1, 'redir' => dcCore::app()->admin->list->getRedir()]
-        );
-    } catch (Exception $e) {
-        dcCore::app()->error->add($e->getMessage());
-    }
-}
+        $s_active              = (bool) $s->get('active');
+        $s_plugin_service      = (string) $s->get('plugin_service');
+        $s_admin_service       = (string) $s->get('admin_service');
+        $s_tpl_service         = (string) $s->get('tpl_service');
+        $s_wiki_service        = (string) $s->get('wiki_service');
+        $s_allow_external_url  = (bool) $s->get('allow_external_url');
+        $s_tpl_passive         = (bool) $s->get('tpl_passive');
+        $s_tpl_active          = (bool) $s->get('tpl_active');
+        $s_admin_entry_default = (string) $s->get('admin_entry_default');
 
-echo '
-<div class="fieldset"><h4>' . __('Settings') . '</h4>
-<div id="setting-plugin">
-<h5>' . __('Activation') . '</h5>
-<p><label class="classic">' .
-form::checkbox(['s_active'], '1', $s_active) .
-__('Enable plugin') . '</label></p>
-</div>
+        if (!empty($_POST['save'])) {
+            try {
+                # settings
+                $s_active              = !empty($_POST['s_active']);
+                $s_admin_service       = (string) $_POST['s_admin_service'];
+                $s_plugin_service      = (string) $_POST['s_plugin_service'];
+                $s_tpl_service         = (string) $_POST['s_tpl_service'];
+                $s_wiki_service        = (string) $_POST['s_wiki_service'];
+                $s_allow_external_url  = !empty($_POST['s_allow_external_url']);
+                $s_tpl_passive         = !empty($_POST['s_tpl_passive']);
+                $s_tpl_active          = !empty($_POST['s_tpl_active']);
+                $s_admin_entry_default = !empty($_POST['s_admin_entry_default']);
 
-<hr/><div id="setting-option">
-<h5>' . __('Behaviors') . '</h5>
-<p><label class="classic">' .
-form::checkbox(['s_allow_external_url'], '1', $s_allow_external_url) .
-__('Allow short link for external URL') . '</label></p>
-<p class="form-note">' . __('Not only link started with this blog URL could be shortened.') . '</p>
-<p><label class="classic">' .
-form::checkbox(['s_tpl_passive'], '1', $s_tpl_passive) .
-__('Passive mode') . '</label></p>
-<p class="form-note">' . __('If this extension is disabled and the passive mode is enabled, "kutrl" tags (like EntryKurl) will display long urls instead of nothing on templates.') . '</p>
-<p><label class="classic">' .
-form::checkbox(['s_tpl_active'], '1', $s_tpl_active) .
-__('Active mode') . '</label></p>
-<p class="form-note">' . __('If the active mode is enabled, all know default template tags (like EntryURL) will display short urls instead of long ones on templates.') . '<br />' .
-__('You can disable URL shortening for a specific template tag by adding attribute disable_kutrl="1" to it . ') . '</p>
-<p class="warning">' . __('We strongly discourage using active mode as it crashes public post form and complex url if theme is not customize for kUtRL.') . '</p>
-<p><label class="classic">' .
-form::checkbox(['s_admin_entry_default'], '1', $s_admin_entry_default) .
-__('Create short link for new entries') . '</label></p>
-<p class="form-note">' . __('This can be changed on page of creation/edition of an entry.') . '</p>
-</div>
+                $s->put('active', $s_active);
+                $s->put('plugin_service', $s_plugin_service);
+                $s->put('admin_service', $s_admin_service);
+                $s->put('tpl_service', $s_tpl_service);
+                $s->put('wiki_service', $s_wiki_service);
+                $s->put('allow_external_url', $s_allow_external_url);
+                $s->put('tpl_passive', $s_tpl_passive);
+                $s->put('tpl_active', $s_tpl_active);
+                $s->put('admin_entry_default', $s_admin_entry_default);
 
-<hr/><div id="setting-service">
-<h5>' . __('Default services') . '</h5>
-<p><label>';
-if (!empty($_REQUEST['chk'])) {
-    if (null !== ($o = kUtRL::quickPlace($s_admin_service))) {
-        echo $o->testService() ? $img_green : $img_red;
-    }
-}
-echo '&nbsp;' . __('Administration:') . '<br />' .
-form::combo(['s_admin_service'], $services_combo, $s_admin_service) . '
-</label></p>
-<p class="form-note">' . __('Service to use in this admin page and on edit page of an entry.') . '</p>
-<p><label>';
-if (!empty($_REQUEST['chk'])) {
-    if (null !== ($o = kUtRL::quickPlace($s_plugin_service))) {
-        echo $o->testService() ? $img_green : $img_red;
-    }
-}
-echo '&nbsp;' . __('Extensions:') . '<br />' .
-form::combo(['s_plugin_service'], $services_combo, $s_plugin_service) . '
-</label></p>
-<p class="form-note">' . __('Service to use on third part plugins.') . '</p>
-<p><label>';
-if (!empty($_REQUEST['chk'])) {
-    if (null !== ($o = kUtRL::quickPlace($s_tpl_service))) {
-        echo $o->testService() ? $img_green : $img_red;
-    }
-}
-echo '&nbsp;' . __('Templates:') . '<br />' .
-form::combo(['s_tpl_service'], $ext_services_combo, $s_tpl_service) . '
-</label></p>
-<p class="form-note">' . __('Shorten links automatically when using template value like "EntryKutrl".') . '</p>
-<p><label>';
-if (!empty($_REQUEST['chk'])) {
-    if (null !== ($o = kUtRL::quickPlace($s_wiki_service))) {
-        echo $o->testService() ? $img_green : $img_red;
-    }
-}
-echo '&nbsp;' . __('Contents:') . '<br />' .
-form::combo(['s_wiki_service'], $ext_services_combo, $s_wiki_service) . '
-</label></p>
-<p class="form-note">' . __('Shorten links automatically found in contents using wiki synthax.') . '</p>
-</div>
-</div>
+                # services
+                foreach (Utils::getServices() as $service_id => $service) {
+                    $o = new $service();
+                    $o->saveSettings();
+                }
 
-<div class="fieldset">
-<h4>' . __('Services') . '</h4>
-<p class="info">' . __('List of services you can use to shorten links with pkugin kUtRL.') . '</p>
-';
+                dcCore::app()->blog->triggerBlog();
 
-foreach (kUtRL::getServices() as $service_id => $service) {
-    $o = new $service();
+                Notices::addSuccessNotice(
+                    __('Configuration successfully updated.')
+                );
 
-    echo '<hr/><div id="setting-' . $service_id . '"><h5>' . $o->name . '</h5>';
-
-    if (!empty($_REQUEST['chk'])) {
-        $img_chk = $img_red . ' ' . sprintf(__('Failed to test %s API.'), $o->name);
-
-        try {
-            if ($o->testService()) {
-                $img_chk = $img_green . ' ' . sprintf(__('%s API is well configured and runing.'), $o->name);
+                dcCore::app()->admin->url->redirect(
+                    'admin.plugins',
+                    ['module' => My::id(), 'conf' => 1, 'chk' => 1, 'redir' => dcCore::app()->admin->list->getRedir()]
+                );
+            } catch (Exception $e) {
+                dcCore::app()->error->add($e->getMessage());
             }
-        } catch (Exception $e) {
-            dcCore::app()->error->add(sprintf(__('Failed to test service %s: %s'), $o->name, $e->getMessage()));
         }
-        echo sprintf('<p><em>%s</em></p>', $img_chk) . $o->error->toHTML();
-    }
-    if ($o->home != '') {
-        echo '<p><a title="' . __('homepage') . '" href="' . $o->home . '">' . sprintf(__('Learn more about %s.'), $o->name) . '</a></p>';
-    }
-    $o->settingsForm();
 
-    echo '</div>';
+        return true;
+    }
+
+    public static function render(): void
+    {
+        if (!self::status()) {
+            return;
+        }
+
+        # Default values
+        $img_green = '<img src="images/check-on.png" alt="ok" />';
+        $img_red   = '<img src="images/check-off.png" alt="fail" />';
+
+        # Settings
+        $s = My::settings();
+
+        $s_active              = (bool) $s->get('active');
+        $s_plugin_service      = (string) $s->get('plugin_service');
+        $s_admin_service       = (string) $s->get('admin_service');
+        $s_tpl_service         = (string) $s->get('tpl_service');
+        $s_wiki_service        = (string) $s->get('wiki_service');
+        $s_allow_external_url  = (bool) $s->get('allow_external_url');
+        $s_tpl_passive         = (bool) $s->get('tpl_passive');
+        $s_tpl_active          = (bool) $s->get('tpl_active');
+        $s_admin_entry_default = (bool) $s->get('admin_entry_default');
+
+        $chk_admin_service  = '';
+        $chk_plugin_service = '';
+        $chk_tpl_service    = '';
+        $chk_wiki_service   = '';
+        if (!empty($_REQUEST['chk'])) {
+            if (null !== ($o = Utils::quickPlace($s_admin_service))) {
+                $chk_admin_service = ($o->testService() ? $img_green : $img_red) . '&nbsp;';
+            }
+            if (null !== ($o = Utils::quickPlace($s_plugin_service))) {
+                $chk_plugin_service = ($o->testService() ? $img_green : $img_red) . '&nbsp;';
+            }
+            if (null !== ($o = Utils::quickPlace($s_tpl_service))) {
+                $chk_tpl_service = ($o->testService() ? $img_green : $img_red) . '&nbsp;';
+            }
+            if (null !== ($o = Utils::quickPlace($s_wiki_service))) {
+                $chk_wiki_service = ($o->testService() ? $img_green : $img_red) . '&nbsp;';
+            }
+        }
+
+        $i_config = [];
+        foreach (Utils::getServices() as $service_id => $service) {
+            $o = new $service();
+
+            $s_items = [];
+
+            if (!empty($_REQUEST['chk'])) {
+                $img_chk = $img_red . ' ' . sprintf(__('Failed to test %s API.'), $o->name);
+
+                try {
+                    if ($o->testService()) {
+                        $img_chk = $img_green . ' ' . sprintf(__('%s API is well configured and runing.'), $o->name);
+                    }
+                } catch (Exception $e) {
+                    dcCore::app()->error->add(sprintf(__('Failed to test service %s: %s'), $o->name, $e->getMessage()));
+                }
+                $s_items[] = (new Text(null, sprintf('<p><em>%s</em></p>', $img_chk) . $o->error->toHTML()));
+            }
+
+            if ($o->home != '') {
+                $s_items[] = (new Para())
+                    ->items([
+                        (new Link())
+                            ->href($o->home)
+                            ->title(__('homepage'))
+                            ->text(sprintf(__('Learn more about %s.'), $o->name)),
+                    ]);
+            }
+
+            $i_config[] = (new Text('hr'));
+            $i_config[] = (new Div('settings-' . $service_id))
+                ->items([
+                    (new Text('h5', $o->name)),
+                    ... $s_items,
+                    $o->settingsForm(),
+                ]);
+        }
+
+        echo (new Div())
+            ->class('fieldset')
+            ->items([
+                (new text('h4', __('Settings'))),
+                (new Div('setting-plugin'))
+                    ->items([
+                        (new Text('h5', __('Activation'))),
+                        (new Para())
+                            ->items([
+                                (new Checkbox('s_active', $s_active))
+                                    ->value(1),
+                                (new Label(__('Enable plugin'), Label::OUTSIDE_LABEL_AFTER))
+                                    ->class('classic')
+                                    ->for('s_active'),
+                            ]),
+                    ]),
+                (new Text('hr')),
+
+                (new Div('setting-option'))
+                    ->items([
+                        (new Text('h5', __('Behaviors'))),
+                        (new Para())
+                            ->items([
+                                (new Checkbox('s_allow_external_url', $s_allow_external_url))
+                                    ->value(1),
+                                (new Label(__('Allow short link for external URL'), Label::OUTSIDE_LABEL_AFTER))
+                                    ->class('classic')
+                                    ->for('s_allow_external_url'),
+                            ]),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('Not only link started with this blog URL could be shortened.')),
+                        (new Para())
+                            ->items([
+                                (new Checkbox('s_tpl_passive', $s_tpl_passive))
+                                    ->value(1),
+                                (new Label(__('Passive mode'), Label::OUTSIDE_LABEL_AFTER))
+                                    ->class('classic')
+                                    ->for('s_tpl_passive'),
+                            ]),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('If this extension is disabled and the passive mode is enabled, "kutrl" tags (like EntryKurl) will display long urls instead of nothing on templates.')),
+                        (new Para())
+                            ->items([
+                                (new Checkbox('s_tpl_active', $s_tpl_active))
+                                    ->value(1),
+                                (new Label(__('Active mode'), Label::OUTSIDE_LABEL_AFTER))
+                                    ->class('classic')
+                                    ->for('s_tpl_active'),
+                            ]),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('If the active mode is enabled, all know default template tags (like EntryURL) will display short urls instead of long ones on templates.')),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('You can disable URL shortening for a specific template tag by adding attribute disable_kutrl="1" to it . ')),
+                        (new Note())
+                            ->class('warning')
+                            ->text(__('We strongly discourage using active mode as it crashes public post form and complex url if theme is not customize for kUtRL.')),
+                        (new Para())
+                            ->items([
+                                (new Checkbox('s_admin_entry_default', $s_admin_entry_default))
+                                    ->value(1),
+                                (new Label(__('Create short link for new entries'), Label::OUTSIDE_LABEL_AFTER))
+                                    ->class('classic')
+                                    ->for('s_admin_entry_default'),
+                            ]),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('This can be changed on page of creation/edition of an entry.')),
+                    ]),
+                (new Text('hr')),
+
+                (new Div('setting-service'))
+                    ->items([
+                        (new Text('h5', __('Default services'))),
+                        (new Para())
+                            ->items([
+                                (new Label($chk_admin_service . __('Administration:'), Label::OUTSIDE_LABEL_BEFORE))
+                                    ->for('s_admin_service'),
+                                (new Select('s_admin_service'))
+                                    ->items(Combo::servicesCombo())
+                                    ->default($s_admin_service),
+                            ]),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('Service to use in this admin page and on edit page of an entry.')),
+                        (new Para())
+                            ->items([
+                                (new Label($chk_plugin_service . __('Extensions:'), Label::OUTSIDE_LABEL_BEFORE))
+                                    ->for('s_plugin_service'),
+                                (new Select('s_plugin_service'))
+                                    ->items(Combo::servicesCombo())
+                                    ->default($s_plugin_service),
+                            ]),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('Service to use on third part plugins.')),
+                        (new Para())
+                            ->items([
+                                (new Label($chk_tpl_service . __('Templates:'), Label::OUTSIDE_LABEL_BEFORE))
+                                    ->for('s_tpl_service'),
+                                (new Select('s_tpl_service'))
+                                    ->items(Combo::servicesCombo())
+                                    ->default($s_tpl_service),
+                            ]),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('Shorten links automatically when using template value like "EntryKutrl".')),
+                        (new Para())
+                            ->items([
+                                (new Label($chk_wiki_service . __('Contents:'), Label::OUTSIDE_LABEL_BEFORE))
+                                    ->for('s_wiki_service'),
+                                (new Select('s_wiki_service'))
+                                    ->items(Combo::servicesCombo())
+                                    ->default($s_wiki_service),
+                            ]),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('Shorten links automatically found in contents using wiki synthax.')),
+                    ]),
+            ])
+            ->render() .
+
+            (new Div())
+            ->class('fieldset')
+            ->items([
+                (new text('h4', __('Settings'))),
+                (new Note())
+                    ->class('info')
+                    ->text(__('List of services you can use to shorten links with pkugin kUtRL.')),
+                ... $i_config,
+            ])
+            ->render();
+    }
 }
-
-echo'</div>';

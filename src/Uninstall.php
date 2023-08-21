@@ -10,86 +10,73 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return;
+declare(strict_types=1);
+
+namespace Dotclear\Plugin\kUtRL;
+
+use dcCore;
+use Dotclear\Core\Process;
+use Dotclear\Plugin\Uninstaller\Uninstaller;
+
+/**
+ * Plugin Uninstaller actions.
+ */
+class Uninstall extends Process
+{
+    public static function init(): bool
+    {
+        return self::status(My::checkContext(My::UNINSTALL));
+    }
+
+    public static function process(): bool
+    {
+        if (!self::status() || !dcCore::app()->plugins->moduleExists('Uninstaller')) {
+            return false;
+        }
+
+        Uninstaller::instance()
+            ->addUserAction(
+                'settings',
+                'delete_all',
+                My::id()
+            )
+            ->addUserAction(
+                'tables',
+                'delete',
+                My::TABLE_NAME,
+            )
+            ->addUserAction(
+                'plugins',
+                'delete',
+                My::id()
+            )
+            ->addUserAction(
+                'versions',
+                'delete',
+                My::id()
+            )
+            ->addDirectAction(
+                'settings',
+                'delete_all',
+                My::id()
+            )
+            ->addDirectAction(
+                'tables',
+                'delete',
+                My::TABLE_NAME
+            )
+            ->addDirectAction(
+                'plugins',
+                'delete',
+                My::id()
+            )
+            ->addDirectAction(
+                'versions',
+                'delete',
+                My::id()
+            )
+        ;
+
+        return false;
+    }
 }
-
-$this->addUserAction(
-    /* type */
-    'settings',
-    /* action */
-    'delete_all',
-    /* ns */
-    basename(__DIR__),
-    /* description */
-    __('delete all settings')
-);
-
-$this->addUserAction(
-    /* type */
-    'tables',
-    /* action */
-    'delete',
-    /* ns */
-    initkUtRL::KURL_TABLE_NAME,
-    /* description */
-    __('delete table')
-);
-
-$this->addUserAction(
-    /* type */
-    'plugins',
-    /* action */
-    'delete',
-    /* ns */
-    basename(__DIR__),
-    /* description */
-    __('delete plugin files')
-);
-
-$this->addUserAction(
-    /* type */
-    'versions',
-    /* action */
-    'delete',
-    /* ns */
-    basename(__DIR__),
-    /* description */
-    __('delete the version number')
-);
-
-# Delete only dc version and plugin files from pluginsBeforeDelete
-# Keep table
-
-$this->addDirectAction(
-    /* type */
-    'settings',
-    /* action */
-    'delete_all',
-    /* ns */
-    basename(__DIR__),
-    /* description */
-    sprintf(__('delete all %s settings'), basename(__DIR__))
-);
-
-$this->addDirectAction(
-    /* type */
-    'versions',
-    /* action */
-    'delete',
-    /* ns */
-    basename(__DIR__),
-    /* description */
-    sprintf(__('delete %s version number'), basename(__DIR__))
-);
-
-$this->addDirectAction(
-    /* type */
-    'plugins',
-    /* action */
-    'delete',
-    /* ns */
-    basename(__DIR__),
-    /* description */
-    sprintf(__('delete %s plugin files'), basename(__DIR__))
-);

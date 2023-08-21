@@ -10,11 +10,21 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+declare(strict_types=1);
 
-class yourlsKutrlService extends kutrlService
+namespace Dotclear\Plugin\kUtRL\Service;
+
+use ArrayObject;
+use Dotclear\Helper\Html\Form\{
+    Div,
+    Input,
+    Label,
+    Note,
+    Para
+};
+use Dotclear\Plugin\kUtRL\Service;
+
+class ServiceYourls extends Service
 {
     protected $config = [
         'id'   => 'yourls',
@@ -29,7 +39,7 @@ class yourlsKutrlService extends kutrlService
         'action'   => 'shorturl',
     ];
 
-    protected function init()
+    protected function init(): void
     {
         $this->args['username'] = $this->settings->get('srv_yourls_username');
         $this->args['password'] = $this->settings->get('srv_yourls_password');
@@ -42,38 +52,58 @@ class yourlsKutrlService extends kutrlService
         $this->config['url_min_len'] = strlen($base) + 3;
     }
 
-    public function saveSettings()
+    public function saveSettings(): void
     {
         $this->settings->put('srv_yourls_username', $_POST['kutrl_srv_yourls_username']);
         $this->settings->put('srv_yourls_password', $_POST['kutrl_srv_yourls_password']);
         $this->settings->put('srv_yourls_base', $_POST['kutrl_srv_yourls_base']);
     }
 
-    public function settingsForm()
+    public function settingsForm(): Div
     {
-        echo
-        '<p><label class="classic">' .
-        __('Url of the service:') . '<br />' .
-        form::field(['kutrl_srv_yourls_base'], 50, 255, $this->settings->get('srv_yourls_base')) .
-        '</label></p>' .
-        '<p class="form-note">' .
-        __('This is the URL of the YOURLS service you want to use. Ex: "http://www.smaller.org/api.php".') .
-        '</p>' .
-        '<p><label class="classic">' . __('Login:') . '<br />' .
-        form::field(['kutrl_srv_yourls_username'], 50, 255, $this->settings->get('srv_yourls_username')) .
-        '</label></p>' .
-        '<p class="form-note">' .
-        __('This is your user name to sign up to this YOURLS service.') .
-        '</p>' .
-        '<p><label class="classic">' . __('Password:') . '<br />' .
-        form::field(['kutrl_srv_yourls_password'], 50, 255, $this->settings->get('srv_yourls_password')) .
-        '</label></p>' .
-        '<p class="form-note">' .
-        __('This is your password to sign up to this YOURLS service.') .
-        '</p>';
+        return (new Div())
+            ->items([
+                (new Para())
+                    ->items([
+                        (new Label(__('Url of the service:'), Label::OUTSIDE_LABEL_BEFORE))
+                            ->for('kutrl_srv_yourls_base'),
+                        (new Input('kutrl_srv_yourls_base'))
+                            ->size(50)
+                            ->maxlenght(255)
+                            ->value((string) $this->settings->get('srv_yourls_base')),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('This is the URL of the YOURLS service you want to use. Ex: "http://www.smaller.org/api.php".')),
+                    ]),
+                (new Para())
+                    ->items([
+                        (new Label(__('Login:'), Label::OUTSIDE_LABEL_BEFORE))
+                            ->for('kutrl_srv_yourls_username'),
+                        (new Input('kutrl_srv_yourls_username'))
+                            ->size(50)
+                            ->maxlenght(255)
+                            ->value((string) $this->settings->get('srv_yourls_username')),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('This is your user name to sign up to this YOURLS service.')),
+                    ]),
+                (new Para())
+                    ->items([
+                        (new Label(__('Password:'), Label::OUTSIDE_LABEL_BEFORE))
+                            ->for('kutrl_srv_yourls_password'),
+                        (new Input('kutrl_srv_yourls_password'))
+                            ->size(50)
+                            ->maxlenght(255)
+                            ->value((string) $this->settings->get('srv_yourls_password')),
+                        (new Note())
+                            ->class('form-note')
+                            ->text(__('This is your password to sign up to this YOURLS service.')),
+                    ]),
+
+            ]);
     }
 
-    public function testService()
+    public function testService(): bool
     {
         if (empty($this->url_api)) {
             $this->error->add(__('Service is not well configured.'));
@@ -99,7 +129,7 @@ class yourlsKutrlService extends kutrlService
         return false;
     }
 
-    public function createHash($url, $hash = null)
+    public function createHash(string $url, ?string $hash = null)
     {
         $args = array_merge($this->args, ['url' => $url]);
 

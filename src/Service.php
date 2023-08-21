@@ -2,6 +2,9 @@
 /**
  * @brief kUtRL, a plugin for Dotclear 2
  *
+ * Generic class for shorten link service
+ * A service class must extends this one
+ *
  * @package Dotclear
  * @subpackage Plugin
  *
@@ -10,9 +13,20 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-# Generic class for shorten link service
-# A service class must extends this one
-class kutrlService
+declare(strict_types=1);
+
+namespace Dotclear\Plugin\kUtRL;
+
+use dcCore;
+use dcError;
+use Dotclear\Database\MetaRecord;
+use Dotclear\Helper\Html\Form\{
+    Div,
+    Note
+};
+use Dotclear\Helper\Network\HttpClient;
+
+class Service
 {
     public $error;
     public $settings;
@@ -22,32 +36,32 @@ class kutrlService
 
     public function __construct()
     {
-        $this->settings = dcCore::app()->blog->settings->get(basename(dirname(__DIR__)));
-        $this->log      = new kutrlLog();
+        $this->settings = My::settings();
+        $this->log      = new Logs();
         $this->error    = new dcError();
         //$this->error->setHTMLFormat('%s', "%s\n");
 
         $this->init();
 
         // Force setting
-        $allow_external_url                  = $this->settings->get('allow_external_url');
-        $this->config['$allow_external_url'] = null === $allow_external_url ?
+        $allow_external_url                 = $this->settings?->get('allow_external_url');
+        $this->config['allow_external_url'] = null === $allow_external_url ?
             true : $allow_external_url;
 
         $this->config = array_merge(
             [
-                'id'                 => 'undefined',
-                'name'               => 'undefined',
-                'home'               => '',
+                'id'   => 'undefined',
+                'name' => 'undefined',
+                'home' => '',
 
                 'allow_external_url' => true,
                 'allow_custom_hash'  => false,
                 'allow_protocols'    => ['http://'],
 
-                'url_test'           => 'http://github.com/JcDenis/kUtRL/releases',
-                'url_api'            => '',
-                'url_base'           => '',
-                'url_min_len'        => 0,
+                'url_test'    => 'http://github.com/JcDenis/kUtRL/releases',
+                'url_api'     => '',
+                'url_base'    => '',
+                'url_min_len' => 0,
             ],
             $this->config
         );
@@ -66,52 +80,54 @@ class kutrlService
     }
 
     # Additionnal actions on child start
-    protected function init()
+    protected function init(): void
     {
         //
     }
 
     # Save settings from admin page
-    public function saveSettings()
+    public function saveSettings(): void
     {
-        return null;
+        //
     }
 
     # Settings form for admin page
-    public function settingsForm()
+    public function settingsForm(): Div
     {
-        echo
-        '<p class="form-note">' .
-        __('There is nothing to configure for this service.') .
-        '</p>';
+        return (new Div())
+            ->items([
+                (new Note())
+                    ->class('form-note')
+                    ->text(__('There is nothing to configure for this service.')),
+            ]);
     }
 
     # Test if service is well configured
-    public function testService()
+    public function testService(): bool
     {
-        return null;
+        return true;
     }
 
     # Test if an url is valid
-    public function isValidUrl($url)
+    public function isValidUrl(string $url): bool
     {
         return (bool) filter_var($url, FILTER_VALIDATE_URL);
     }
 
     # Test if an url contents know prefix
-    public function isServiceUrl($url)
+    public function isServiceUrl(string $url): bool
     {
         return strpos($url, $this->url_base) === 0;
     }
 
     # Test if an url is long enoutgh
-    public function isLongerUrl($url)
+    public function isLongerUrl(string $url): bool
     {
         return (strlen($url) >= (int) $this->url_min_len);
     }
 
     # Test if an url protocol (eg: http://) is allowed
-    public function isProtocolUrl($url)
+    public function isProtocolUrl(string $url): bool
     {
         foreach ($this->allow_protocols as $protocol) {
             if (empty($protocol)) {
@@ -126,7 +142,7 @@ class kutrlService
     }
 
     # Test if an url is from current blog
-    public function isBlogUrl($url)
+    public function isBlogUrl(string $url): bool
     {
         $base = dcCore::app()->blog->url;
         $url  = substr($url, 0, strlen($base));
@@ -134,22 +150,34 @@ class kutrlService
         return $url == $base;
     }
 
-    # Test if an url is know
-    public function isKnowUrl($url)
+    /**
+     * Test if an url is know.
+     *
+     * @return  false|MetaRecord
+     */
+    public function isKnowUrl(string $url)
     {
         return $this->log->select($url, null, $this->id, 'kutrl');
     }
 
-    # Test if an custom short url is know
-    public function isKnowHash($hash)
+    /**
+     * Test if an custom short url is know.
+     *
+     * @return  false|MetaRecord
+     */
+    public function isKnowHash(string $hash)
     {
         return $this->log->select(null, $hash, $this->id, 'kutrl');
     }
 
-    # Create hash from url
-    public function hash($url, $hash = null)
+    /**
+     * Create hash from url.
+     *
+     * @return  false|MetaRecord
+     */
+    public function hash(string $url, ?string $hash = null)
     {
-        $url = trim(dcCore::app()->con->escape($url));
+        $url = trim(dcCore::app()->con->escapeStr((string) $url));
         if ('undefined' === $this->id) {
             return false;
         }
@@ -183,41 +211,54 @@ class kutrlService
         return $rs;
     }
 
-    # Create a hash for a given url (and its custom hash)
-    public function createHash($url, $hash = null)
+    /**
+     * Create a hash for a given url (and its custom hash).
+     *
+     * @return  false|ArrayObject
+     */
+    public function createHash(string $url, ?string $hash = null)
     {
         return false;
     }
 
-    # Remove an url from list of know urls
-    public function remove($url)
+    /**
+     * Remove an url from list of know urls.
+     */
+    public function remove(string $url): bool
     {
         if (!($rs = $this->isKnowUrl($url))) {
             return false;
         }
         $this->deleteUrl($url);
-        $this->log->delete($rs->id);
+        $this->log->delete((int) $rs->id);
 
         return true;
     }
 
-    # Delete url on service (second argument really delete urls)
-    public function deleteUrl($url, $delete = false)
-    {
-        return null;
-    }
-
-    # Retrieve long url from hash
-    public function getUrl($hash)
+    /**
+     * Delete url on service (second argument really delete urls).
+     */
+    public function deleteUrl(string $url, bool $delete = false): bool
     {
         return false;
     }
 
-    # Post request
-    public static function post($server, $data, $verbose = true, $get = false, $headers = [])
+    /**
+     * Retrieve long url from hash.
+     *
+     * @return  false|string
+     */
+    public function getUrl(string $hash)
     {
-        $url    = (string) $server;
-        $client = netHttp::initClient($url, $url);
+        return false;
+    }
+
+    /**
+     * Post request.
+     */
+    public static function post(string $url, $data, bool $verbose = true, bool $get = false, $headers = [])
+    {
+        $client = HttpClient::initClient($url, $url);
         $client->setUserAgent('kUtRL - https://github.com/JcDenis/kUtRL');
         $client->setPersistReferers(false);
 

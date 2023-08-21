@@ -10,22 +10,32 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+declare(strict_types=1);
 
-dcCore::app()->addBehavior('initWidgets', ['widgetKutrl', 'adminShorten']);
-dcCore::app()->addBehavior('initWidgets', ['widgetKutrl', 'adminRank']);
+namespace Dotclear\Plugin\kUtRL;
 
-class widgetKutrl
+use dcCore;
+use Dotclear\Helper\Html\Form\{
+    Form,
+    Hidden,
+    Input,
+    Label,
+    Para,
+    Submit
+};
+use Dotclear\Helper\Html\Html;
+use Dotclear\Plugin\widgets\WidgetsStack;
+use Dotclear\Plugin\widgets\WidgetsElement;
+
+class Widgets
 {
-    public static function adminShorten($w)
+    public static function initShorten(WidgetsStack $w): void
     {
         $w
             ->create(
                 'shortenkutrl',
-                __('Links shortener'),
-                ['widgetKutrl', 'publicShorten']
+                My::name(),
+                [self::class, 'parseShorten']
             )
             ->addTitle(__('Shorten link'))
             ->addHomeOnly()
@@ -34,13 +44,13 @@ class widgetKutrl
             ->addOffline();
     }
 
-    public static function adminRank($w)
+    public static function initRank(WidgetsStack $w): void
     {
         $w
             ->create(
                 'rankkutrl',
                 __('Top of short links'),
-                ['widgetKutrl', 'publicRank']
+                [self::class, 'parseRank']
             )
             ->addTitle(__('Top of short links'))
             ->setting(
@@ -112,49 +122,65 @@ class widgetKutrl
             ->addOffline();
     }
 
-    public static function publicShorten($w)
+    public static function parseShorten(WidgetsElement $w): string
     {
-        $s = dcCore::app()->blog->settings->get(basename(__DIR__));
+        $s = My::settings();
 
         if (!$s->get('active')
          || !$s->get('srv_local_public')
          || !$w->checkHomeOnly(dcCore::app()->url->type)
          || dcCore::app()->url->type == 'kutrl') {
-            return null;
+            return '';
         }
 
-        $hmf  = hmfKutrl::create();
-        $hmfp = hmfKutrl::protect($hmf);
+        $hmf  = FrontendUtils::create();
+        $hmfp = FrontendUtils::protect($hmf);
 
         return $w->renderDiv(
-            $w->content_only,
+            (bool) $w->content_only,
             'shortenkutrlwidget ' . $w->class,
             '',
-            ($w->title ? $w->renderTitle(html::escapeHTML($w->title)) : '') .
-                '<form name="shortenkutrlwidget" method="post" action="' .
-                 dcCore::app()->blog->url . dcCore::app()->url->getBase('kutrl') . '">' .
-                '<p><label>' .
-                 __('Long link:') . '<br />' .
-                 form::field('longurl', 20, 255, '') .
-                '</label></p>' .
-                '<p><label>' .
-                 sprintf(__('Rewrite "%s" in next field to show that you are not a robot:'), $hmf) . '<br />' .
-                 form::field('hmf', 20, 255, '') .
-                '</label></p>' .
-                '<p><input class="submit" type="submit" name="submiturl" value="' . __('Shorten') . '" />' .
-                form::hidden('hmfp', $hmfp) .
-                dcCore::app()->formNonce() .
-                '</p>' .
-                '</form>'
+            ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) : '') .
+            (new Form(['shortenkutrlwidget']))
+                ->method('post')
+                ->action(dcCore::app()->blog->url . dcCore::app()->url->getBase('kutrl'))
+                ->fields([
+                    (new Para())
+                        ->items([
+                            (new Label(__('Long link:'), Label::OUTSIDE_LABEL_BEFORE))
+                                ->for('longurl'),
+                            (new Input('longurl'))
+                                ->size(20)
+                                ->maxlenght(255)
+                                ->value(''),
+                        ]),
+                    (new Para())
+                        ->items([
+                            (new Label(sprintf(__('Rewrite "%s" in next field to show that you are not a robot:'), $hmf), Label::OUTSIDE_LABEL_BEFORE))
+                                ->for('hmf'),
+                            (new Input('hmf'))
+                                ->size(20)
+                                ->maxlenght(255)
+                                ->value(''),
+                        ]),
+                    (new Para())
+                        ->items([
+                            (new Submit('submiturl'))
+                                ->value(__('Shorten')),
+                            (new Hidden('hmfp', $hmfp)),
+                            dcCore::app()->formNonce(false),
+                        ]),
+                ])
+                ->render()
         );
     }
 
-    public static function publicRank($w)
+    public static function parseRank(WidgetsElement $w): string
     {
-        $s = dcCore::app()->blog->settings->get(basename(__DIR__));
+        $s = My::settings();
 
         if (!$s->get('active') || !$w->checkHomeOnly(dcCore::app()->url->type)) {
-            return null;
+            return '';
         }
 
         $type = in_array($w->type, ['localnormal', 'localmix', 'localcustom']) ?
@@ -165,7 +191,7 @@ class widgetKutrl
 
         $more = '';
         if ($w->type == 'localmix' && '' != $w->mixprefix) {
-            $more = "AND kut_hash LIKE '" . dcCore::app()->con->escape($w->mixprefix) . "%' ";
+            $more = "AND kut_hash LIKE '" . dcCore::app()->con->escapeStr((string) $w->mixprefix) . "%' ";
         }
 
         $order = ($w->sortby && in_array($w->sortby, ['kut_dt', 'kut_counter', 'kut_hash'])) ?
@@ -177,14 +203,14 @@ class widgetKutrl
 
         $rs = dcCore::app()->con->select(
             'SELECT kut_counter, kut_hash ' .
-            'FROM ' . dcCore::app()->prefix . initkUtRL::KURL_TABLE_NAME . ' ' .
-            "WHERE blog_id='" . dcCore::app()->con->escape(dcCore::app()->blog->id) . "' " .
+            'FROM ' . dcCore::app()->prefix . My::TABLE_NAME . ' ' .
+            "WHERE blog_id='" . dcCore::app()->con->escapeStr((string) dcCore::app()->blog->id) . "' " .
             "AND kut_service = 'local' " .
             $type . $hide . $more . 'ORDER BY ' . $order . $limit
         );
 
         if ($rs->isEmpty()) {
-            return null;
+            return '';
         }
 
         $content = '';
@@ -225,14 +251,14 @@ class widgetKutrl
         }
 
         if (empty($content)) {
-            return null;
+            return '';
         }
 
         return $w->renderDiv(
-            $w->content_only,
+            (bool) $w->content_only,
             'lastblogupdate ' . $w->class,
             '',
-            ($w->title ? $w->renderTitle(html::escapeHTML($w->title)) : '') .
+            ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) : '') .
                 sprintf('<ul>%s</ul>', $content)
         );
     }

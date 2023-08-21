@@ -2,6 +2,8 @@
 /**
  * @brief kUtRL, a plugin for Dotclear 2
  *
+ * This file contents class to acces local short links records
+ *
  * @package Dotclear
  * @subpackage Plugin
  *
@@ -10,36 +12,52 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-# This file contents class to acces local short links records
+declare(strict_types=1);
 
-class kutrlLog
+namespace Dotclear\Plugin\kUtRL;
+
+use dcCore;
+use Dotclear\Database\MetaRecord;
+use Dotclear\Database\Statement\{
+    DeleteStatement,
+    JoinStatement,
+    SelectStatement,
+    UpdateStatement
+};
+
+class Logs
 {
     public $table;
-    public $blog;
     public $con;
 
     public function __construct()
     {
-        $this->table = dcCore::app()->prefix . initkUtRL::KURL_TABLE_NAME;
-        $this->blog  = dcCore::app()->con->escape(dcCore::app()->blog->id);
+        $this->table = dcCore::app()->prefix . My::TABLE_NAME;
         $this->con   = dcCore::app()->con;
     }
 
-    public function nextId()
+    public function nextId(): int
     {
-        return $this->con->select(
-            'SELECT MAX(kut_id) FROM ' . $this->table
-        )->f(0) + 1;
+        $sql = new SelectStatement();
+
+        return $sql
+            ->column($sql->max('kut_id'))
+            ->from($this->table)
+            ->select()
+            ->f(0) + 1;
     }
 
-    public function insert($url, $hash, $type, $service = 'kutrl')
+    /**
+     * @return  false|array<string,int|string>
+     */
+    public function insert(string $url, string $hash, string $type, string $service = 'kutrl')
     {
         $cur = $this->con->openCursor($this->table);
         $this->con->writeLock($this->table);
 
         try {
             $cur->kut_id      = $this->nextId();
-            $cur->blog_id     = $this->blog;
+            $cur->blog_id     = dcCore::app()->blog->id;
             $cur->kut_url     = (string) $url;
             $cur->kut_hash    = (string) $hash;
             $cur->kut_type    = (string) $type;
@@ -64,45 +82,50 @@ class kutrlLog
             throw $e;
         }
 
-        return false;
+        return [];
     }
 
-    public function select($url = null, $hash = null, $type = null, $service = 'kutrl')
+    /**
+     * @return  false|MetaRecord
+     */
+    public function select(?string $url = null, ?string $hash = null, ?string $type = null, string $service = 'kutrl')
     {
-        //$this->con->writeLock($this->table);
-
-        $req = 'SELECT kut_id as id, kut_hash as hash, kut_url as url, ' .
-        'kut_type as type, kut_service as service, kut_counter as counter ' .
-        'FROM ' . $this->table . ' ' .
-        "WHERE blog_id = '" . $this->blog . "' " .
-        "AND kut_service = '" . $this->con->escape($service) . "' ";
+        $sql = new SelectStatement();
+        $sql
+            ->columns([
+                $sql->as('kut_id', 'id'),
+                $sql->as('kut_hash', 'hash'),
+                $sql->as('kut_url', 'url'),
+                $sql->as('kut_type', 'type'),
+                $sql->as('kut_service', 'service'),
+                $sql->as('kut_counter', 'counter'),
+            ])
+            ->from($this->table)
+            ->where('blog_id = ' . $sql->quote(dcCore::app()->blog->id))
+            ->and('kut_service = ' . $sql->quote($service))
+        ;
 
         if (null !== $url) {
-            $req .= "AND kut_url = '" . $this->con->escape($url) . "' ";
+            $sql->and('kut_url = ' . $sql->quote($url));
         }
         if (null !== $hash) {
-            $req .= "AND kut_hash = '" . $this->con->escape($hash) . "' ";
+            $sql->and('kut_hash = ' . $sql->quote($hash));
         }
         if (null !== $type) {
-            if (is_array($type)) {
-                $req .= "AND kut_type '" . $this->con->in($type) . "' ";
-            } else {
-                $req .= "AND kut_type = '" . $this->con->escape($type) . "' ";
-            }
+            $sql->and('kut_type = ' . $sql->quote($type));
         }
 
-        $req .= 'ORDER BY kut_dt DESC ' . $this->con->limit(1);
+        $sql
+            ->order('kut_dt DESC')
+            ->limit(1);
 
-        $rs = $this->con->select($req);
-        //$this->con->unlock();
+        $rs = $sql->select();
 
         return $rs->isEmpty() ? false : $rs;
     }
 
-    public function clear($id)
+    public function clear(int $id): bool
     {
-        $id = (int) $id;
-
         $cur = $this->con->openCursor($this->table);
         $this->con->writeLock($this->table);
 
@@ -112,7 +135,7 @@ class kutrlLog
             $cur->kut_counter = 0;
 
             $cur->update(
-                "WHERE blog_id='" . $this->blog . "' " .
+                "WHERE blog_id='" . $this->con->escapeStr(dcCore::app()->blog->id) . "' " .
                 "AND kut_id='" . $id . "' "
             );
             $this->con->unlock();
@@ -127,29 +150,29 @@ class kutrlLog
         return false;
     }
 
-    public function delete($id)
+    public function delete(int $id): bool
     {
-        $id = (int) $id;
+        $sql = new DeleteStatement();
+        $sql
+            ->from($this->table)
+            ->where('blog_id = ' . $sql->quote(dcCore::app()->blog->id))
+            ->and('kut_id = ' . $id)
+            ->delete();
 
-        return $this->con->execute(
-            'DELETE FROM ' . $this->table . ' ' .
-            "WHERE blog_id='" . $this->blog . "' " .
-            "AND kut_id='" . $id . "' "
-        );
+        return true;
     }
 
-    public function counter($id, $do = 'get')
+    public function counter(int $id, string $do = 'get'): int
     {
-        $id = (int) $id;
+        $sql = new SelectStatement();
+        $rs  = $sql
+            ->column('kut_counter')
+            ->from($this->table)
+            ->where('blog_id = ' . $sql->quote((string) dcCore::app()->blog?->id))
+            ->and('kut_id = ' . $id)
+            ->select();
 
-        $rs = $this->con->select(
-            'SELECT kut_counter ' .
-            'FROM ' . $this->table . ' ' .
-            "WHERE blog_id='" . $this->blog . "' " .
-            "AND kut_id='" . $id . "' "
-        );
-
-        $counter = $rs->isEmpty() ? 0 : $rs->kut_counter;
+        $counter = $rs->isEmpty() ? 0 : (int) $rs->kut_counter;
 
         if ('get' == $do) {
             return $counter;
@@ -161,94 +184,86 @@ class kutrlLog
             return 0;
         }
 
-        $cur = $this->con->openCursor($this->table);
-        $this->con->writeLock($this->table);
-
-        $cur->kut_counter = (int) $counter;
-        $cur->update(
-            "WHERE blog_id='" . $this->blog . "' " .
-            "AND kut_id='" . $id . "'"
-        );
-        $this->con->unlock();
+        $sql = new UpdateStatement();
+        $ret = $sql->ref($this->table)
+            ->column('kut_counter')
+            ->value($counter)
+            ->where('blog_id = ' . $sql->quote((string) dcCore::app()->blog?->id))
+            ->and('kut_id = ' . $id)
+            ->update();
 
         return $counter;
     }
 
-    public function getLogs($p, $count_only = false)
+    public function getLogs(array $params, bool $count_only = false): MetaRecord
     {
-        if ($count_only) {
-            $r = 'SELECT count(S.kut_id) ';
-        } else {
-            $content_req = '';
+        $sql = new SelectStatement();
 
-            if (!empty($p['columns']) && is_array($p['columns'])) {
-                $content_req .= implode(', ', $p['columns']) . ', ';
-            }
-            $r = 'SELECT S.kut_id, S.kut_type, S.kut_hash, S.kut_url, ' .
-            $content_req . 'S.kut_dt ';
-        }
-        $r .= 'FROM ' . $this->table . ' S ';
-        if (!empty($p['from'])) {
-            $r .= $p['from'] . ' ';
-        }
-        $r .= "WHERE S.blog_id = '" . $this->blog . "' ";
-        if (isset($p['kut_service'])) {
-            $r .= "AND kut_service='" . $this->con->escape($p['kut_service']) . "' ";
+        if ($count_only) {
+            $sql->column($sql->count($sql->unique('S.kut_id')));
         } else {
-            $r .= "AND kut_service='kutrl' ";
-        }
-        if (isset($p['kut_type'])) {
-            if (is_array($p['kut_type']) && !empty($p['kut_type'])) {
-                $r .= 'AND kut_type ' . $this->con->in($p['kut_type']);
-            } elseif ($p['kut_type'] != '') {
-                $r .= "AND kut_type = '" . $this->con->escape($p['kut_type']) . "' ";
+            if (!empty($params['columns']) && is_array($params['columns'])) {
+                $sql->columns($params['columns']);
             }
+            $sql->columns([
+                'S.kut_id',
+                'S.kut_type',
+                'S.kut_hash',
+                'S.kut_url',
+                'S.kut_dt',
+                'S.kut_counter',
+            ]);
         }
-        if (isset($p['kut_id'])) {
-            if (is_array($p['kut_id']) && !empty($p['kut_id'])) {
-                $r .= 'AND kut_id ' . $this->con->in($p['kut_id']);
-            } elseif ($p['kut_id'] != '') {
-                $r .= "AND kut_id = '" . $this->con->escape($p['kut_id']) . "' ";
-            }
+
+        $sql->from($sql->as($this->table, 'S'));
+
+        if (!empty($params['from'])) {
+            $sql->from($params['from']);
         }
-        if (isset($p['kut_hash'])) {
-            if (is_array($p['kut_hash']) && !empty($p['kut_hash'])) {
-                $r .= 'AND kut_hash ' . $this->con->in($p['kut_hash']);
-            } elseif ($p['kut_hash'] != '') {
-                $r .= "AND kut_hash = '" . $this->con->escape($p['kut_hash']) . "' ";
-            }
+
+        $sql->where('S.blog_id = ' . $sql->quote(dcCore::app()->blog->id));
+
+        if (isset($params['kut_service'])) {
+            $sql->and('kut_service = ' . $sql->quote($params['kut_service']));
+        } else {
+            $sql->and("kut_service = 'kutrl' ");
         }
-        if (isset($p['kut_url'])) {
-            if (is_array($p['kut_url']) && !empty($p['kut_url'])) {
-                $r .= 'AND kut_url ' . $this->con->in($p['kut_url']);
-            } elseif ($p['kut_url'] != '') {
-                $r .= "AND kut_url = '" . $this->con->escape($p['kut_url']) . "' ";
-            }
+        if (isset($params['kut_type'])) {
+            $sql->and('kut_type ' . $sql->in($params['kut_type']));
         }
-        if (!empty($p['kut_year'])) {
-            $r .= 'AND ' . $this->con->dateFormat('kut_dt', '%Y') . ' = ' .
-            "'" . sprintf('%04d', $p['kut_year']) . "' ";
+        if (isset($params['kut_id'])) {
+            $sql->and('kut_id ' . $sql->in($params['kut_id']));
         }
-        if (!empty($p['kut_month'])) {
-            $r .= 'AND ' . $this->con->dateFormat('kut_dt', '%m') . ' = ' .
-            "'" . sprintf('%02d', $p['kut_month']) . "' ";
+        if (isset($params['kut_hash'])) {
+            $sql->and('kut_hash ' . $sql->in($params['kut_hash']));
         }
-        if (!empty($p['kut_day'])) {
-            $r .= 'AND ' . $this->con->dateFormat('kut_dt', '%d') . ' = ' .
-            "'" . sprintf('%02d', $p['kut_day']) . "' ";
+        if (isset($params['kut_url'])) {
+            $sql->and('kut_url ' . $sql->in($params['kut_url']));
         }
-        if (!empty($p['sql'])) {
-            $r .= $p['sql'] . ' ';
+        if (!empty($params['kut_year'])) {
+            $sql->and($sql->dateFormat('kut_dt', '%Y') . ' = ' . $sql->quote(sprintf('%04d', $params['kut_year'])));
+        }
+        if (!empty($params['kut_month'])) {
+            $sql->and($sql->dateFormat('kut_dt', '%m') . ' = ' . $sql->quote(sprintf('%02d', $params['kut_month'])));
+        }
+        if (!empty($params['kut_day'])) {
+            $sql->and($sql->dateFormat('kut_dt', '%d') . ' = ' . $sql->quote(sprintf('%02d', $params['kut_day'])));
+        }
+        if (!empty($params['sql'])) {
+            $sql->sql($params['sql']);
         }
         if (!$count_only) {
-            $r .= empty($p['order']) ?
-                'ORDER BY kut_dt DESC ' :
-                'ORDER BY ' . $this->con->escape($p['order']) . ' ';
-        }
-        if (!$count_only && !empty($p['limit'])) {
-            $r .= $this->con->limit($p['limit']);
+            if (!empty($params['order'])) {
+                $sql->order($sql->escape($params['order']));
+            } else {
+                $sql->order('kut_dt DESC');
+            }
         }
 
-        return $this->con->select($r);
+        if (!$count_only && !empty($params['limit'])) {
+            $sql->limit($params['limit']);
+        }
+
+        return $sql->select();
     }
 }

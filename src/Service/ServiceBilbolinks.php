@@ -10,11 +10,21 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+declare(strict_types=1);
 
-class bilbolinksKutrlService extends kutrlService
+namespace Dotclear\Plugin\kUtRL\Service;
+
+use ArrayObject;
+use Dotclear\Helper\Html\Form\{
+    Div,
+    Input,
+    label,
+    Note,
+    Para
+};
+use Dotclear\Plugin\kUtRL\Service;
+
+class ServiceBilbolinks extends Service
 {
     protected $config = [
         'id'   => 'bilbolinks',
@@ -22,7 +32,7 @@ class bilbolinksKutrlService extends kutrlService
         'home' => 'http://www.tux-planet.fr/bilbobox/',
     ];
 
-    protected function init()
+    protected function init(): void
     {
         $base = (string) $this->settings->get('srv_bilbolinks_base');
         if (!empty($base) && substr($base, -1, 1) != '/') {
@@ -33,7 +43,7 @@ class bilbolinksKutrlService extends kutrlService
         $this->config['url_min_len'] = 25;
     }
 
-    public function saveSettings()
+    public function saveSettings(): void
     {
         $base = '';
         if (!empty($_POST['kutrl_srv_bilbolinks_base'])) {
@@ -45,19 +55,26 @@ class bilbolinksKutrlService extends kutrlService
         $this->settings->put('srv_bilbolinks_base', $base);
     }
 
-    public function settingsForm()
+    public function settingsForm(): Div
     {
-        echo
-        '<p><label class="classic">' .
-        __('Url of the service:') . '<br />' .
-        form::field(['kutrl_srv_bilbolinks_base'], 50, 255, $this->settings->get('srv_bilbolinks_base')) .
-        '</label></p>' .
-        '<p class="form-note">' .
-        __('This is the root URL of the "bilbolinks" service you want to use. Ex: "http://tux-pla.net/".') .
-        '</p>';
+        return (new Div())
+            ->items([
+                (new Para())
+                    ->items([
+                        (new Label(__('Url of the service:'), Label::OUTSIDE_LABEL_BEFORE))
+                            ->for('kutrl_srv_bilbolinks_base'),
+                        (new Input('kutrl_srv_bilbolinks_base'))
+                            ->size(50)
+                            ->maxlenght(255)
+                            ->value((string) $this->settings->get('srv_bilbolinks_base')),
+                    ]),
+                (new Note())
+                    ->class('form-note')
+                    ->text(__('This is the root URL of the "bilbolinks" service you want to use. Ex: "http://tux-pla.net/".')),
+            ]);
     }
 
-    public function testService()
+    public function testService(): bool
     {
         if (empty($this->url_base)) {
             $this->error->add(__('Service is not well configured.'));
@@ -75,7 +92,7 @@ class bilbolinksKutrlService extends kutrlService
         return true;
     }
 
-    public function createHash($url, $hash = null)
+    public function createHash(string $url, ?string $hash = null)
     {
         $arg = ['longurl' => $url];
 

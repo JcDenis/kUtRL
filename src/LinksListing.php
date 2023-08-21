@@ -10,121 +10,141 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-class kutrlLinkslist
+declare(strict_types=1);
+
+namespace Dotclear\Plugin\kUtRL;
+
+use ArrayObject;
+use dcCore;
+use Dotclear\Core\Backend\Filter\Filters;
+use Dotclear\Core\Backend\Listing\{
+    Listing,
+    Pager
+};
+use Dotclear\Helper\Date;
+use Dotclear\Helper\Html\Form\{
+    Checkbox,
+    Div,
+    Link,
+    Note,
+    Para,
+    Text,
+};
+use Dotclear\Helper\Html\Html;
+
+class LinksListing extends Listing
 {
-    protected $rs;
-    protected $rs_count;
-    protected $html_prev;
-    protected $html_next;
-
-    public function __construct($rs, $rs_count)
-    {
-        $this->rs        = &$rs;
-        $this->rs_count  = $rs_count;
-        $this->html_prev = __('&#171; prev.');
-        $this->html_next = __('next &#187;');
-    }
-
-    public function userColumns($type, $cols)
-    {
-        $cols_user = @dcCore::app()->auth->user_prefs->interface->cols;
-        if (is_array($cols_user) || $cols_user instanceof ArrayObject) {
-            if (isset($cols_user[$type])) {
-                foreach ($cols_user[$type] as $cn => $cd) {
-                    if (!$cd && isset($cols[$cn])) {
-                        unset($cols[$cn]);
-                    }
-                }
-            }
-        }
-    }
-
-    public function display($page, $nb_per_page, $enclose_block, $filter = false)
+    public function display(Filters $filter, string $enclose_block): void
     {
         if ($this->rs->isEmpty()) {
-            if ($filter) {
-                echo '<p><strong>' . __('No short link matches the filter') . '</strong></p>';
-            } else {
-                echo '<p><strong>' . __('No short link') . '</strong></p>';
-            }
-        } else {
-            $pager = new dcPager($page, $this->rs_count, $nb_per_page, 10);
-            $links = [];
-            if (isset($_REQUEST['entries'])) {
-                foreach ($_REQUEST['entries'] as $v) {
-                    $links[(int) $v] = true;
-                }
-            }
+            echo (new Note())
+                ->class('info')
+                ->text($filter->show() ? __('No short link matches the filter') : __('No short link'))
+                ->render();
 
-            $cols = [
-                'kut_url'     => '<th colspan="2" class="first">' . __('Link') . '</th>',
-                'kut_hash'    => '<th scope="col">' . __('Hash') . '</th>',
-                'kut_dt'      => '<th scope="col">' . __('Date') . '</th>',
-                'kut_service' => '<th scope="col">' . __('Service') . '</th>',
-            ];
-            $cols = new ArrayObject($cols);
-            $this->userColumns('kUtRL', $cols);
-
-            $html_block = '<div class="table-outer">' .
-            '<table>' .
-            '<caption>' . (
-                $filter ?
-                sprintf(__('List of %s links matching the filter.'), $this->rs_count) :
-                sprintf(__('List of links (%s)'), $this->rs_count)
-            ) . '</caption>' .
-            '<thead>' .
-            '<tr>' . implode(iterator_to_array($cols)) . '</tr>' .
-            '</thead>' .
-            '<tbody>%s</tbody>' .
-            '</table>' .
-            '%s</div>';
-
-            if ($enclose_block) {
-                $html_block = sprintf($enclose_block, $html_block);
-            }
-            $blocks = explode('%s', $html_block);
-
-            echo $pager->getLinks() . $blocks[0];
-
-            while ($this->rs->fetch()) {
-                echo $this->linkLine(isset($links[$this->rs->kut_id]));
-            }
-
-            echo $blocks[1] . $blocks[2] . $pager->getLinks();
+            return;
         }
+
+        $links = [];
+        if (isset($_REQUEST['entries'])) {
+            foreach ($_REQUEST['entries'] as $v) {
+                $links[(int) $v] = true;
+            }
+        }
+
+        $pager = new Pager((int) $filter->value('page'), $this->rs_count, (int) $filter->nb, 10);
+
+        $cols = new ArrayObject([
+            'kut_url' => (new Text('th', __('Link')))
+                ->class('first')
+                ->extra('colspan="2"'),
+            'kut_hash' => (new Text('th', __('Hash')))
+                ->extra('scope="col"'),
+            'kut_dt' => (new Text('th', __('Date')))
+                ->extra('scope="col"'),
+            'kut_service' => (new Text('th', __('Service')))
+                ->extra('scope="col"'),
+        ]);
+
+        $this->userColumns(My::id(), $cols);
+
+        $lines = [];
+        while ($this->rs->fetch()) {
+            $lines[] = $this->linkLine(isset($links[$this->rs->kut_id]));
+        }
+
+        echo
+        $pager->getLinks() .
+        sprintf(
+            $enclose_block,
+            (new Div())
+                ->class('table-outer')
+                ->items([
+                    (new Para(null, 'table'))
+                        ->items([
+                            (new Text(
+                                'caption',
+                                $filter->show() ?
+                                sprintf(__('List of %s links matching the filter.'), $this->rs_count) :
+                                sprintf(__('List of links. (%s)'), $this->rs_count)
+                            )),
+                            (new Para(null, 'tr'))
+                                ->items(iterator_to_array($cols)),
+                            (new Para(null, 'tbody'))
+                                ->items($lines),
+                        ]),
+                ])
+                ->render()
+        ) .
+        $pager->getLinks();
     }
 
-    private function linkLine($checked)
+    private function linkLine(bool $checked): Para
     {
         $type = $this->rs->kut_type;
         $hash = $this->rs->kut_hash;
 
-        if (null !== ($o = kUtRL::quickService($type))) {
-            $type = '<a href="' . $o->home . '" title="' . $o->name . '">' . $o->name . '</a>';
-            $hash = '<a href="' . $o->url_base . $hash . '" title="' . $o->url_base . $hash . '">' . $hash . '</a>';
+        if (null !== ($o = Utils::quickService($type))) {
+            $type = (new Link())
+                ->href($o->home)
+                ->title($o->name)
+                ->text($o->name)
+                ->render();
+            $hash = (new Link())
+                ->href($o->url_base . $hash)
+                ->title($o->url_base . $hash)
+                ->text($hash)
+                ->render();
         }
 
-        $cols = [
-            'check'       => '<td class="nowrap">' .
-                    form::checkbox(['entries[]'], $this->rs->kut_id, ['checked' => $checked]) .
-                '</td>',
-            'kut_url'     => '<td class="maximal" scope="row">' .
-                '<a href="' . $this->rs->kut_url . '">' . $this->rs->kut_url . '</a>' .
-                '</td>',
-            'kut_hash'    => '<td class="nowrap">' .
-                    $hash .
-                '</td>',
-            'kut_dt'      => '<td class="nowrap count">' .
-                    dt::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, dcCore::app()->auth->getInfo('user_tz')) .
-                '</td>',
-            'kut_service' => '<td class="nowrap">' .
-                    $type .
-                '</td>',
-        ];
+        $cols = new ArrayObject([
+            'check' => (new Para(null, 'td'))
+                ->class('nowrap minimal')
+                ->items([
+                    (new Checkbox(['entries[]'], $checked))
+                        ->value($this->rs->kut_id),
+                ]),
+            'kut_url' => (new Para(null, 'td'))
+                ->class('maximal')
+                ->items([
+                    (new Link())
+                        ->href($o->home)
+                        ->title($this->rs->kut_url)
+                        ->text($this->rs->kut_url),
+                ]),
+            'kut_hash' => (new Text('td', $hash))
+                ->class('nowrap'),
+            'kut_dt' => (new Text('td', Html::escapeHTML(Date::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, dcCore::app()->auth->getInfo('user_tz')))))
+                ->class('nowrap'),
+            'kut_service' => (new Text('td', $type))
+                ->class('nowrap'),
+        ]);
 
-        $cols = new ArrayObject($cols);
-        $this->userColumns('kUtRL', $cols);
+        $this->userColumns(My::id(), $cols);
 
-        return '<tr class="line">' . implode(iterator_to_array($cols)) . '</tr>' . "\n";
+        return
+        (new Para('p' . $this->rs->kut_id, 'tr'))
+            ->class('line')
+            ->items(iterator_to_array($cols));
     }
 }

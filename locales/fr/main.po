@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: kUtRL 2022.11.12\n"
+"Project-Id-Version: kUtRL 2022.08.21\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-11-20T16:20:38+00:00\n"
-"Last-Translator: Jean-Crhistian Denis\n"
+"PO-Revision-Date: 2023-08-21T14:43:14+00:00\n"
+"Last-Translator: Jean-Christain Denis\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,17 +13,35 @@ msgstr ""
 msgid "Links shortener"
 msgstr "Réducteur de liens"
 
-msgid "Short link"
-msgstr "Lien court"
+msgid "Long link:"
+msgstr "Lien long :"
 
-msgid "Long link"
-msgstr "Lien long"
+msgid "Shorten"
+msgstr "Raccourir"
 
-msgid "Service"
-msgstr "Service"
+msgid "URL not found"
+msgstr "Lien non trouvé"
+
+msgid "The URL you are looking for does not exist."
+msgstr "Le liens que vous recherchez n'existe pas."
+
+msgid "Create your own short URL"
+msgstr "Créer votre propre lien court"
+
+msgid "Plugin kUtRL"
+msgstr "Extension kUtRL"
+
+msgid "Short link creation"
+msgstr "Création de lien court"
+
+msgid "New short link of type \"%s\" and hash \"%s\" was created."
+msgstr "Un nouveau lien court de type \"%s\" et de hash \"%s\" a été créé."
 
 msgid "Hash"
 msgstr "Hash"
+
+msgid "Service"
+msgstr "Service"
 
 msgid "links per page"
 msgstr "liens par page"
@@ -46,14 +64,35 @@ msgstr "suivi %s fois"
 msgid "Delete short link"
 msgstr "Effacer un lien court"
 
+msgid "Short link"
+msgstr "Lien court"
+
 msgid "No enough right"
 msgstr "Privilèges insuffisants"
 
 msgid "Posts short links have been created."
 msgstr "Les liens courts des billets ont été créé."
 
+msgid "Long link"
+msgstr "Lien long"
+
 msgid "Disabled"
 msgstr "Désactiver"
+
+msgid "Failed to test %s API."
+msgstr "Impossible de tester l'API %s."
+
+msgid "%s API is well configured and runing."
+msgstr "L'API %s est correctement configurée et est fonctionnelle."
+
+msgid "Failed to test service %s: %s"
+msgstr "Impossible de tester le service %s : %s"
+
+msgid "homepage"
+msgstr "page d'accueil"
+
+msgid "Learn more about %s."
+msgstr "En savoir plus à propos de %s."
 
 msgid "Enable plugin"
 msgstr "Activer le plugin"
@@ -121,20 +160,11 @@ msgstr "Réduit automatiquement les liens des contenus utilisant la syntax wiki.
 msgid "List of services you can use to shorten links with pkugin kUtRL."
 msgstr "Liste des services que vous pouvez utiliser pour réduire des liens à l'aide du plugin kUtRL."
 
-msgid "Failed to test %s API."
-msgstr "Impossible de tester l'API %s."
+msgid "New public short URL"
+msgstr "Nouvelle URL courte"
 
-msgid "%s API is well configured and runing."
-msgstr "L'API %s est correctement configurée et est fonctionnelle."
-
-msgid "Failed to test service %s: %s"
-msgstr "Impossible de tester le service %s : %s"
-
-msgid "homepage"
-msgstr "page d'accueil"
-
-msgid "Learn more about %s."
-msgstr "En savoir plus à propos de %s."
+msgid "Confirm by writing \"%s\" in next field:"
+msgstr "Confirmez en écrivant \"%s\" dans le champs suivant :"
 
 msgid "Failed to verify protected field."
 msgstr "Impossible de vérifier le champs de protection."
@@ -163,69 +193,6 @@ msgstr "Le lien court pour %s est %s"
 msgid "Failed to create short link."
 msgstr "Impossible de créer le lien court."
 
-msgid "New public short URL"
-msgstr "Nouvelle URL courte"
-
-msgid "Confirm by writing \"%s\" in next field:"
-msgstr "Confirmez en écrivant \"%s\" dans le champs suivant :"
-
-msgid "Shorten link"
-msgstr "Réduire un lien"
-
-msgid "Top of short links"
-msgstr "Top des liens courts"
-
-msgid "Text: (Use wildcard %rank%, %hash%, %url%, %count%, %counttext%)"
-msgstr "Texte : (Ustiliser les jokers %rank%, %hash%, %url%, %count%, %counttext%)"
-
-msgid "URL length (if truncate)"
-msgstr "Longueur de l'URL (si tronqué)"
-
-msgid "All"
-msgstr "Tous"
-
-msgid "Mini URL"
-msgstr "Mini URL"
-
-msgid "Custom URL"
-msgstr "URL personnalisé"
-
-msgid "Semi-custom"
-msgstr "Semi-personnalisé"
-
-msgid "Semi-custom prefix: (only if you want limit to a particular prefix)"
-msgstr "Préfixe des liens semi-personnalisé : (Seulement si vous voulez limiter à un préfixe particulier)"
-
-msgid "Sort by:"
-msgstr "Trier par :"
-
-msgid "Rank"
-msgstr "Rang"
-
-msgid "Limit:"
-msgstr "Limite :"
-
-msgid "Hide no followed links"
-msgstr "Cacher les liens non suivis"
-
-msgid "Long link:"
-msgstr "Lien long :"
-
-msgid "Rewrite \"%s\" in next field to show that you are not a robot:"
-msgstr "Recopier \"%s\" dans le champs suivant pour montrer que vous n'êtes pas une machine :"
-
-msgid "Shorten"
-msgstr "Raccourir"
-
-msgid "Plugin kUtRL"
-msgstr "Extension kUtRL"
-
-msgid "Short link creation"
-msgstr "Création de lien court"
-
-msgid "New short link of type \"%s\" and hash \"%s\" was created."
-msgstr "Un nouveau lien court de type \"%s\" et de hash \"%s\" a été créé."
-
 msgid "No short link matches the filter"
 msgstr "Aucun lien correspondant au filtre"
 
@@ -235,17 +202,50 @@ msgstr "Pas de lien court"
 msgid "List of %s links matching the filter."
 msgstr "Liste des %s liens correspondant au filtre."
 
-msgid "List of links (%s)"
-msgstr "Listes des liens (%s)"
+msgid "List of links. (%s)"
+msgstr "Liste des liens. (%s)"
 
-msgid "There is nothing to configure for this service."
-msgstr "Il n'y a rien à configurer pour ce service."
+msgid "There is nothing to shorten."
+msgstr "Il n'y a rien à réduire."
 
-msgid "%s (Shorten with %s)"
-msgstr "%s (réduit avec %s)"
+msgid "This service does not allowed custom hash."
+msgstr "Ce service n'accepte pas les liens court personnalisés."
+
+msgid "This link is not a valid URL."
+msgstr "Ce lien n'est pas valide."
+
+msgid "This custom short url is already taken."
+msgstr "Ce lien court personnalisé est déjà pris."
+
+msgid "Failed to create short link. This could be caused by a service failure."
+msgstr "Impossible de créé un lien court. Ceci peut être causé par un problème du service."
 
 msgid "New short URL"
 msgstr "Nouvelle URL courte"
+
+msgid "New link"
+msgstr "Nouveau lien"
+
+msgid "You must set an admin service."
+msgstr "Vous devez définir un service admin."
+
+msgid "Only if you want a custom short link."
+msgstr "Uniquement si vous souhaitez un lien court personnalisé."
+
+msgid "You can use \"bob!!\" if you want a semi-custom link, it starts with \"bob\" and \"!!\" will be replaced by an increment value."
+msgstr "Vous pouvez utiliser \"bob!!\" si vous souhaitez un lien semi-personnalisé, il commencera par \"bob\" et \"!!\" sera remplacé par une valeur incrémentale."
+
+msgid "Shorten link using service \"%s\""
+msgstr "Raccourcir un lien en utilisant le service \"%s\""
+
+msgid "Service:"
+msgstr "Service :"
+
+msgid "Links successfully deleted"
+msgstr "Liens supprimés avec succès"
+
+msgid "Delete selected short links"
+msgstr "Effacer les liens court sélectionnés"
 
 msgid "Url of the service:"
 msgstr "URL du service :"
@@ -301,8 +301,8 @@ msgstr "Paramètre de la raquête. ex: \"longurl\""
 msgid "Encode URL"
 msgstr "Encoder l'URL à raccourcir"
 
-msgid "This service is set to:"
-msgstr "Ce service est règlé comme suit:"
+msgid "There is nothing to configure for this service."
+msgstr "Il n'y a rien à configurer pour ce service."
 
 msgid "Full API URL:"
 msgstr "URL complet vers l'API:"
@@ -370,8 +370,74 @@ msgstr "Le lien court personnalisé n'est pas valide."
 msgid "Failed to save link."
 msgstr "Impossible d'enregistrer le lien."
 
+msgid "This is the URL of the YOURLS service you want to use. Ex: \"http://www.smaller.org/api.php\"."
+msgstr "Ceci est l'URL du service YOURLS que vous voulez utiliser. Ex: \"http://www.smaller.org/api.php\"."
+
 msgid "Login:"
 msgstr "Identifiant :"
+
+msgid "This is your user name to sign up to this YOURLS service."
+msgstr "Ceci est votre nom d'utilisateur pour vous connecter à ce service YOURLS."
+
+msgid "This is your password to sign up to this YOURLS service."
+msgstr "Ceci est votre mot de passe pour vous connecter à ce service YOURLS."
+
+msgid "Authentication to service failed."
+msgstr "Authentification au service échoué."
+
+msgid "Unreadable service response."
+msgstr "La réponse du service n'est pas lisible."
+
+msgid "Shorten link"
+msgstr "Réduire un lien"
+
+msgid "Top of short links"
+msgstr "Top des liens courts"
+
+msgid "Text: (Use wildcard %rank%, %hash%, %url%, %count%, %counttext%)"
+msgstr "Texte : (Ustiliser les jokers %rank%, %hash%, %url%, %count%, %counttext%)"
+
+msgid "URL length (if truncate)"
+msgstr "Longueur de l'URL (si tronqué)"
+
+msgid "All"
+msgstr "Tous"
+
+msgid "Mini URL"
+msgstr "Mini URL"
+
+msgid "Custom URL"
+msgstr "URL personnalisé"
+
+msgid "Semi-custom"
+msgstr "Semi-personnalisé"
+
+msgid "Semi-custom prefix: (only if you want limit to a particular prefix)"
+msgstr "Préfixe des liens semi-personnalisé : (Seulement si vous voulez limiter à un préfixe particulier)"
+
+msgid "Sort by:"
+msgstr "Trier par :"
+
+msgid "Rank"
+msgstr "Rang"
+
+msgid "Limit:"
+msgstr "Limite :"
+
+msgid "Hide no followed links"
+msgstr "Cacher les liens non suivis"
+
+msgid "Rewrite \"%s\" in next field to show that you are not a robot:"
+msgstr "Recopier \"%s\" dans le champs suivant pour montrer que vous n'êtes pas une machine :"
+
+msgid "%s (Shorten with %s)"
+msgstr "%s (réduit avec %s)"
+
+msgid "List of links (%s)"
+msgstr "Listes des liens (%s)"
+
+msgid "This service is set to:"
+msgstr "Ce service est règlé comme suit:"
 
 msgid "This is your login to sign up to %s"
 msgstr "C'est votre identifiant pour vous connecter sur %s"
@@ -388,74 +454,8 @@ msgstr "Ceci est votre mot de passe d'inscription sur tr.im."
 msgid "Prevent service rate limit."
 msgstr "Prévention de la limitation d'envoie du service."
 
-msgid "Authentication to service failed."
-msgstr "Authentification au service échoué."
-
-msgid "Unreadable service response."
-msgstr "La réponse du service n'est pas lisible."
-
-msgid "This is the URL of the YOURLS service you want to use. Ex: \"http://www.smaller.org/api.php\"."
-msgstr "Ceci est l'URL du service YOURLS que vous voulez utiliser. Ex: \"http://www.smaller.org/api.php\"."
-
-msgid "This is your user name to sign up to this YOURLS service."
-msgstr "Ceci est votre nom d'utilisateur pour vous connecter à ce service YOURLS."
-
-msgid "This is your password to sign up to this YOURLS service."
-msgstr "Ceci est votre mot de passe pour vous connecter à ce service YOURLS."
-
-msgid "There is nothing to shorten."
-msgstr "I n'y a rien à réduire."
-
-msgid "This service does not allowed custom hash."
-msgstr "Ce service n'accepte pas les liens court personnalisés."
-
-msgid "This link is not a valid URL."
-msgstr "Ce lien n'est pas valide."
-
-msgid "This custom short url is already taken."
-msgstr "Ce lien court personnalisé est déjà pris."
-
-msgid "Failed to create short link. This could be caused by a service failure."
-msgstr "Impossible de créé un lien court. Ceci peut être causé par un problème du service."
-
-msgid "Service:"
-msgstr "Service :"
-
-msgid "Links successfully deleted"
-msgstr "Liens supprimés avec succès"
-
-msgid "New link"
-msgstr "Nouveau lien"
-
-msgid "You must set an admin service."
-msgstr "Vous devez définir un service admin."
-
-msgid "Shorten link using service \"%s\""
-msgstr "Raccourcir un lien en utilisant le service \"%s\""
-
-msgid "Only if you want a custom short link."
-msgstr "Uniquement si vous souhaitez un lien court personnalisé."
-
-msgid "You can use \"bob!!\" if you want a semi-custom link, it starts with \"bob\" and \"!!\" will be replaced by an increment value."
-msgstr "Vous pouvez utiliser \"bob!!\" si vous souhaitez un lien semi-personnalisé, il commencera par \"bob\" et \"!!\" sera remplacé par une valeur incrémentale."
-
-msgid "Delete selected short links"
-msgstr "Effacer les liens court sélectionnés"
-
 msgid "Configuration successfully saved"
 msgstr "Configuration sauvegardée avec succès"
-
-msgid "Plugin activation"
-msgstr "Activation"
-
-msgid "URL not found"
-msgstr "Lien non trouvé"
-
-msgid "The URL you are looking for does not exist."
-msgstr "Le liens que vous recherchez n'existe pas."
-
-msgid "Create your own short URL"
-msgstr "Créer votre propre lien court"
 
 msgid "Publish history"
 msgstr "Publier l'historique"

@@ -2,6 +2,8 @@
 /**
  * @brief kUtRL, a plugin for Dotclear 2
  *
+ * Generic class to play easily with services
+ *
  * @package Dotclear
  * @subpackage Plugin
  *
@@ -10,15 +12,21 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+declare(strict_types=1);
 
-# Generic class to play easily with services
-class kUtRL
+namespace Dotclear\Plugin\kUtRL;
+
+use dcCore;
+use Exception;
+
+class Utils
 {
-    # Load services list from behavior
-    public static function getServices()
+    /**
+     * Load services list from behavior.
+     *
+     * @return  array<string,string>    The services list
+     */
+    public static function getServices(): ?array
     {
         $list = dcCore::app()->getBehaviors('kutrlService');
 
@@ -37,9 +45,14 @@ class kUtRL
         return $services;
     }
 
-    # Silently try to load a service according to its id
-    # Return null on error else service on success
-    public static function quickService($id = '')
+    /**
+     * Silently try to load a service according to its id.
+     *
+     * @param   string  $id     The service ID
+     *
+     * @return  Service     The service instance or null on error;
+     */
+    public static function quickService(string $id = ''): ?Service
     {
         try {
             if (empty($id)) {
@@ -55,15 +68,20 @@ class kUtRL
         return null;
     }
 
-    # Silently try to load a service according to its place
-    # Return null on error else service on success
-    public static function quickPlace($place = 'plugin')
+    /**
+     * Silently try to load a service according to its place.
+     *
+     * @param   string  The execution context
+     *
+     * @return  Service     The service or null on error
+     */
+    public static function quickPlace(string $place = 'plugin'): ?Service
     {
         try {
             if (!in_array($place, ['tpl', 'wiki', 'admin', 'plugin'])) {
                 return null;
             }
-            $id = dcCore::app()->blog->settings->get(basename(dirname(__DIR__)))->get($place . '_service');
+            $id = My::settings()->get($place . '_service');
             if (!empty($id)) {
                 return self::quickService($id);
             }
@@ -73,9 +91,16 @@ class kUtRL
         return null;
     }
 
-    # Silently try to reduce url (using 'plugin' place)
-    # return long url on error else short url on success
-    public static function quickReduce($url, $custom = null, $place = 'plugin')
+    /**
+     * Silently try to reduce url (using 'plugin' place).
+     *
+     * @param   string  $url    The long URL
+     * @param   string  $cutom  The custom short URI
+     * @param   string  $place  The context
+     *
+     * @return  string The short url on success else the long url
+     */
+    public static function quickReduce(string $url, ?string $custom = null, string $place = 'plugin'): string
     {
         try {
             $srv = self::quickPlace($place);

@@ -10,21 +10,36 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+declare(strict_types=1);
 
-class localKutrlService extends kutrlService
+namespace Dotclear\Plugin\kUtRL\Service;
+
+use ArrayObject;
+use dcCore;
+use Dotclear\Helper\Html\Form\{
+    Checkbox,
+    Div,
+    Input,
+    Label,
+    Note,
+    Para,
+    Text,
+    Textarea
+};
+use Dotclear\Helper\Html\Html;
+use Dotclear\Plugin\kUtRL\Service;
+
+class ServiceLocal extends Service
 {
     protected $config = [
-        'id'                => 'local',
-        'name'              => 'kUtRL',
-        'home'              => 'https://github.com/JcDenis/kUtRL',
+        'id'   => 'local',
+        'name' => 'kUtRL',
+        'home' => 'https://github.com/JcDenis/kUtRL',
 
         'allow_custom_hash' => true,
     ];
 
-    protected function init()
+    protected function init(): void
     {
         $protocols                       = (string) $this->settings->get('srv_local_protocols');
         $this->config['allow_protocols'] = empty($protocols) ? [] : explode(',', $protocols);
@@ -33,7 +48,7 @@ class localKutrlService extends kutrlService
         $this->config['url_min_len'] = strlen($this->url_base) + 2;
     }
 
-    public function saveSettings()
+    public function saveSettings(): void
     {
         $this->settings->put('srv_local_protocols', $_POST['kutrl_srv_local_protocols'], 'string');
         $this->settings->put('srv_local_public', isset($_POST['kutrl_srv_local_public']), 'boolean');
@@ -41,64 +56,96 @@ class localKutrlService extends kutrlService
         $this->settings->put('srv_local_404_active', isset($_POST['kutrl_srv_local_404_active']), 'boolean');
     }
 
-    public function settingsForm()
+    public function settingsForm(): Div
     {
-        echo
-        '<div class="two-cols"><div class="col">' .
+        return (new Div())
+            ->items([
+                (new Div())
+                    ->class('two-cols')
+                    ->items([
+                        (new Div())
+                            ->class('col')
+                            ->items([
+                                (new Text('b', __('Settings:'))),
+                                (new Para())
+                                    ->items([
+                                        (new Label(__('Allowed protocols:'), Label::OUTSIDE_LABEL_BEFORE))
+                                            ->for('kutrl_srv_local_protocols'),
+                                        (new Input('kutrl_srv_local_protocols'))
+                                            ->size(50)
+                                            ->maxlenght(255)
+                                            ->value((string) $this->settings->get('srv_local_protocols')),
+                                    ]),
+                                (new Note())
+                                    ->class('form-note')
+                                    ->text(__('Use comma seperated list like: "http:,https:,ftp:"')),
+                                (new Para())
+                                    ->items([
+                                        (new Checkbox('kutrl_srv_local_public', (bool) $this->settings->get('srv_local_public')))
+                                            ->value(1),
+                                        (new Label(__('Enable public page for visitors to shorten links'), Label::OUTSIDE_LABEL_AFTER))
+                                            ->class('classic')
+                                            ->for('kutrl_srv_local_public'),
+                                    ]),
+                                (new Para('style-area'))
+                                    ->class('area')
+                                    ->items([
+                                        (new Label(__('CSS:'), Label::OUTSIDE_LABEL_BEFORE))
+                                            ->for('kutrl_srv_local_css'),
+                                        (new Textarea('kutrl_srv_local_css', Html::escapeHTML($this->settings->get('srv_local_css'))))
+                                            ->cols(50)
+                                            ->rows(3),
+                                    ]),
+                                (new Note())
+                                    ->class('form-note')
+                                    ->text(__('You can add here special cascading style sheet. Body of page has class "dc-kutrl" and widgets have class "shortenkutrlwidget" and "rankkutrlwidget".')),
+                                (new Para())
+                                    ->items([
+                                        (new Checkbox('kutrl_srv_local_404_active', (bool) $this->settings->get('srv_local_404_active')))
+                                            ->value(1),
+                                        (new Label(__('Enable special 404 error public page for unknow urls'), Label::OUTSIDE_LABEL_AFTER))
+                                            ->class('classic')
+                                            ->for('kutrl_srv_local_404_active'),
+                                    ]),
+                                (new Note())
+                                    ->class('form-note')
+                                    ->text(__('If this is not activated, the default 404 page of the theme will be display.')),
+                            ]),
 
-        '<p><strong>' . __('Settings:') . '</strong></p>' .
-        '<p><label class="classic">' .
-        __('Allowed protocols:') . '<br />' .
-        form::field(['kutrl_srv_local_protocols'], 50, 255, $this->settings->get('srv_local_protocols')) .
-        '</label></p>' .
-
-        '<p class="form-note">' .
-        __('Use comma seperated list like: "http:,https:,ftp:"') .
-        '</p>' .
-
-        '<p><label class="classic">' .
-        form::checkbox(['kutrl_srv_local_public'], '1', $this->settings->get('srv_local_public')) . ' ' .
-        __('Enable public page for visitors to shorten links') .
-        '</label></p>' .
-
-        '<p class="area" id="style-area"><label for="_style">' . __('CSS:') . '</label>' .
-        form::textarea('kutrl_srv_local_css', 50, 3, html::escapeHTML($this->settings->get('srv_local_css')), '', '2') .
-        '</p>' .
-        '<p class="form-note">' . __('You can add here special cascading style sheet. Body of page has class "dc-kutrl" and widgets have class "shortenkutrlwidget" and "rankkutrlwidget".') . '</p>' .
-
-        '<p><label class="classic">' .
-        form::checkbox(['kutrl_srv_local_404_active'], '1', $this->settings->get('srv_local_404_active')) . ' ' .
-        __('Enable special 404 error public page for unknow urls') .
-        '</label></p>' .
-        '<p class="form-note">' . __('If this is not activated, the default 404 page of the theme will be display.') . '</p>' .
-
-        '</div><div class="col">' .
-
-        '<p><strong>' . __('Note:') . '</strong></p>' .
-        '<p>' .
-        __('This service use your own Blog to shorten and serve URL.') . '<br />' .
-        sprintf(__('This means that with this service short links start with "%s".'), $this->url_base) .
-        '</p>' .
-        '<p>' .
-        __("You can use Dotclear's plugin called myUrlHandlers to change short links prefix on your blog.");
-
-        if (preg_match('/index\.php/', $this->url_base)) {
-            echo
-            '<p>' .
-            __("We recommand that you use a rewrite engine in order to remove 'index.php' from your blog's URL.") .
-            '<br /><a href="http://fr.dotclear.org/documentation/2.0/usage/blog-parameters">' .
-            __("You can find more about this on the Dotclear's documentation.") .
-            '</a></p>';
-        }
-        echo
-        '</p>' .
-        '<p>' . __('There are two templates delivered with kUtRL, if you do not use default theme, you may adapt them to yours.') . '<br />' .
-        __('Files are in plugin directory /default-templates, just copy them into your theme and edit them.') . '</p>' .
-
-        '</div></div><br class="clear"/>';
+                        (new Div())
+                            ->class('col')
+                            ->items([
+                                (new Text('b', __('Note:'))),
+                                (new Text(
+                                    'p',
+                                    __('This service use your own Blog to shorten and serve URL.') . '<br />' .
+                                    sprintf(__('This means that with this service short links start with "%s".'), $this->url_base)
+                                )),
+                                (new Text(
+                                    'p',
+                                    __("You can use Dotclear's plugin called myUrlHandlers to change short links prefix on your blog.") .
+                                    (
+                                        preg_match('/index\.php/', $this->url_base) ?
+                                        ' ' .
+                                        __("We recommand that you use a rewrite engine in order to remove 'index.php' from your blog's URL.") .
+                                        '<br /><a href="http://fr.dotclear.org/documentation/2.0/usage/blog-parameters">' .
+                                        __("You can find more about this on the Dotclear's documentation.") .
+                                        '</a>'
+                                        : ''
+                                    )
+                                )),
+                                (new Text(
+                                    'p',
+                                    __('There are two templates delivered with kUtRL, if you do not use default theme, you may adapt them to yours.') . '<br />' .
+                                    __('Files are in plugin directory /default-templates, just copy them into your theme and edit them.')
+                                )),
+                            ]),
+                    ]),
+                (new Text('br', ''))->class('clear'),
+            ]);
     }
 
-    public function testService()
+    public function testService(): bool
     {
         $ap = $this->allow_protocols;
         if (!empty($ap)) {
@@ -109,7 +156,7 @@ class localKutrlService extends kutrlService
         return false;
     }
 
-    public function createHash($url, $hash = null)
+    public function createHash(string $url, ?string $hash = null)
     {
         # Create response object
         $rs       = new ArrayObject();
@@ -121,12 +168,12 @@ class localKutrlService extends kutrlService
             $type     = 'localnormal';
             $rs->hash = $this->next($this->last('localnormal'));
 
-        # Mixed custom link
+            # Mixed custom link
         } elseif (preg_match('/^([A-Za-z0-9]{2,})\!\!$/', $hash, $m)) {
             $type     = 'localmix';
             $rs->hash = $m[1] . $this->next(-1, $m[1]);
 
-        # Custom link
+            # Custom link
         } elseif (preg_match('/^[A-Za-z0-9\.\-\_]{2,}$/', $hash)) {
             if (false !== $this->log->select(null, $hash, null, 'local')) {
                 $this->error->add(__('Custom short link is already taken.'));
@@ -136,7 +183,7 @@ class localKutrlService extends kutrlService
             $type     = 'localcustom';
             $rs->hash = $hash;
 
-        # Wrong char in custom hash
+            # Wrong char in custom hash
         } else {
             $this->error->add(__('Custom short link is not valid.'));
 
@@ -215,7 +262,7 @@ class localKutrlService extends kutrlService
         return implode($id);
     }
 
-    public function getUrl($hash)
+    public function getUrl(string $hash)
     {
         if (false === ($rs = $this->log->select(null, $hash, null, 'local'))) {
             return false;
@@ -223,20 +270,20 @@ class localKutrlService extends kutrlService
         if (!$rs->url) { //previously removed url
             return false;
         }
-        $this->log->counter($rs->id, 'up');
+        $this->log->counter((int) $rs->id, 'up');
 
         return $rs->url;
     }
 
-    public function deleteUrl($url, $delete = false)
+    public function deleteUrl(string $url, bool $delete = false): bool
     {
         if (false === ($rs = $this->log->select($url, null, null, 'local'))) {
             return false;
         }
         if ($delete) {
-            $this->log->delete($rs->id);
+            $this->log->delete((int) $rs->id);
         } else {
-            $this->log->clear($rs->id, '');
+            $this->log->clear((int) $rs->id);
         }
 
         return true;

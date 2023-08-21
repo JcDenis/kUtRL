@@ -2,6 +2,8 @@
 /**
  * @brief kUtRL, a plugin for Dotclear 2
  *
+ * This file contents class to shorten url pass through wiki
+ *
  * @package Dotclear
  * @subpackage Plugin
  *
@@ -10,40 +12,44 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-# This file contents class to shorten url pass through wiki
+declare(strict_types=1);
 
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+namespace Dotclear\Plugin\kUtRL;
 
-class kutrlWiki
+use dcCore;
+use Dotclear\Helper\Html\WikiToHtml;
+
+class Wiki
 {
-    public static function coreInitWiki($wiki2xhtml)
+    public static function coreInitWiki(WikiToHtml $wiki2xhtml): void
     {
         # Do nothing on comment preview and post preview
         if (!empty($_POST['preview'])
             || isset(dcCore::app()->ctx) && dcCore::app()->ctx->preview
-            || !dcCore::app()->blog->settings->get(basename(dirname(__DIR__)))->get('active')
+            || !My::settings()?->get('active')
         ) {
-            return null;
+            return;
         }
-        if (null === ($kut = kUtRL::quickPlace('wiki'))) {
-            return null;
+        if (null === ($kut = Utils::quickPlace('wiki'))) {
+            return;
         }
         foreach ($kut->allow_protocols as $protocol) {
             $wiki2xhtml->registerFunction(
                 'url:' . $protocol,
-                ['kutrlWiki', 'transform']
+                [self::class, 'transform']
             );
         }
     }
 
-    public static function transform($url, $content)
+    /**
+     * @return  array<string,string>
+     */
+    public static function transform(string $url, string $content): ?array
     {
-        if (!dcCore::app()->blog->settings->get(basename(dirname(__DIR__)))->get('active')) {
+        if (!My::settings()?->get('active')) {
             return null;
         }
-        if (null === ($kut = kUtRL::quickPlace('wiki'))) {
+        if (null === ($kut = Utils::quickPlace('wiki'))) {
             return [];
         }
         # Test if long url exists
@@ -64,10 +70,7 @@ class kutrlWiki
             $res['content'] = $res['url'];
         }
 
-        # ex: Send new url to messengers
-        if (!empty($rs)) {
-            dcCore::app()->callBehavior('wikiAfterKutrlCreate', $rs, __('New short URL'));
-        }
+        dcCore::app()->callBehavior('wikiAfterKutrlCreate', $rs, __('New short URL'));
 
         return $res;
     }

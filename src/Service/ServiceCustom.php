@@ -10,18 +10,29 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+declare(strict_types=1);
 
-class customKutrlService extends kutrlService
+namespace Dotclear\Plugin\kUtRL\Service;
+
+use ArrayObject;
+use Dotclear\Helper\Html\Form\{
+    Checkbox,
+    Div,
+    Input,
+    Label,
+    Note,
+    Para
+};
+use Dotclear\Plugin\kUtRL\Service;
+
+class ServiceCustom extends Service
 {
     protected $config = [
         'id'   => 'custom',
         'name' => 'Custom',
     ];
 
-    protected function init()
+    protected function init(): void
     {
         $config = json_decode((string) $this->settings->get('srv_custom'), true);
         if (!is_array($config)) {
@@ -36,7 +47,7 @@ class customKutrlService extends kutrlService
         $this->config['url_min_length'] = strlen($this->url_base) + 2;
     }
 
-    public function saveSettings()
+    public function saveSettings(): void
     {
         $config = [
             'url_api'    => $_POST['kutrl_srv_custom_url_api'],
@@ -47,7 +58,7 @@ class customKutrlService extends kutrlService
         $this->settings->put('srv_custom', json_encode($config));
     }
 
-    public function settingsForm()
+    public function settingsForm(): Div
     {
         $default = [
             'url_api'    => '',
@@ -61,30 +72,63 @@ class customKutrlService extends kutrlService
         }
         $config = array_merge($default, $config);
 
-        echo
-        '<p>' . __('You can set a configurable service.') . '<br />' .
-        __('It consists on a simple query to an URL with only one param.') . '<br />' .
-        __('It must respond with a http code 200 on success.') . '<br />' .
-        __('It must returned the short URL (or only hash) in clear text.') . '</p>' .
-        '<p><label class="classic">' . __('API URL:') . '<br />' .
-        form::field(['kutrl_srv_custom_url_api'], 50, 255, $config['url_api']) .
-        '</label></p>' .
-        '<p class="form-note">' . __('Full path to API of the URL shortener. ex: "http://is.gd/api.php"') . '</p>' .
-        '<p><label class="classic">' . __('Short URL domain:') . '<br />' .
-        form::field(['kutrl_srv_custom_url_base'], 50, 255, $config['url_base']) .
-        '</label></p>' .
-        '<p class="form-note">' . __('Common part of the short URL. ex: "http://is.gd/"') . '</p>' .
-        '<p><label class="classic">' . __('API URL param:') . '<br />' .
-        form::field(['kutrl_srv_custom_url_param'], 50, 255, $config['url_param']) .
-        '</label></p>' .
-        '<p class="form-note">' . __('Param of the query. ex: "longurl"') . '</p>' .
-        '<p><label class="classic">' .
-        form::checkbox(['kutrl_srv_custom_url_encode'], '1', $config['url_encode']) . ' ' .
-        __('Encode URL') .
-        '</label></p>';
+        return (new Div())
+            ->items([
+                (new Para())
+                    ->text(
+                        __('You can set a configurable service.') . '<br />' .
+                        __('It consists on a simple query to an URL with only one param.') . '<br />' .
+                        __('It must respond with a http code 200 on success.') . '<br />' .
+                        __('It must returned the short URL (or only hash) in clear text.')
+                    ),
+                (new Para())
+                    ->items([
+                        (new Label(__('API URL:'), Label::OUTSIDE_LABEL_BEFORE))
+                            ->for('kutrl_srv_custom_url_api'),
+                        (new Input('kutrl_srv_custom_url_api'))
+                            ->size(50)
+                            ->maxlenght(255)
+                            ->value((string) $config['url_api']),
+                    ]),
+                (new Note())
+                    ->class('form-note')
+                    ->text(__('Full path to API of the URL shortener. ex: "http://is.gd/api.php"')),
+                (new Para())
+                    ->items([
+                        (new Label(__('Short URL domain:'), Label::OUTSIDE_LABEL_BEFORE))
+                            ->for('kutrl_srv_custom_url_base'),
+                        (new Input('kutrl_srv_custom_url_base'))
+                            ->size(50)
+                            ->maxlenght(255)
+                            ->value((string) $config['url_base']),
+                    ]),
+                (new Note())
+                    ->class('form-note')
+                    ->text(__('Common part of the short URL. ex: "http://is.gd/"')),
+                (new Para())
+                    ->items([
+                        (new Label(__('API URL param:'), Label::OUTSIDE_LABEL_BEFORE))
+                            ->for('kutrl_srv_custom_url_param'),
+                        (new Input('kutrl_srv_custom_url_param'))
+                            ->size(50)
+                            ->maxlenght(255)
+                            ->value((string) $config['url_param']),
+                    ]),
+                (new Note())
+                    ->class('form-note')
+                    ->text(__('Param of the query. ex: "longurl"')),
+                (new Para())
+                    ->items([
+                        (new Checkbox('kutrl_srv_custom_url_encode', (bool) $config['url_encode']))
+                            ->value(1),
+                        (new Label(__('Encode URL'), Label::OUTSIDE_LABEL_AFTER))
+                            ->class('classic')
+                            ->for('kutrl_srv_custom_url_encode'),
+                    ]),
+            ]);
     }
 
-    public function testService()
+    public function testService(): bool
     {
         if (empty($this->url_api)) {
             return false;
@@ -100,7 +144,7 @@ class customKutrlService extends kutrlService
         return true;
     }
 
-    public function createHash($url, $hash = null)
+    public function createHash(string $url, ?string $hash = null)
     {
         $enc = $this->url_encode ? urlencode($url) : $url;
         $arg = [$this->url_param => $enc];

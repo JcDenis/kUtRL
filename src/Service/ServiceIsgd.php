@@ -10,23 +10,26 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return;
-}
+declare(strict_types=1);
 
-class isgdKutrlService extends kutrlService
+namespace Dotclear\Plugin\kUtRL\Service;
+
+use ArrayObject;
+use Dotclear\Plugin\kUtRL\Service;
+
+class ServiceIsgd extends Service
 {
     protected $config = [
-        'id'             => 'isgd',
-        'name'           => 'is.gd',
-        'home'           => 'http://is.gd/',
+        'id'   => 'isgd',
+        'name' => 'is.gd',
+        'home' => 'http://is.gd/',
 
         'url_api'        => 'http://is.gd/api.php',
         'url_base'       => 'http://is.gd/',
         'url_min_length' => 25,
     ];
 
-    public function testService()
+    public function testService(): bool
     {
         $arg = ['longurl' => urlencode($this->url_test)];
         if (!self::post($this->url_api, $arg, true, true)) {
@@ -38,7 +41,7 @@ class isgdKutrlService extends kutrlService
         return true;
     }
 
-    public function createHash($url, $hash = null)
+    public function createHash(string $url, ?string $hash = null)
     {
         $arg = ['longurl' => $url];
 
