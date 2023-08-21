@@ -18,17 +18,20 @@ $this->registerModule(
     'Links shortener',
     'Use, create and serve short url on your blog',
     'Jean-Christian Denis and contributors',
-    '2022.12.22',
+    '2022.08.21',
     [
-        'requires'    => [['core', '2.24']],
+        'requires' => [
+            ['core', '2.27'],
+            ['php', '8.1'],
+        ],
         'permissions' => dcCore::app()->auth->makePermissions([
             dcAuth::PERMISSION_USAGE,
             dcAuth::PERMISSION_CONTENT_ADMIN,
             dcAuth::PERMISSION_ADMIN,
         ]),
-        'type'        => 'plugin',
-        'support'     => 'https://github.com/JcDenis/' . basename(__DIR__),
-        'details'     => 'http://plugins.dotaddict.org/dc2/details/' . basename(__DIR__),
-        'repository'  => 'https://raw.githubusercontent.com/JcDenis/' . basename(__DIR__) . '/master/dcstore.xml',
+        'type'       => 'plugin',
+        'support'    => 'https://git.dotclear.watch/JcDenis/' . basename(__DIR__) . '/issues',
+        'details'    => 'https://git.dotclear.watch/JcDenis/' . basename(__DIR__) . '/src/branch/master/README.md',
+        'repository' => 'https://git.dotclear.watch/JcDenis/' . basename(__DIR__) . '/raw/branch/master/dcstore.xml',
     ]
 );
