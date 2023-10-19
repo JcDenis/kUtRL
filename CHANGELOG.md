@@ -1,3 +1,10 @@
+kUtRL 2023.10.19
+===========================================================
+* Require Dotclear 2.28
+* Require PHP 8.1
+* Upgrade to Dotclear 2.28
+* Upgrade plugin activityReport
+
 kUtRL 2023.08.21
 ===========================================================
 * Require Dotclear 2.27

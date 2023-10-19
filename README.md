@@ -1,8 +1,8 @@
 # README
 
-[![Release](https://img.shields.io/badge/release-2023.08.21-a2cbe9.svg)](https://git.dotclear.watch/JcDenis/kUtRL/releases)
-![Date](https://img.shields.io/badge/date-2023.08.21-c44d58.svg)
-[![Dotclear](https://img.shields.io/badge/dotclear-v2.27-137bbb.svg)](https://fr.dotclear.org/download)
+[![Release](https://img.shields.io/badge/release-2023.10.19-a2cbe9.svg)](https://git.dotclear.watch/JcDenis/kUtRL/releases)
+![Date](https://img.shields.io/badge/date-2023.10.19-c44d58.svg)
+[![Dotclear](https://img.shields.io/badge/dotclear-v2.28-137bbb.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-9ac123.svg)](https://plugins.dotaddict.org/dc2/details/kUtRL)
 [![License](https://img.shields.io/badge/license-GPL--2.0-ececec.svg)](https://git.dotclear.watch/JcDenis/kUtRL/src/branch/master/LICENSE)
 
@@ -14,7 +14,7 @@ _kUtRL_ is a plugin for the open-source web publishing software called [Dotclear
 
 ## REQUIREMENTS
 
-* Dotclear 2.27
+* Dotclear 2.28
 * PHP 8.1+
 * Dotclear admin permission to configure
 * No specials permissions to shorten links on the fly

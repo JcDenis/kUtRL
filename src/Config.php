@@ -1,20 +1,10 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Process;
 use Dotclear\Helper\Html\Form\{
@@ -30,7 +20,11 @@ use Dotclear\Helper\Html\Form\{
 use Exception;
 
 /**
- * Backend module configuration.
+ * @brief       kUtRL config class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class Config extends Process
 {
@@ -92,18 +86,18 @@ class Config extends Process
                     $o->saveSettings();
                 }
 
-                dcCore::app()->blog->triggerBlog();
+                App::blog()->triggerBlog();
 
                 Notices::addSuccessNotice(
                     __('Configuration successfully updated.')
                 );
 
-                dcCore::app()->admin->url->redirect(
+                App::backend()->url()->redirect(
                     'admin.plugins',
-                    ['module' => My::id(), 'conf' => 1, 'chk' => 1, 'redir' => dcCore::app()->admin->list->getRedir()]
+                    ['module' => My::id(), 'conf' => 1, 'chk' => 1, 'redir' => App::backend()->__get('list')->getRedir()]
                 );
             } catch (Exception $e) {
-                dcCore::app()->error->add($e->getMessage());
+                App::error()->add($e->getMessage());
             }
         }
 
@@ -166,7 +160,7 @@ class Config extends Process
                         $img_chk = $img_green . ' ' . sprintf(__('%s API is well configured and runing.'), $o->name);
                     }
                 } catch (Exception $e) {
-                    dcCore::app()->error->add(sprintf(__('Failed to test service %s: %s'), $o->name, $e->getMessage()));
+                    App::error()->add(sprintf(__('Failed to test service %s: %s'), $o->name, $e->getMessage()));
                 }
                 $s_items[] = (new Text(null, sprintf('<p><em>%s</em></p>', $img_chk) . $o->error->toHTML()));
             }

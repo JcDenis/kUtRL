@@ -1,39 +1,35 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
 use ArrayObject;
-use dcCore;
-use dcTemplate;
+use Dotclear\App;
 
+/**
+ * @brief       kUtRL frontend template.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class FrontendTemplate
 {
     public static function pageURL(ArrayObject$attr): string
     {
-        $f = dcCore::app()->tpl->getFilters($attr);
+        $f = App::frontend()->template()->getFilters($attr);
 
-        return '<?php echo ' . sprintf($f, 'dcCore::app()->blog->url.dcCore::app()->url->getBase("kutrl")') . '; ?>';
+        return '<?php echo ' . sprintf($f, 'App::blog()->url().App::url()->getBase("kutrl")') . '; ?>';
     }
 
     public static function pageIf(ArrayObject $attr, string $content): string
     {
-        $operator = isset($attr['operator']) ? dcTemplate::getOperator($attr['operator']) : '&&';
+        $operator = isset($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
 
         if (isset($attr['is_active'])) {
             $sign = (bool) $attr['is_active'] ? '' : '!';
-            $if[] = $sign . 'dcCore::app()->blog->settings->get("' . My::id() . '")->get("srv_local_public")';
+            $if[] = $sign . 'App::blog()->settings()->get("' . My::id() . '")->get("srv_local_public")';
         }
         if (empty($if)) {
             return $content;
@@ -47,11 +43,11 @@ class FrontendTemplate
 
     public static function pageMsgIf(ArrayObject$attr, string $content): string
     {
-        $operator = isset($attr['operator']) ? dcTemplate::getOperator($attr['operator']) : '&&';
+        $operator = isset($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
 
         if (isset($attr['has_message'])) {
             $sign = (bool) $attr['has_message'] ? '!' : '=';
-            $if[] = '"" ' . $sign . '= dcCore::app()->ctx->kutrl_msg';
+            $if[] = '"" ' . $sign . '= App::frontend()->context()->kutrl_msg';
         }
         if (empty($if)) {
             return $content;
@@ -65,19 +61,19 @@ class FrontendTemplate
 
     public static function pageMsg(ArrayObject$attr): string
     {
-        return '<?php echo dcCore::app()->ctx->kutrl_msg; ?>';
+        return '<?php echo App::frontend()->context()->kutrl_msg; ?>';
     }
 
     public static function humanField(ArrayObject $attr): string
     {
-        return "<?php echo sprintf(__('Confirm by writing \"%s\" in next field:'),dcCore::app()->ctx->kutrl_hmf); ?>";
+        return "<?php echo sprintf(__('Confirm by writing \"%s\" in next field:'),App::frontend()->context()->kutrl_hmf); ?>";
     }
 
     public static function humanFieldProtect(ArrayObject $attr): string
     {
         return
-        '<input type="hidden" name="hmfp" id="hmfp" value="<?php echo dcCore::app()->ctx->kutrl_hmfp; ?>" />' .
-        '<?php echo dcCore::app()->formNonce(); ?>';
+        '<input type="hidden" name="hmfp" id="hmfp" value="<?php echo App::frontend()->context()->kutrl_hmfp; ?>" />' .
+        '<?php echo App::nonce()->getFormNonce(); ?>';
     }
 
     public static function AttachmentKutrlIf(ArrayObject$attr, string $content): string
@@ -92,69 +88,69 @@ class FrontendTemplate
 
     public static function MediaKutrlIf(ArrayObject$attr, string $content): string
     {
-        return self::genericKutrlIf('dcCore::app()->ctx->file_url', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->file_url', $attr, $content);
     }
 
     public static function MediaKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('dcCore::app()->ctx->file_url', $attr);
+        return self::genericKutrl('App::frontend()->context()->file_url', $attr);
     }
 
     public static function EntryAuthorKutrlIf(ArrayObject$attr, string $content): string
     {
-        return self::genericKutrlIf('dcCore::app()->ctx->posts->user_url', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->posts->user_url', $attr, $content);
     }
 
     public static function EntryAuthorKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('dcCore::app()->ctx->posts->user_url', $attr);
+        return self::genericKutrl('App::frontend()->context()->posts->user_url', $attr);
     }
 
     public static function EntryKutrlIf(ArrayObject $attr, string $content): string
     {
-        return self::genericKutrlIf('dcCore::app()->ctx->posts->getURL()', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->posts->getURL()', $attr, $content);
     }
 
     public static function EntryKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('dcCore::app()->ctx->posts->getURL()', $attr);
+        return self::genericKutrl('App::frontend()->context()->posts->getURL()', $attr);
     }
 
     public static function CommentAuthorKutrlIf(ArrayObject $attr, string $content): string
     {
-        return self::genericKutrlIf('dcCore::app()->ctx->comments->getAuthorURL()', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->comments->getAuthorURL()', $attr, $content);
     }
 
     public static function CommentAuthorKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('dcCore::app()->ctx->comments->getAuthorURL()', $attr);
+        return self::genericKutrl('App::frontend()->context()->comments->getAuthorURL()', $attr);
     }
 
     public static function CommentPostKutrlIf(ArrayObject $attr, string $content): string
     {
-        return self::genericKutrlIf('dcCore::app()->ctx->comments->getPostURL()', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->comments->getPostURL()', $attr, $content);
     }
 
     public static function CommentPostKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('dcCore::app()->ctx->comments->getPostURL()', $attr);
+        return self::genericKutrl('App::frontend()->context()->comments->getPostURL()', $attr);
     }
 
     protected static function genericKutrlIf(string $str, ArrayObject $attr, string $content): string
     {
-        $operator = isset($attr['operator']) ? dcTemplate::getOperator($attr['operator']) : '&&';
+        $operator = isset($attr['operator']) ? App::fontend()->template()->getOperator($attr['operator']) : '&&';
 
         if (isset($attr['is_active'])) {
             $sign = (bool) $attr['is_active'] ? '' : '!';
-            $if[] = $sign . 'dcCore::app()->ctx->exists("kutrl")';
+            $if[] = $sign . 'App::frontend()->context()->exists("kutrl")';
         }
         if (isset($attr['passive_mode'])) {
             $sign = (bool) $attr['passive_mode'] ? '' : '!';
-            $if[] = $sign . 'dcCore::app()->ctx->kutrl_passive';
+            $if[] = $sign . 'App::frontend()->context()->kutrl_passive';
         }
         if (isset($attr['has_kutrl'])) {
             $sign = (bool) $attr['has_kutrl'] ? '!' : '=';
-            $if[] = '(dcCore::app()->ctx->exists("kutrl") && false ' . $sign . '== dcCore::app()->ctx->kutrl->select(' . $str . ',null,null,"kutrl"))';
+            $if[] = '(App::frontend()->context()->exists("kutrl") && false ' . $sign . '== App::frontend()->context()->kutrl->select(' . $str . ',null,null,"kutrl"))';
         }
         if (empty($if)) {
             return $content;
@@ -168,32 +164,32 @@ class FrontendTemplate
 
     protected static function genericKutrl(string $str, ArrayObject $attr): string
     {
-        $f = dcCore::app()->tpl->getFilters($attr);
+        $f = App::frontend()->template()->getFilters($attr);
 
         return
         "<?php \n" .
         # Preview
-        "if (dcCore::app()->ctx->preview) { \n" .
+        "if (App::frontend()->context()->preview) { \n" .
         ' echo ' . sprintf($f, $str) . '; ' .
         "} else { \n" .
         # Disable
-        "if (!dcCore::app()->ctx->exists('kutrl')) { \n" .
+        "if (!App::frontend()->context()->exists('kutrl')) { \n" .
         # Passive mode
-        ' if (dcCore::app()->ctx->kutrl_passive) { ' .
+        ' if (App::frontend()->context()->kutrl_passive) { ' .
         '  echo ' . sprintf($f, $str) . '; ' .
         " } \n" .
         "} else { \n" .
         # Existing
-        ' if (false !== ($kutrl_rs = dcCore::app()->ctx->kutrl->isKnowUrl(' . $str . '))) { ' .
-        '  echo ' . sprintf($f, 'dcCore::app()->ctx->kutrl->url_base.$kutrl_rs->hash') . '; ' .
+        ' if (false !== ($kutrl_rs = App::frontend()->context()->kutrl->isKnowUrl(' . $str . '))) { ' .
+        '  echo ' . sprintf($f, 'App::frontend()->context()->kutrl->url_base.$kutrl_rs->hash') . '; ' .
         " } \n" .
         # New
-        ' elseif (false !== ($kutrl_rs = dcCore::app()->ctx->kutrl->hash(' . $str . '))) { ' .
-        '  echo ' . sprintf($f, 'dcCore::app()->ctx->kutrl->url_base.$kutrl_rs->hash') . '; ' .
+        ' elseif (false !== ($kutrl_rs = App::frontend()->context()->kutrl->hash(' . $str . '))) { ' .
+        '  echo ' . sprintf($f, 'App::frontend()->context()->kutrl->url_base.$kutrl_rs->hash') . '; ' .
 
         # ex: Send new url to messengers
         ' if (!empty($kutrl_rs)) { ' .
-        "  dcCore::app()->callBehavior('publicAfterKutrlCreate',\$kutrl_rs,__('New public short URL')); " .
+        "  App::behavior()->callBehavior('publicAfterKutrlCreate',\$kutrl_rs,__('New public short URL')); " .
         " } \n" .
 
         " } \n" .

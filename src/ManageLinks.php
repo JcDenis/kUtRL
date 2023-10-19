@@ -1,20 +1,10 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\Filter\{
     Filters,
     FiltersLibrary
@@ -34,6 +24,13 @@ use Dotclear\Helper\Html\Form\{
     Text
 };
 
+/**
+ * @brief       kUtRL manage links class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class ManageLinks extends Process
 {
     private static Filters $kutrl_filter;
@@ -69,7 +66,7 @@ class ManageLinks extends Process
             $list_counter        = $log->getLogs($params, true)->f(0);
             self::$kutrl_listing = new LinksListing($list_all, $list_counter);
         } catch (Exception $e) {
-            dcCore::app()->error->add($e->getMessage());
+            App::error()->add($e->getMessage());
         }
 
         if (!empty($_POST['deletelinks'])) {
@@ -85,12 +82,12 @@ class ManageLinks extends Process
                     $o->remove($rs->kut_url);
                 }
 
-                dcCore::app()->blog->triggerBlog();
+                App::blog()->triggerBlog();
 
                 Notices::addSuccessNotice(__('Links successfully deleted'));
                 My::redirect(self::$kutrl_filter->values());
             } catch (Exception $e) {
-                dcCore::app()->error->add($e->getMessage());
+                App::error()->add($e->getMessage());
             }
         }
 

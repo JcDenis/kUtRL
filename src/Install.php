@@ -1,27 +1,20 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
-use dcNamespace;
+use Dotclear\App;
 use Dotclear\Core\Process;
 use Dotclear\Database\Structure;
 use Exception;
 
 /**
- * Module installation.
+ * @brief       kUtRL install class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class Install extends Process
 {
@@ -38,7 +31,7 @@ class Install extends Process
 
         try {
             // Table
-            $t = new Structure(dcCore::app()->con, dcCore::app()->prefix);
+            $t = new Structure(App::con(), App::con()->prefix());
             $t->{My::TABLE_NAME}
                 ->kut_id('bigint', 0, false)
                 ->blog_id('varchar', 32, false)
@@ -56,18 +49,18 @@ class Install extends Process
                 ->index('idx_kut_service', 'btree', 'kut_service')
                 ->index('idx_kut_type', 'btree', 'kut_type');
 
-            (new Structure(dcCore::app()->con, dcCore::app()->prefix))->synchronize($t);
+            (new Structure(App::con(), App::con()->prefix()))->synchronize($t);
 
             // upgrade version < 2022.12.22 : upgrade settings id and ns and array
-            $current = dcCore::app()->getVersion(My::id());
+            $current = App::version()->getVersion(My::id());
             if ($current && version_compare($current, '2022.12.22', '<')) {
-                $record = dcCore::app()->con->select(
-                    'SELECT * FROM ' . dcCore::app()->prefix . dcNamespace::NS_TABLE_NAME . ' ' .
+                $record = App::con()->select(
+                    'SELECT * FROM ' . App::con()->prefix() . App::blogWorkspace()::NS_TABLE_NAME . ' ' .
                     "WHERE setting_ns = 'kUtRL' "
                 );
                 while ($record->fetch()) {
                     if (preg_match('/^kutrl_(.*?)$/', $record->setting_id, $match)) {
-                        $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . dcNamespace::NS_TABLE_NAME);
+                        $cur = App::blogWorkspace()->openBlogWorkspace();
                         // avoid the use of serialize function
                         if (in_array($record->setting_id, ['kutrl_srv_custom'])) {
                             $cur->setting_value = json_encode(@unserialize(base64_decode((string) $record->setting_value)));
@@ -76,7 +69,7 @@ class Install extends Process
                         $cur->setting_ns = basename(__DIR__);
                         $cur->update(
                             "WHERE setting_id = '" . $record->setting_id . "' and setting_ns = 'kUtRL' " .
-                            'AND blog_id ' . (null === $record->blog_id ? 'IS NULL ' : ("= '" . dcCore::app()->con->escapeStr((string) $record->blog_id) . "' "))
+                            'AND blog_id ' . (null === $record->blog_id ? 'IS NULL ' : ("= '" . App::con()->escapeStr((string) $record->blog_id) . "' "))
                         );
                     }
                 }
@@ -110,7 +103,7 @@ class Install extends Process
 
             return true;
         } catch (Exception $e) {
-            dcCore::app()->error->add($e->getMessage());
+            App::error()->add($e->getMessage());
 
             return false;
         }

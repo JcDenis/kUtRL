@@ -1,24 +1,10 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * Generic class for shorten link service
- * A service class must extends this one
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
-use dcError;
+use Dotclear\App;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Form\{
     Div,
@@ -26,6 +12,13 @@ use Dotclear\Helper\Html\Form\{
 };
 use Dotclear\Helper\Network\HttpClient;
 
+/**
+ * @brief       kUtRL service class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class Service
 {
     public $error;
@@ -38,7 +31,7 @@ class Service
     {
         $this->settings = My::settings();
         $this->log      = new Logs();
-        $this->error    = new dcError();
+        $this->error    = App::error();
         //$this->error->setHTMLFormat('%s', "%s\n");
 
         $this->init();
@@ -144,7 +137,7 @@ class Service
     # Test if an url is from current blog
     public function isBlogUrl(string $url): bool
     {
-        $base = dcCore::app()->blog->url;
+        $base = App::blog()->url();
         $url  = substr($url, 0, strlen($base));
 
         return $url == $base;
@@ -177,7 +170,7 @@ class Service
      */
     public function hash(string $url, ?string $hash = null)
     {
-        $url = trim(dcCore::app()->con->escapeStr((string) $url));
+        $url = trim(App::con()->escapeStr((string) $url));
         if ('undefined' === $this->id) {
             return false;
         }
@@ -202,10 +195,10 @@ class Service
             }
 
             $this->log->insert($rs->url, $rs->hash, $rs->type, 'kutrl');
-            dcCore::app()->blog->triggerBlog();
+            App::blog()->triggerBlog();
 
             # --BEHAVIOR-- kutrlAfterCreateShortUrl
-            dcCore::app()->callBehavior('kutrlAfterCreateShortUrl', $rs);
+            App::behavior()->callBehavior('kutrlAfterCreateShortUrl', $rs);
         }
 
         return $rs;
@@ -214,11 +207,25 @@ class Service
     /**
      * Create a hash for a given url (and its custom hash).
      *
-     * @return  false|ArrayObject
+     * @return  false|MetaRecord
      */
     public function createHash(string $url, ?string $hash = null)
     {
         return false;
+    }
+
+    /**
+     * Get a shorlink record from values.
+     *
+     * @param   string  $hash   The hash
+     * @param   string  $url    The url
+     * @param   string  $type   The type
+     *
+     * @return  MetaRecord  The link description record
+     */
+    public function fromValue(string $hash, string $url, string $type): MetaRecord
+    {
+        return MetaRecord::newFromArray([['hash' => $hash, 'url' => $url, 'type' => $type]]);
     }
 
     /**

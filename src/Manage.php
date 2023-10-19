@@ -1,20 +1,10 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\{
     Notices,
     Page
@@ -32,6 +22,13 @@ use Dotclear\Helper\Html\Form\{
 };
 use Dotclear\Helper\Html\Html;
 
+/**
+ * @brief       kUtRL manage class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class Manage extends Process
 {
     public static function init(): bool
@@ -59,7 +56,7 @@ class Manage extends Process
             if (null === $kut) {
                 throw new Exception('Unknow service');
             }
-            $url  = trim(dcCore::app()->con->escapeStr((string) $_POST['str']));
+            $url  = trim(App::con()->escapeStr((string) $_POST['str']));
             $hash = empty($_POST['custom']) ? null : $_POST['custom'];
 
             if (empty($url)) {
@@ -117,12 +114,12 @@ class Manage extends Process
 
                     # ex: Send new url to messengers
                     if (!empty($rs)) {
-                        dcCore::app()->callBehavior('adminAfterKutrlCreate', $rs, __('New short URL'));
+                        App::behavior()->callBehavior('adminAfterKutrlCreate', $rs, __('New short URL'));
                     }
                 }
             }
         } catch (Exception $e) {
-            dcCore::app()->error->add($e->getMessage());
+            App::error()->add($e->getMessage());
         }
 
         return true;

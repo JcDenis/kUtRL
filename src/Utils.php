@@ -1,24 +1,19 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * Generic class to play easily with services
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
+use Dotclear\App;
 use Exception;
 
+/**
+ * @brief       kUtRL utils.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class Utils
 {
     /**
@@ -28,7 +23,7 @@ class Utils
      */
     public static function getServices(): ?array
     {
-        $list = dcCore::app()->getBehaviors('kutrlService');
+        $list = App::behavior()->getBehavior('kutrlService');
 
         if (empty($list)) {
             return [];

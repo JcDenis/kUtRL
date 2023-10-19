@@ -1,25 +1,18 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
-
+use Dotclear\App;
 use Dotclear\Core\Process;
 
 /**
- * Frontend prepend.
+ * @brief       kUtRL frontend class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class Frontend extends Process
 {
@@ -34,41 +27,40 @@ class Frontend extends Process
             return false;
         }
 
-        dcCore::app()->tpl->setPath(
-            dcCore::app()->tpl->getPath(),
+        App::frontend()->template()->setPath(
+            App::frontend()->template()->getPath(),
             My::path() . DIRECTORY_SEPARATOR . 'default-templates'
         );
-        dcCore::app()->addBehavior('initWidgets', [Widgets::class, 'initShorten']);
-        dcCore::app()->addBehavior('initWidgets', [Widgets::class, 'initRank']);
 
-        dcCore::app()->addBehaviors([
-            'publicBeforeDocumentV2'      => [FrontendBehaviors::class, 'publicBeforeDocumentV2'],
-            'publicHeadContent'           => [FrontendBehaviors::class, 'publicHeadContent'],
-            'publicBeforeContentFilterV2' => [FrontendBehaviors::class, 'publicBeforeContentFilterV2'],
-            'templateBeforeValueV2'       => [FrontendBehaviors::class, 'templateBeforeValueV2'],
-            'templateAfterValueV2'        => [FrontendBehaviors::class, 'templateAfterValueV2'],
+        App::behavior()->addBehaviors([
+            'initWidgets'                 => Widgets::init(...),
+            'publicBeforeDocumentV2'      => FrontendBehaviors::publicBeforeDocumentV2(...),
+            'publicHeadContent'           => FrontendBehaviors::publicHeadContent(...),
+            'publicBeforeContentFilterV2' => FrontendBehaviors::publicBeforeContentFilterV2(...),
+            'templateBeforeValueV2'       => FrontendBehaviors::templateBeforeValueV2(...),
+            'templateAfterValueV2'        => FrontendBehaviors::templateAfterValueV2(...),
         ]);
 
-        dcCore::app()->tpl->addBlock('kutrlPageIf', [FrontendTemplate::class, 'pageIf']);
-        dcCore::app()->tpl->addBlock('kutrlMsgIf', [FrontendTemplate::class, 'pageMsgIf']);
+        App::frontend()->template()->addBlock('kutrlPageIf', FrontendTemplate::pageIf(...));
+        App::frontend()->template()->addBlock('kutrlMsgIf', FrontendTemplate::pageMsgIf(...));
 
-        dcCore::app()->tpl->addValue('kutrlPageURL', [FrontendTemplate::class, 'pageURL']);
-        dcCore::app()->tpl->addValue('kutrlMsg', [FrontendTemplate::class, 'pageMsg']);
-        dcCore::app()->tpl->addValue('kutrlHumanField', [FrontendTemplate::class, 'humanField']);
-        dcCore::app()->tpl->addValue('kutrlHumanFieldProtect', [FrontendTemplate::class, 'humanFieldProtect']);
+        App::frontend()->template()->addValue('kutrlPageURL', FrontendTemplate::pageURL(...));
+        App::frontend()->template()->addValue('kutrlMsg', FrontendTemplate::pageMsg(...));
+        App::frontend()->template()->addValue('kutrlHumanField', FrontendTemplate::humanField(...));
+        App::frontend()->template()->addValue('kutrlHumanFieldProtect', FrontendTemplate::humanFieldProtect(...));
 
-        dcCore::app()->tpl->addBlock('AttachmentKutrlIf', [FrontendTemplate::class, 'AttachmentKutrlIf']);
-        dcCore::app()->tpl->addValue('AttachmentKutrl', [FrontendTemplate::class, 'AttachmentKutrl']);
-        dcCore::app()->tpl->addBlock('MediaKutrlIf', [FrontendTemplate::class, 'MediaKutrlIf']);
-        dcCore::app()->tpl->addValue('MediaKutrl', [FrontendTemplate::class, 'MediaKutrl']);
-        dcCore::app()->tpl->addBlock('EntryAuthorKutrlIf', [FrontendTemplate::class, 'EntryAuthorKutrlIf']);
-        dcCore::app()->tpl->addValue('EntryAuthorKutrl', [FrontendTemplate::class, 'EntryAuthorKutrl']);
-        dcCore::app()->tpl->addBlock('EntryKutrlIf', [FrontendTemplate::class, 'EntryKutrlIf']);
-        dcCore::app()->tpl->addValue('EntryKutrl', [FrontendTemplate::class, 'EntryKutrl']);
-        dcCore::app()->tpl->addBlock('CommentAuthorKutrlIf', [FrontendTemplate::class, 'CommentAuthorKutrlIf']);
-        dcCore::app()->tpl->addValue('CommentAuthorKutrl', [FrontendTemplate::class, 'CommentAuthorKutrl']);
-        dcCore::app()->tpl->addBlock('CommentPostKutrlIf', [FrontendTemplate::class, 'CommentPostKutrlIf']);
-        dcCore::app()->tpl->addValue('CommentPostKutrl', [FrontendTemplate::class, 'CommentPostKutrl']);
+        App::frontend()->template()->addBlock('AttachmentKutrlIf', FrontendTemplate::AttachmentKutrlIf(...));
+        App::frontend()->template()->addValue('AttachmentKutrl', FrontendTemplate::AttachmentKutrl(...));
+        App::frontend()->template()->addBlock('MediaKutrlIf', FrontendTemplate::MediaKutrlIf(...));
+        App::frontend()->template()->addValue('MediaKutrl', FrontendTemplate::MediaKutrl(...));
+        App::frontend()->template()->addBlock('EntryAuthorKutrlIf', FrontendTemplate::EntryAuthorKutrlIf(...));
+        App::frontend()->template()->addValue('EntryAuthorKutrl', FrontendTemplate::EntryAuthorKutrl(...));
+        App::frontend()->template()->addBlock('EntryKutrlIf', FrontendTemplate::EntryKutrlIf(...));
+        App::frontend()->template()->addValue('EntryKutrl', FrontendTemplate::EntryKutrl(...));
+        App::frontend()->template()->addBlock('CommentAuthorKutrlIf', FrontendTemplate::CommentAuthorKutrlIf(...));
+        App::frontend()->template()->addValue('CommentAuthorKutrl', FrontendTemplate::CommentAuthorKutrl(...));
+        App::frontend()->template()->addBlock('CommentPostKutrlIf', FrontendTemplate::CommentPostKutrlIf(...));
+        App::frontend()->template()->addValue('CommentPostKutrl', FrontendTemplate::CommentPostKutrl(...));
 
         return true;
     }

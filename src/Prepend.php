@@ -1,24 +1,18 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Process;
 
 /**
- * Module prepend.
+ * @brief       kUtRL prepend class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class Prepend extends Process
 {
@@ -51,45 +45,40 @@ class Prepend extends Process
         }
 
         # Services
-        dcCore::app()->addBehavior('kutrlService', fn () => ['default', Service\ServiceDefault::class]);
+        App::behavior()->addBehavior('kutrlService', fn () => ['default', Service\ServiceDefault::class]);
         if (!defined('SHORTEN_SERVICE_DISABLE_CUSTOM')) {
-            dcCore::app()->addBehavior('kutrlService', fn () => ['custom', Service\ServiceCustom::class]);
+            App::behavior()->addBehavior('kutrlService', fn () => ['custom', Service\ServiceCustom::class]);
         }
         if (!defined('SHORTEN_SERVICE_DISABLE_LOCAL')) {
-            dcCore::app()->addBehavior('kutrlService', fn () => ['local', Service\ServiceLocal::class]);
+            App::behavior()->addBehavior('kutrlService', fn () => ['local', Service\ServiceLocal::class]);
         }
         if (!defined('SHORTEN_SERVICE_DISABLE_BILBOLINKS')) {
-            dcCore::app()->addBehavior('kutrlService', fn () => ['bilbolinks', Service\ServiceBilbolinks::class]);
+            App::behavior()->addBehavior('kutrlService', fn () => ['bilbolinks', Service\ServiceBilbolinks::class]);
         }
         if (!defined('SHORTEN_SERVICE_DISABLE_BITLY')) {
-            dcCore::app()->addBehavior('kutrlService', fn () => ['bitly', Service\ServiceBitly::class]);
+            App::behavior()->addBehavior('kutrlService', fn () => ['bitly', Service\ServiceBitly::class]);
         }
         if (!defined('SHORTEN_SERVICE_DISABLE_ISGD')) {
-            dcCore::app()->addBehavior('kutrlService', fn () => ['isgd', Service\ServiceIsgd::class]);
+            App::behavior()->addBehavior('kutrlService', fn () => ['isgd', Service\ServiceIsgd::class]);
         }
         if (!defined('SHORTEN_SERVICE_DISABLE_YOURLS')) {
-            dcCore::app()->addBehavior('kutrlService', fn () => ['yourls', Service\ServiceYourls::class]);
+            App::behavior()->addBehavior('kutrlService', fn () => ['yourls', Service\ServiceYourls::class]);
         }
 
         # Shorten url passed through wiki functions
-        dcCore::app()->addBehaviors([
-            'coreInitWikiPost'          => [Wiki::class, 'coreInitWiki'],
-            'coreInitWikiComment'       => [Wiki::class, 'coreInitWiki'],
-            'coreInitWikiSimpleComment' => [Wiki::class,'coreInitWiki'],
+        App::behavior()->addBehaviors([
+            'coreInitWikiPost'          => Wiki::coreInitWiki(...),
+            'coreInitWikiComment'       => Wiki::coreInitWiki(...),
+            'coreInitWikiSimpleComment' => Wiki::coreInitWiki(...),
         ]);
 
         # Public page
-        dcCore::app()->url->register(
+        App::url()->register(
             'kutrl',
             'go',
             '^go(/(.*?)|)$',
-            [FrontendUrl::class, 'redirectUrl']
+            FrontendUrl::redirectUrl(...)
         );
-
-        # Add kUtRL events on plugin activityReport
-        if (defined('ACTIVITY_REPORT_V2')) {
-            require_once $d . 'lib.kutrl.activityreport.php';
-        }
 
         return true;
     }

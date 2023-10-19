@@ -1,20 +1,9 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL\Service;
 
-use ArrayObject;
 use Dotclear\Helper\Html\Form\{
     Div,
     Input,
@@ -24,6 +13,13 @@ use Dotclear\Helper\Html\Form\{
 };
 use Dotclear\Plugin\kUtRL\Service;
 
+/**
+ * @brief       kUtRL bilbolinks service class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class ServiceBilbolinks extends Service
 {
     protected $config = [
@@ -106,11 +102,10 @@ class ServiceBilbolinks extends Service
 
             return false;
         }
-        $rs       = new ArrayObject();
-        $rs->hash = str_replace($this->url_base, '', $response);
-        $rs->url  = $url;
-        $rs->type = $this->id;
-
-        return $rs;
+        return $this->fromValue(
+            str_replace($this->url_base, '', $response),
+            $url,
+            $this->id
+        );
     }
 }

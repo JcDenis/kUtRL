@@ -1,21 +1,11 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
 use ArrayObject;
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\Filter\Filters;
 use Dotclear\Core\Backend\Listing\{
     Listing,
@@ -32,6 +22,13 @@ use Dotclear\Helper\Html\Form\{
 };
 use Dotclear\Helper\Html\Html;
 
+/**
+ * @brief       kUtRL links listing.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class LinksListing extends Listing
 {
     public function display(Filters $filter, string $enclose_block): void
@@ -134,7 +131,7 @@ class LinksListing extends Listing
                 ]),
             'kut_hash' => (new Text('td', $hash))
                 ->class('nowrap'),
-            'kut_dt' => (new Text('td', Html::escapeHTML(Date::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, dcCore::app()->auth->getInfo('user_tz')))))
+            'kut_dt' => (new Text('td', Html::escapeHTML(Date::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, App::auth()->getInfo('user_tz')))))
                 ->class('nowrap'),
             'kut_service' => (new Text('td', $type))
                 ->class('nowrap'),

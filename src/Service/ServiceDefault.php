@@ -1,20 +1,9 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL\Service;
 
-use ArrayObject;
 use Dotclear\Helper\Html\Form\{
     Div,
     Note,
@@ -23,11 +12,18 @@ use Dotclear\Helper\Html\Form\{
 };
 use Dotclear\Plugin\kUtRL\Service;
 
-# nb: "default" ne veut pas dire service par défaut
-# mais service simple et rapide configuré par des constantes
-# cela permet de configurer ces constantes dans le fichier
-# config de Dotclear pour une plateforme complète.
-
+/**
+ * @brief       kUtRL default service class.
+ * @ingroup     kUtRL
+ *
+ * Note: "default" ne veut pas dire service par défaut
+ * mais service simple et rapide configuré par des constantes
+ * cela permet de configurer ces constantes dans le fichier
+ * config de Dotclear pour une plateforme complète.
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class ServiceDefault extends Service
 {
     protected function init(): void
@@ -98,11 +94,10 @@ class ServiceDefault extends Service
             return false;
         }
 
-        $rs       = new ArrayObject();
-        $rs->hash = str_replace($this->url_base, '', $response);
-        $rs->url  = $url;
-        $rs->type = $this->id;
-
-        return $rs;
+        return $this->fromValue(
+            str_replace($this->url_base, '', $response),
+            $url,
+            $this->id
+        );
     }
 }

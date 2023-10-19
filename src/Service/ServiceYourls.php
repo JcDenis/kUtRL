@@ -1,20 +1,9 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL\Service;
 
-use ArrayObject;
 use Dotclear\Helper\Html\Form\{
     Div,
     Input,
@@ -24,6 +13,13 @@ use Dotclear\Helper\Html\Form\{
 };
 use Dotclear\Plugin\kUtRL\Service;
 
+/**
+ * @brief       kUtRL yourls service class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class ServiceYourls extends Service
 {
     protected $config = [
@@ -142,12 +138,11 @@ class ServiceYourls extends Service
         $rsp = @simplexml_load_string($response);
 
         if ($rsp && $rsp->status == 'success') {
-            $rs       = new ArrayObject();
-            $rs->hash = $rsp->url[0]->keyword;
-            $rs->url  = $url;
-            $rs->type = $this->id;
-
-            return $rs;
+            return $this->fromValue(
+                $rsp->url[0]->keyword,
+                $url,
+                $this->id
+            );
         }
         $this->error->add(__('Unreadable service response.'));
 

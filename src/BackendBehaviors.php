@@ -1,27 +1,20 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
 use ArrayObject;
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\{
     Action\ActionsPosts,
     Favorites,
     Notices
 };
-use Dotclear\Database\MetaRecord;
+use Dotclear\Database\{
+    Cursor,
+    MetaRecord
+};
 use Dotclear\Helper\Html\Form\{
     Checkbox,
     Div,
@@ -35,7 +28,13 @@ use Dotclear\Helper\Html\Form\{
 use Dotclear\Helper\Html\Html;
 use Exception;
 
-# Admin behaviors class
+/**
+ * @brief       kUtRL backend behaviors.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class BackendBehaviors
 {
     public static function antispamDashboardFavoritesV2(Favorites $favs): void
@@ -47,7 +46,7 @@ class BackendBehaviors
                 'url'         => My::manageUrl(),
                 'small-icon'  => My::icons(),
                 'large-icon'  => My::icons(),
-                'permissions' => dcCore::app()->auth->makePermissions([dcCore::app()->auth::PERMISSION_ADMIN]),
+                'permissions' => App::auth()->makePermissions([App::auth()::PERMISSION_ADMIN]),
             ]
         );
     }
@@ -182,7 +181,7 @@ class BackendBehaviors
             return;
         }
 
-        $rs = dcCore::app()->blog->getPosts(['post_id' => $post_id]);
+        $rs = App::blog()->getPosts(['post_id' => $post_id]);
         if ($rs->isEmpty()) {
             return;
         }
@@ -205,7 +204,7 @@ class BackendBehaviors
 
             # ex: Send new url to messengers
             if (!empty($rs)) {
-                dcCore::app()->callBehavior('adminAfterKutrlCreate', $rs, $title);
+                App::behavior()->callBehavior('adminAfterKutrlCreate', $rs, $title);
             }
         }
     }
@@ -219,7 +218,7 @@ class BackendBehaviors
             return;
         }
 
-        $rs = dcCore::app()->blog->getPosts(['post_id' => $post_id]);
+        $rs = App::blog()->getPosts(['post_id' => $post_id]);
         if ($rs->isEmpty()) {
             return;
         }
@@ -233,7 +232,7 @@ class BackendBehaviors
 
         # ex: Send new url to messengers
         if (!empty($rs)) {
-            dcCore::app()->callBehavior('adminAfterKutrlCreate', $rs, $title);
+            App::behavior()->callBehavior('adminAfterKutrlCreate', $rs, $title);
         }
     }
 
@@ -245,7 +244,7 @@ class BackendBehaviors
             return;
         }
 
-        $rs = dcCore::app()->blog->getPosts(['post_id' => $post_id]);
+        $rs = App::blog()->getPosts(['post_id' => $post_id]);
         if ($rs->isEmpty()) {
             return;
         }
@@ -256,17 +255,17 @@ class BackendBehaviors
     public static function adminPostsActions(ActionsPosts $pa): void
     {
         if (!My::settings()->get('active')
-         || !dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([dcCore::app()->auth::PERMISSION_ADMIN]), dcCore::app()->blog->id)) {
+         || !App::auth()->check(App::auth()->makePermissions([App::auth()::PERMISSION_ADMIN]), App::blog()->id())) {
             return;
         }
 
         $pa->addAction(
             [My::name() => [__('Create short link') => 'kutrl_create']],
-            [self::class, 'callbackCreate']
+            self::callbackCreate(...)
         );
         $pa->addAction(
             [My::name() => [__('Delete short link') => 'kutrl_delete']],
-            [self::class, 'callbackDelete']
+            self::callbackDelete(...)
         );
     }
 
@@ -279,7 +278,7 @@ class BackendBehaviors
         }
 
         # No right
-        if (!dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([dcCore::app()->auth::PERMISSION_ADMIN]), dcCore::app()->blog->id)) {
+        if (!App::auth()->check(App::auth()->makePermissions([App::auth()::PERMISSION_ADMIN]), App::blog()->id())) {
             throw new Exception(__('No enough right'));
         }
 
@@ -288,7 +287,7 @@ class BackendBehaviors
         }
 
         # retrieve posts info and create hash
-        $posts = dcCore::app()->blog->getPosts(['post_id' => $posts_ids]);
+        $posts = App::blog()->getPosts(['post_id' => $posts_ids]);
         while ($posts->fetch()) {
             $kut->hash($posts->getURL());
         }
@@ -306,7 +305,7 @@ class BackendBehaviors
         }
 
         # No right
-        if (!dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([dcCore::app()->auth::PERMISSION_ADMIN]), dcCore::app()->blog->id)) {
+        if (!App::auth()->check(App::auth()->makePermissions([App::auth()::PERMISSION_ADMIN]), App::blog()->id())) {
             throw new Exception(__('No enough right'));
         }
 
@@ -315,7 +314,7 @@ class BackendBehaviors
         }
 
         # retrieve posts info and create hash
-        $posts = dcCore::app()->blog->getPosts(['post_id' => $posts_ids]);
+        $posts = App::blog()->getPosts(['post_id' => $posts_ids]);
         while ($posts->fetch()) {
             $kut->remove($posts->getURL());
         }

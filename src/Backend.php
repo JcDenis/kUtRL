@@ -1,24 +1,18 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Process;
 
 /**
- * Backend prepend.
+ * @brief       kUtRL backend class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class Backend extends Process
 {
@@ -38,29 +32,27 @@ class Backend extends Process
 
         # Admin behaviors
         if (My::settings()->get('active')) {
-            dcCore::app()->addBehaviors([
-                'adminDashboardFavoritesV2' => [BackendBehaviors::class, 'antispamDashboardFavoritesV2'],
-                'adminColumnsListsV2'       => [BackendBehaviors::class, 'adminColumnsListsV2'],
-                'adminFiltersListsV2'       => [BackendBehaviors::class, 'adminFiltersListsV2'],
-                'adminPostHeaders'          => [BackendBehaviors::class, 'adminPostHeaders'],
-                'adminPostFormItems'        => [BackendBehaviors::class, 'adminPostFormItems'],
-                'adminAfterPostUpdate'      => [BackendBehaviors::class, 'adminAfterPostUpdate'], // update existing short url
-                'adminAfterPostUpdate'      => [BackendBehaviors::class, 'adminAfterPostCreate'], // create new short url
-                'adminAfterPostCreate'      => [BackendBehaviors::class, 'adminAfterPostCreate'],
-                'adminBeforePostDelete'     => [BackendBehaviors::class, 'adminBeforePostDelete'],
-                'adminPostsActions'         => [BackendBehaviors::class, 'adminPostsActions'],
+            App::behavior()->addBehaviors([
+                'adminDashboardFavoritesV2' => BackendBehaviors::antispamDashboardFavoritesV2(...),
+                'adminColumnsListsV2'       => BackendBehaviors::adminColumnsListsV2(...),
+                'adminFiltersListsV2'       => BackendBehaviors::adminFiltersListsV2(...),
+                'adminPostHeaders'          => BackendBehaviors::adminPostHeaders(...),
+                'adminPostFormItems'        => BackendBehaviors::adminPostFormItems(...),
+                'adminAfterPostUpdate'      => BackendBehaviors::adminAfterPostUpdate(...), // update existing short url
+                'adminAfterPostUpdate'      => BackendBehaviors::adminAfterPostCreate(...), // create new short url
+                'adminAfterPostCreate'      => BackendBehaviors::adminAfterPostCreate(...),
+                'adminBeforePostDelete'     => BackendBehaviors::adminBeforePostDelete(...),
+                'adminPostsActions'         => BackendBehaviors::adminPostsActions(...),
             ]);
         }
 
-        dcCore::app()->addBehavior('initWidgets', [Widgets::class, 'initShorten']);
-        dcCore::app()->addBehavior('initWidgets', [Widgets::class, 'initRank']);
-
-        dcCore::app()->addBehaviors([
-            'exportFullV2'   => [ImportExportBehaviors::class, 'exportFullV2'],
-            'exportSingleV2' => [ImportExportBehaviors::class, 'exportSingleV2'],
-            'importInitV2'   => [ImportExportBehaviors::class, 'importInitV2'],
-            'importSingleV2' => [ImportExportBehaviors::class, 'importSingleV2'],
-            'importFullV2'   => [ImportExportBehaviors::class, 'importFullV2'],
+        App::behavior()->addBehaviors([
+            'initWidgets'    => Widgets::init(...),
+            'exportFullV2'   => ImportExportBehaviors::exportFullV2(...),
+            'exportSingleV2' => ImportExportBehaviors::exportSingleV2(...),
+            'importInitV2'   => ImportExportBehaviors::importInitV2(...),
+            'importSingleV2' => ImportExportBehaviors::importSingleV2(...),
+            'importFullV2'   => ImportExportBehaviors::importFullV2(...),
         ]);
 
         return true;

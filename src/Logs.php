@@ -1,22 +1,10 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * This file contents class to acces local short links records
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Database\Statement\{
     DeleteStatement,
@@ -25,6 +13,13 @@ use Dotclear\Database\Statement\{
     UpdateStatement
 };
 
+/**
+ * @brief       kUtRL logs class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class Logs
 {
     public $table;
@@ -32,8 +27,8 @@ class Logs
 
     public function __construct()
     {
-        $this->table = dcCore::app()->prefix . My::TABLE_NAME;
-        $this->con   = dcCore::app()->con;
+        $this->table = App::con()->prefix() . My::TABLE_NAME;
+        $this->con   = App::con();
     }
 
     public function nextId(): int
@@ -57,7 +52,7 @@ class Logs
 
         try {
             $cur->kut_id      = $this->nextId();
-            $cur->blog_id     = dcCore::app()->blog->id;
+            $cur->blog_id     = App::blog()->id();
             $cur->kut_url     = (string) $url;
             $cur->kut_hash    = (string) $hash;
             $cur->kut_type    = (string) $type;
@@ -101,7 +96,7 @@ class Logs
                 $sql->as('kut_counter', 'counter'),
             ])
             ->from($this->table)
-            ->where('blog_id = ' . $sql->quote(dcCore::app()->blog->id))
+            ->where('blog_id = ' . $sql->quote(App::blog()->id()))
             ->and('kut_service = ' . $sql->quote($service))
         ;
 
@@ -135,7 +130,7 @@ class Logs
             $cur->kut_counter = 0;
 
             $cur->update(
-                "WHERE blog_id='" . $this->con->escapeStr(dcCore::app()->blog->id) . "' " .
+                "WHERE blog_id='" . $this->con->escapeStr(App::blog()->id()) . "' " .
                 "AND kut_id='" . $id . "' "
             );
             $this->con->unlock();
@@ -155,7 +150,7 @@ class Logs
         $sql = new DeleteStatement();
         $sql
             ->from($this->table)
-            ->where('blog_id = ' . $sql->quote(dcCore::app()->blog->id))
+            ->where('blog_id = ' . $sql->quote(App::blog()->id()))
             ->and('kut_id = ' . $id)
             ->delete();
 
@@ -168,7 +163,7 @@ class Logs
         $rs  = $sql
             ->column('kut_counter')
             ->from($this->table)
-            ->where('blog_id = ' . $sql->quote((string) dcCore::app()->blog?->id))
+            ->where('blog_id = ' . $sql->quote(App::blog()->id()))
             ->and('kut_id = ' . $id)
             ->select();
 
@@ -188,7 +183,7 @@ class Logs
         $ret = $sql->ref($this->table)
             ->column('kut_counter')
             ->value($counter)
-            ->where('blog_id = ' . $sql->quote((string) dcCore::app()->blog?->id))
+            ->where('blog_id = ' . $sql->quote(App::blog()->id()))
             ->and('kut_id = ' . $id)
             ->update();
 
@@ -221,7 +216,7 @@ class Logs
             $sql->from($params['from']);
         }
 
-        $sql->where('S.blog_id = ' . $sql->quote(dcCore::app()->blog->id));
+        $sql->where('S.blog_id = ' . $sql->quote(App::blog()->id()));
 
         if (isset($params['kut_service'])) {
             $sql->and('kut_service = ' . $sql->quote($params['kut_service']));

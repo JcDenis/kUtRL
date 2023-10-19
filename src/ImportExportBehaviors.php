@@ -1,22 +1,18 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use dcCore;
+use Dotclear\App;
 
-# Import/export behaviors for Import/export plugin
+/**
+ * @brief       kUtRL importExport stuff.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class ImportExportBehaviors
 {
     public static function exportSingleV2($exp, $blog_id)
@@ -25,7 +21,7 @@ class ImportExportBehaviors
             My::TABLE_NAME,
             'SELECT kut_id, blog_id, kut_service, kut_type, ' .
             'kut_hash, kut_url, kut_dt, kut_password, kut_counter ' .
-            'FROM ' . dcCore::app()->prefix . My::TABLE_NAME . ' ' .
+            'FROM ' . App::con()->prefix() . My::TABLE_NAME . ' ' .
             "WHERE blog_id = '" . $blog_id . "' "
         );
     }
@@ -37,7 +33,7 @@ class ImportExportBehaviors
 
     public static function importInitV2($bk)
     {
-        $bk->cur_kutrl = dcCore::app()->con->openCursor(dcCore::app()->prefix . My::TABLE_NAME);
+        $bk->cur_kutrl = App::con()->openCursor(App::con()->prefix() . My::TABLE_NAME);
         $bk->kutrl     = new Logs();
     }
 

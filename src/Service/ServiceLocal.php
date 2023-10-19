@@ -1,21 +1,10 @@
 <?php
-/**
- * @brief kUtRL, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL\Service;
 
-use ArrayObject;
-use dcCore;
+use Dotclear\App;
 use Dotclear\Helper\Html\Form\{
     Checkbox,
     Div,
@@ -29,6 +18,13 @@ use Dotclear\Helper\Html\Form\{
 use Dotclear\Helper\Html\Html;
 use Dotclear\Plugin\kUtRL\Service;
 
+/**
+ * @brief       kUtRL local service class.
+ * @ingroup     kUtRL
+ *
+ * @author      Jean-Christian Denis (author)
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class ServiceLocal extends Service
 {
     protected $config = [
@@ -44,7 +40,7 @@ class ServiceLocal extends Service
         $protocols                       = (string) $this->settings->get('srv_local_protocols');
         $this->config['allow_protocols'] = empty($protocols) ? [] : explode(',', $protocols);
 
-        $this->config['url_base']    = dcCore::app()->blog->url . dcCore::app()->url->getBase('kutrl') . '/';
+        $this->config['url_base']    = App::blog()->url() . App::url()->getBase('kutrl') . '/';
         $this->config['url_min_len'] = strlen($this->url_base) + 2;
     }
 
@@ -159,19 +155,19 @@ class ServiceLocal extends Service
     public function createHash(string $url, ?string $hash = null)
     {
         # Create response object
-        $rs       = new ArrayObject();
-        $rs->type = 'local';
-        $rs->url  = $url;
+        $rs_hash = '';
+        $rs_type = 'local';
+        $rs_url  = $url;
 
         # Normal link
         if ($hash === null) {
             $type     = 'localnormal';
-            $rs->hash = $this->next($this->last('localnormal'));
+            $rs_hash = $this->next($this->last('localnormal'));
 
             # Mixed custom link
         } elseif (preg_match('/^([A-Za-z0-9]{2,})\!\!$/', $hash, $m)) {
             $type     = 'localmix';
-            $rs->hash = $m[1] . $this->next(-1, $m[1]);
+            $rs_hash = $m[1] . $this->next(-1, $m[1]);
 
             # Custom link
         } elseif (preg_match('/^[A-Za-z0-9\.\-\_]{2,}$/', $hash)) {
@@ -181,7 +177,7 @@ class ServiceLocal extends Service
                 return false;
             }
             $type     = 'localcustom';
-            $rs->hash = $hash;
+            $rs_hash = $hash;
 
             # Wrong char in custom hash
         } else {
@@ -192,9 +188,13 @@ class ServiceLocal extends Service
 
         # Save link
         try {
-            $this->log->insert($rs->url, $rs->hash, $type, $rs->type);
+            $this->log->insert($rs_url, $rs_hash, $type, $rs_type);
 
-            return $rs;
+            return $this->fromValue(
+                $rs_hash,
+                $rs_url,
+                $rs_type
+            );
         } catch (Exception $e) {
             $this->error->add(__('Failed to save link.'));
         }
