@@ -65,7 +65,7 @@ class ServiceYourls extends Service
                             ->for('kutrl_srv_yourls_base'),
                         (new Input('kutrl_srv_yourls_base'))
                             ->size(50)
-                            ->maxlenght(255)
+                            ->maxlength(255)
                             ->value((string) $this->settings->get('srv_yourls_base')),
                         (new Note())
                             ->class('form-note')
@@ -77,7 +77,7 @@ class ServiceYourls extends Service
                             ->for('kutrl_srv_yourls_username'),
                         (new Input('kutrl_srv_yourls_username'))
                             ->size(50)
-                            ->maxlenght(255)
+                            ->maxlength(255)
                             ->value((string) $this->settings->get('srv_yourls_username')),
                         (new Note())
                             ->class('form-note')
@@ -89,7 +89,7 @@ class ServiceYourls extends Service
                             ->for('kutrl_srv_yourls_password'),
                         (new Input('kutrl_srv_yourls_password'))
                             ->size(50)
-                            ->maxlenght(255)
+                            ->maxlength(255)
                             ->value((string) $this->settings->get('srv_yourls_password')),
                         (new Note())
                             ->class('form-note')

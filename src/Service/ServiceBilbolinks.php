@@ -61,7 +61,7 @@ class ServiceBilbolinks extends Service
                             ->for('kutrl_srv_bilbolinks_base'),
                         (new Input('kutrl_srv_bilbolinks_base'))
                             ->size(50)
-                            ->maxlenght(255)
+                            ->maxlength(255)
                             ->value((string) $this->settings->get('srv_bilbolinks_base')),
                     ]),
                 (new Note())

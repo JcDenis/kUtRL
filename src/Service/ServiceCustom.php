@@ -83,7 +83,7 @@ class ServiceCustom extends Service
                             ->for('kutrl_srv_custom_url_api'),
                         (new Input('kutrl_srv_custom_url_api'))
                             ->size(50)
-                            ->maxlenght(255)
+                            ->maxlength(255)
                             ->value((string) $config['url_api']),
                     ]),
                 (new Note())
@@ -95,7 +95,7 @@ class ServiceCustom extends Service
                             ->for('kutrl_srv_custom_url_base'),
                         (new Input('kutrl_srv_custom_url_base'))
                             ->size(50)
-                            ->maxlenght(255)
+                            ->maxlength(255)
                             ->value((string) $config['url_base']),
                     ]),
                 (new Note())
@@ -107,7 +107,7 @@ class ServiceCustom extends Service
                             ->for('kutrl_srv_custom_url_param'),
                         (new Input('kutrl_srv_custom_url_param'))
                             ->size(50)
-                            ->maxlenght(255)
+                            ->maxlength(255)
                             ->value((string) $config['url_param']),
                     ]),
                 (new Note())

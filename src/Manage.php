@@ -163,7 +163,7 @@ class Manage extends Process
                             ->for('custom'),
                         (new Input('custom'))
                             ->size(50)
-                            ->maxlenght(32)
+                            ->maxlength(32)
                             ->value(''),
                     ]);
                 $fields[] = (new Note())
@@ -190,7 +190,7 @@ class Manage extends Process
                                         ->for('str'),
                                     (new Input('str'))
                                         ->size(100)
-                                        ->maxlenght(255)
+                                        ->maxlength(255)
                                         ->value(''),
                                 ]),
                             ... $fields,

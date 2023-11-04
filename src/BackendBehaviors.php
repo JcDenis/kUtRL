@@ -122,7 +122,7 @@ class BackendBehaviors
                             ->for('kutrl_create_custom'),
                         (new Input('kutrl_create_custom'))
                             ->size(32)
-                            ->maxlenght(32)
+                            ->maxlength(32)
                             ->class('maximal')
                             ->value(''),
                     ]);

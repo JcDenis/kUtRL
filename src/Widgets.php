@@ -145,7 +145,7 @@ class Widgets
                                 ->for('longurl'),
                             (new Input('longurl'))
                                 ->size(20)
-                                ->maxlenght(255)
+                                ->maxlength(255)
                                 ->value(''),
                         ]),
                     (new Para())
@@ -154,7 +154,7 @@ class Widgets
                                 ->for('hmf'),
                             (new Input('hmf'))
                                 ->size(20)
-                                ->maxlenght(255)
+                                ->maxlength(255)
                                 ->value(''),
                         ]),
                     (new Para())

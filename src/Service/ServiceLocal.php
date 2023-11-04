@@ -69,7 +69,7 @@ class ServiceLocal extends Service
                                             ->for('kutrl_srv_local_protocols'),
                                         (new Input('kutrl_srv_local_protocols'))
                                             ->size(50)
-                                            ->maxlenght(255)
+                                            ->maxlength(255)
                                             ->value((string) $this->settings->get('srv_local_protocols')),
                                     ]),
                                 (new Note())

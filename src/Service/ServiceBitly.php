@@ -58,7 +58,7 @@ class ServiceBitly extends Service
                             ->for('kutrl_srv_bitly_apikey'),
                         (new Input('kutrl_srv_bitly_apikey'))
                             ->size(50)
-                            ->maxlenght(255)
+                            ->maxlength(255)
                             ->value((string) $this->settings->get('srv_bitly_apikey')),
                     ]),
                 (new Note())
