@@ -179,7 +179,7 @@ class FrontendUrl extends Url
             }
         }
 
-        App::frontend()->template()->setPath(App::frontend()->template()->getPath(), My::path() . '/default-templates');
+        App::frontend()->template()->appendPath(My::path() . '/default-templates');
         self::serveDocument('kutrl.html');
     }
 
@@ -191,7 +191,7 @@ class FrontendUrl extends Url
             return;
         }
 
-        App::frontend()->template()->setPath(App::frontend()->template()->getPath(), My::path() . '/default-templates');
+        App::frontend()->template()->appendPath(My::path() . '/default-templates');
 
         header('Content-Type: text/html; charset=UTF-8');
         Http::head(404, 'Not Found');

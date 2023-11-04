@@ -27,10 +27,7 @@ class Frontend extends Process
             return false;
         }
 
-        App::frontend()->template()->setPath(
-            App::frontend()->template()->getPath(),
-            My::path() . DIRECTORY_SEPARATOR . 'default-templates'
-        );
+        App::frontend()->template()->appendPath(My::path() . DIRECTORY_SEPARATOR . 'default-templates');
 
         App::behavior()->addBehaviors([
             'initWidgets'                 => Widgets::init(...),
