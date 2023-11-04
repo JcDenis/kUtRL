@@ -1,3 +1,10 @@
+kUtRL 2023.11.04
+===========================================================
+* Require Dotclear 2.28
+* Require PHP 8.1
+* Use latest changes from Dotclear 2.28
+* Code review (phpstan)
+
 kUtRL 2023.10.19
 ===========================================================
 * Require Dotclear 2.28

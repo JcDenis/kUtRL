@@ -2,10 +2,10 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="kUtRL">
     <name>Links shortener</name>
-    <version>2023.10.19</version>
+    <version>2023.11.04</version>
     <author>Jean-Christian Denis and contributors</author>
     <desc>Use, create and serve short url on your blog</desc>
-    <file>https://git.dotclear.watch/JcDenis/kUtRL/releases/download/v2023.10.19/plugin-kUtRL.zip</file>
+    <file>https://git.dotclear.watch/JcDenis/kUtRL/releases/download/v2023.11.04/plugin-kUtRL.zip</file>
     <da:dcmin>2.28</da:dcmin>
     <da:details>https://git.dotclear.watch/JcDenis/kUtRL/src/branch/master/README.md</da:details>
     <da:support>https://git.dotclear.watch/JcDenis/kUtRL/issues</da:support>
