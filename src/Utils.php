@@ -21,7 +21,7 @@ class Utils
      *
      * @return  array<string,string>    The services list
      */
-    public static function getServices(): ?array
+    public static function getServices(): array
     {
         $list = App::behavior()->getBehavior('kutrlService');
 
@@ -54,7 +54,7 @@ class Utils
                 return null;
             }
             $services = self::getServices();
-            if (isset($services[$id])) {
+            if (isset($services[$id]) && is_subclass_of($services[$id], Service::class)) {
                 return new $services[$id]();
             }
         } catch (Exception $e) {
@@ -66,9 +66,9 @@ class Utils
     /**
      * Silently try to load a service according to its place.
      *
-     * @param   string  The execution context
+     * @param   string  $place  The execution context
      *
-     * @return  Service     The service or null on error
+     * @return  null|Service    The service or null on error
      */
     public static function quickPlace(string $place = 'plugin'): ?Service
     {
@@ -89,11 +89,11 @@ class Utils
     /**
      * Silently try to reduce url (using 'plugin' place).
      *
-     * @param   string  $url    The long URL
-     * @param   string  $cutom  The custom short URI
-     * @param   string  $place  The context
+     * @param   string  $url        The long URL
+     * @param   string  $custom     The custom short URI
+     * @param   string  $place      The context
      *
-     * @return  string The short url on success else the long url
+     * @return  string  The short url on success else the long url
      */
     public static function quickReduce(string $url, ?string $custom = null, string $place = 'plugin'): string
     {
@@ -107,7 +107,7 @@ class Utils
                 return $url;
             }
 
-            return $srv->url_base . $rs->hash;
+            return $srv->get('url_base') . $rs->hash;
         } catch (Exception $e) {
         }
 

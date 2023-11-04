@@ -21,10 +21,24 @@ use Dotclear\Helper\Network\HttpClient;
  */
 class Service
 {
+    /**
+     * @var     \Dotclear\Interface\Core\ErrorInterface  $error
+     */
     public $error;
+
+    /**
+     * @var     \Dotclear\Interface\Core\BlogWorkspaceInterface   $settings
+     */
     public $settings;
+
+    /**
+     * @var     Logs    $log
+     */
     public $log;
 
+    /**
+     * @var     array<string, mixed>    $config
+     */
     protected $config = [];
 
     public function __construct()
@@ -37,7 +51,7 @@ class Service
         $this->init();
 
         // Force setting
-        $allow_external_url                 = $this->settings?->get('allow_external_url');
+        $allow_external_url                 = $this->settings->get('allow_external_url');
         $this->config['allow_external_url'] = null === $allow_external_url ?
             true : $allow_external_url;
 
@@ -60,14 +74,22 @@ class Service
         );
     }
 
-    # Magic get for config values
-    public function __get($k)
+    /**
+     * Magic get for config values.
+     *
+     * @return  mixed
+     */
+    public function __get(string $k)
     {
         return $this->get($k);
     }
 
-    # get config value
-    public function get($k)
+    /**
+     * Get config value.
+     *
+     * @return  mixed
+     */
+    public function get(string $k)
     {
         return $this->config[$k] ?? null;
     }
@@ -110,19 +132,19 @@ class Service
     # Test if an url contents know prefix
     public function isServiceUrl(string $url): bool
     {
-        return strpos($url, $this->url_base) === 0;
+        return strpos($url, $this->get('url_base')) === 0;
     }
 
     # Test if an url is long enoutgh
     public function isLongerUrl(string $url): bool
     {
-        return (strlen($url) >= (int) $this->url_min_len);
+        return (strlen($url) >= (int) $this->get('url_min_len'));
     }
 
     # Test if an url protocol (eg: http://) is allowed
     public function isProtocolUrl(string $url): bool
     {
-        foreach ($this->allow_protocols as $protocol) {
+        foreach ($this->get('allow_protocols') as $protocol) {
             if (empty($protocol)) {
                 continue;
             }
@@ -150,7 +172,7 @@ class Service
      */
     public function isKnowUrl(string $url)
     {
-        return $this->log->select($url, null, $this->id, 'kutrl');
+        return $this->log->select($url, null, $this->get('id'), 'kutrl');
     }
 
     /**
@@ -160,7 +182,7 @@ class Service
      */
     public function isKnowHash(string $hash)
     {
-        return $this->log->select(null, $hash, $this->id, 'kutrl');
+        return $this->log->select(null, $hash, $this->get('id'), 'kutrl');
     }
 
     /**
@@ -171,10 +193,10 @@ class Service
     public function hash(string $url, ?string $hash = null)
     {
         $url = trim(App::con()->escapeStr((string) $url));
-        if ('undefined' === $this->id) {
+        if ('undefined' === $this->get('id')) {
             return false;
         }
-        if ($hash && !$this->allow_custom_hash) {
+        if ($hash && !$this->get('allow_custom_hash')) {
             return false;
         }
         if ($this->isServiceUrl($url)) {
@@ -183,7 +205,7 @@ class Service
         if (!$this->isLongerUrl($url)) {
             return false;
         }
-        if (!$this->allow_external_url && $this->isBlogUrl($url)) {
+        if (!$this->get('allow_external_url') && $this->isBlogUrl($url)) {
             return false;
         }
         if ($hash && false !== ($rs = $this->isKnowHash($hash))) {
@@ -262,14 +284,21 @@ class Service
 
     /**
      * Post request.
+     *
+     * @param   array<int, string>  $headers
+     * @return  mixed
      */
-    public static function post(string $url, $data, bool $verbose = true, bool $get = false, $headers = [])
+    public static function post(string $url, mixed $data, bool $verbose = true, bool $get = false, array $headers = [])
     {
         $client = HttpClient::initClient($url, $url);
+        if (false === $client) {
+            return false;
+        }
+
         $client->setUserAgent('kUtRL - https://github.com/JcDenis/kUtRL');
         $client->setPersistReferers(false);
 
-        if (is_array($headers) && !empty($headers)) {
+        if (!empty($headers)) {
             foreach ($headers as $header) {
                 $client->setMoreHeader($header);
             }

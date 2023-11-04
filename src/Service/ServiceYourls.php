@@ -22,12 +22,9 @@ use Dotclear\Plugin\kUtRL\Service;
  */
 class ServiceYourls extends Service
 {
-    protected $config = [
-        'id'   => 'yourls',
-        'name' => 'YOURLS',
-        'home' => 'http://yourls.org',
-    ];
-
+    /**
+     * @var     array<string, string>   $args
+     */
     private $args = [
         'username' => '',
         'password' => '',
@@ -43,9 +40,15 @@ class ServiceYourls extends Service
         $base = (string) $this->settings->get('srv_yourls_base');
         //if (!empty($base) && substr($base,-1,1) != '/') $base .= '/';
 
-        $this->config['url_api']     = $base;
-        $this->config['url_base']    = $base;
-        $this->config['url_min_len'] = strlen($base) + 3;
+        $this->config = [
+            'id'   => 'yourls',
+            'name' => 'YOURLS',
+            'home' => 'http://yourls.org',
+
+            'url_api'     => $base,
+            'url_base'    => $base,
+            'url_min_len' => strlen($base) + 3,
+        ];
     }
 
     public function saveSettings(): void
@@ -108,9 +111,9 @@ class ServiceYourls extends Service
         }
 
         $args        = $this->args;
-        $args['url'] = $this->url_test;
+        $args['url'] = $this->get('url_test');
 
-        if (!($response = self::post($this->url_api, $this->args, true))) {
+        if (!($response = self::post($this->get('url_api'), $this->args, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -129,7 +132,7 @@ class ServiceYourls extends Service
     {
         $args = array_merge($this->args, ['url' => $url]);
 
-        if (!($response = self::post($this->url_api, $args, true))) {
+        if (!($response = self::post($this->get('url_api'), $args, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -141,7 +144,7 @@ class ServiceYourls extends Service
             return $this->fromValue(
                 $rsp->url[0]->keyword,
                 $url,
-                $this->id
+                $this->get('id')
             );
         }
         $this->error->add(__('Unreadable service response.'));

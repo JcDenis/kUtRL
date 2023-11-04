@@ -177,23 +177,23 @@ class Widgets
             return '';
         }
 
-        $type = in_array($w->type, ['localnormal', 'localmix', 'localcustom']) ?
-            "AND kut_type ='" . $w->type . "' " :
+        $type = in_array($w->get('type'), ['localnormal', 'localmix', 'localcustom']) ?
+            "AND kut_type ='" . $w->get('type') . "' " :
             'AND kut_type ' . App::con()->in(['localnormal', 'localmix', 'localcustom']) . ' ';
 
-        $hide = (bool) $w->hideempty ? 'AND kut_counter > 0 ' : '';
+        $hide = (bool) $w->get('hideempty') ? 'AND kut_counter > 0 ' : '';
 
         $more = '';
-        if ($w->type == 'localmix' && '' != $w->mixprefix) {
-            $more = "AND kut_hash LIKE '" . App::con()->escapeStr((string) $w->mixprefix) . "%' ";
+        if ($w->get('type') == 'localmix' && '' != $w->get('mixprefix')) {
+            $more = "AND kut_hash LIKE '" . App::con()->escapeStr((string) $w->get('mixprefix')) . "%' ";
         }
 
-        $order = ($w->sortby && in_array($w->sortby, ['kut_dt', 'kut_counter', 'kut_hash'])) ?
-            $w->sortby : 'kut_dt';
+        $order = ($w->get('sortby') && in_array($w->get('sortby'), ['kut_dt', 'kut_counter', 'kut_hash'])) ?
+            $w->get('sortby') : 'kut_dt';
 
-        $order .= $w->sort == 'desc' ? ' DESC' : ' ASC';
+        $order .= $w->get('sort') == 'desc' ? ' DESC' : ' ASC';
 
-        $limit = App::con()->limit(abs((int) $w->limit));
+        $limit = App::con()->limit(abs((int) $w->get('limit')));
 
         $rs = App::con()->select(
             'SELECT kut_counter, kut_hash ' .
@@ -215,16 +215,12 @@ class Widgets
 
             $hash    = $rs->kut_hash;
             $url     = App::blog()->url() . App::url()->getBase('kutrl') . '/' . $hash;
-            $cut_len = - abs((int) $w->urllen);
+            $cut_len = abs((int) $w->get('urllen'));
 
             if (strlen($url) > $cut_len) {
-                $url = '...' . substr($url, $cut_len);
+                $url = '...' . substr($url, 0, $cut_len);
             }
-            /*
-                        if (strlen($hash) > $cut_len) {
-                            $url = '...'.substr($hash, $cut_len);
-                        }
-            //*/
+
             if ($rs->kut_counter == 0) {
                 $counttext = __('never followed');
             } elseif ($rs->kut_counter == 1) {
@@ -239,7 +235,7 @@ class Widgets
                 str_replace(
                     ['%rank%', '%hash%', '%url%', '%count%', '%counttext%'],
                     [$rank, $hash, $url, $rs->kut_counter, $counttext],
-                    $w->text
+                    $w->get('text')
                 ) .
                 '</a></li>';
         }

@@ -12,6 +12,8 @@ use Dotclear\Database\Statement\{
     SelectStatement,
     UpdateStatement
 };
+use Dotclear\Interface\Core\ConnectionInterface;
+use Exception;
 
 /**
  * @brief       kUtRL logs class.
@@ -22,8 +24,8 @@ use Dotclear\Database\Statement\{
  */
 class Logs
 {
-    public $table;
-    public $con;
+    public string $table;
+    public ConnectionInterface $con;
 
     public function __construct()
     {
@@ -35,11 +37,12 @@ class Logs
     {
         $sql = new SelectStatement();
 
-        return $sql
+        $rs = $sql
             ->column($sql->max('kut_id'))
             ->from($this->table)
-            ->select()
-            ->f(0) + 1;
+            ->select();
+
+        return is_null($rs) || $rs->isEmpty() ? 1 : (int) $rs->f(0) + 1;
     }
 
     /**
@@ -76,8 +79,6 @@ class Logs
 
             throw $e;
         }
-
-        return [];
     }
 
     /**
@@ -110,13 +111,12 @@ class Logs
             $sql->and('kut_type = ' . $sql->quote($type));
         }
 
-        $sql
+        $rs = $sql
             ->order('kut_dt DESC')
-            ->limit(1);
+            ->limit(1)
+            ->select();
 
-        $rs = $sql->select();
-
-        return $rs->isEmpty() ? false : $rs;
+        return is_null($rs) || $rs->isEmpty() ? false : $rs;
     }
 
     public function clear(int $id): bool
@@ -141,8 +141,6 @@ class Logs
 
             throw $e;
         }
-
-        return false;
     }
 
     public function delete(int $id): bool
@@ -167,7 +165,7 @@ class Logs
             ->and('kut_id = ' . $id)
             ->select();
 
-        $counter = $rs->isEmpty() ? 0 : (int) $rs->kut_counter;
+        $counter = is_null($rs) || $rs->isEmpty() ? 0 : (int) $rs->kut_counter;
 
         if ('get' == $do) {
             return $counter;
@@ -190,6 +188,9 @@ class Logs
         return $counter;
     }
 
+    /**
+     * @param   array<string, mixed>    $params
+     */
     public function getLogs(array $params, bool $count_only = false): MetaRecord
     {
         $sql = new SelectStatement();
@@ -259,6 +260,6 @@ class Logs
             $sql->limit($params['limit']);
         }
 
-        return $sql->select();
+        return $sql->select() ?? MetaRecord::newFromArray([]);
     }
 }

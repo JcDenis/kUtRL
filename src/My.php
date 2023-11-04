@@ -25,7 +25,7 @@ class My extends MyPlugin
     /**
      * List of template tag which content URL that can be shorten.
      *
-     * @var     array   USED_TAGS
+     * @var     array<int, string>  USED_TAGS
      */
     public const USED_TAGS = [
         'AttachmentURL',

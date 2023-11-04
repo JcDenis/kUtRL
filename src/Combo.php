@@ -33,8 +33,11 @@ class Combo
     {
         $services_combo = [];
         foreach (Utils::getServices() as $service_id => $service) {
-            $o                            = new $service();
-            $services_combo[__($o->name)] = $o->id;
+            if (!is_subclass_of($service, Service::class)) {
+                continue;
+            }
+            $o                                   = new $service();
+            $services_combo[__($o->get('name'))] = $o->get('id');
         }
         if ($with_none) {
             $services_combo = array_merge([__('Disabled') => ''], $services_combo);

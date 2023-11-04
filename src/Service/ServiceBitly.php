@@ -7,7 +7,7 @@ namespace Dotclear\Plugin\kUtRL\Service;
 use Dotclear\Helper\Html\Form\{
     Div,
     Input,
-    label,
+    Label,
     Note,
     Para
 };
@@ -22,24 +22,27 @@ use Dotclear\Plugin\kUtRL\Service;
  */
 class ServiceBitly extends Service
 {
-    protected $config = [
-        'id'   => 'bitly',
-        'name' => 'bit.ly',
-        'home' => 'https://bit.ly',
-
-        'url_api'     => 'https://api-ssl.bitly.com/v4/',
-        'url_base'    => 'https://bit.ly/',
-        'url_min_len' => 25,
-
-        'allow_protocols' => ['http://', 'https://'],
-    ];
-
+    /**
+     * @var     array<string, mixed>    $args
+     */
     private $args = [
         'apiKey' => '',
     ];
 
     protected function init(): void
     {
+        $this->config = [
+            'id'   => 'bitly',
+            'name' => 'bit.ly',
+            'home' => 'https://bit.ly',
+
+            'url_api'     => 'https://api-ssl.bitly.com/v4/',
+            'url_base'    => 'https://bit.ly/',
+            'url_min_len' => 25,
+
+            'allow_protocols' => ['http://', 'https://'],
+        ];
+
         $this->args['apiKey'] = $this->settings->get('srv_bitly_apikey');
     }
 
@@ -76,7 +79,7 @@ class ServiceBitly extends Service
         }
 
         $args = json_encode(['domain' => 'bit.ly', 'bitlink_id' => 'bit.ly/WP9vc'], JSON_UNESCAPED_SLASHES);
-        if (!($response = self::post($this->url_api . 'expand', $args, true, false, $this->headers()))) {
+        if (!($response = self::post($this->get('url_api') . 'expand', $args, true, false, $this->headers()))) {
             $this->error->add(__('Failed to call service.'));
 
             return false;
@@ -89,7 +92,7 @@ class ServiceBitly extends Service
     {
         $args = json_encode(['domain' => 'bit.ly', 'long_url' => $url]);
 
-        if (!($response = self::post($this->url_api . 'shorten', $args, true, false, $this->headers()))) {
+        if (!($response = self::post($this->get('url_api') . 'shorten', $args, true, false, $this->headers()))) {
             $this->error->add(__('Failed to call service.'));
 
             return false;
@@ -98,12 +101,15 @@ class ServiceBitly extends Service
         $rsp = json_decode($response);
 
         return $this->fromValue(
-            str_replace($this->url_base, '', (string) $rsp->link),
+            str_replace($this->get('url_base'), '', (string) $rsp->link),
             (string) $rsp->long_url,
-            $this->id
+            $this->get('id')
         );
     }
 
+    /**
+     * @return  array<int, string>
+     */
     private function headers()
     {
         return ['Authorization: Bearer ' . $this->args['apiKey'], 'Content-Type: application/json'];

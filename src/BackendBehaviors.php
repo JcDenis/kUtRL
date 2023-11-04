@@ -51,6 +51,9 @@ class BackendBehaviors
         );
     }
 
+    /**
+     * @param   ArrayObject<string, mixed>   $cols
+     */
     public static function adminColumnsListsV2(ArrayObject $cols): void
     {
         $cols[My::id()] = [
@@ -63,6 +66,9 @@ class BackendBehaviors
         ];
     }
 
+    /**
+     * @param   ArrayObject<string, mixed>   $sorts
+     */
     public static function adminFiltersListsV2(ArrayObject $sorts): void
     {
         $sorts[My::id()] = [
@@ -79,12 +85,15 @@ class BackendBehaviors
         return My::jsLoad('posts');
     }
 
+    /**
+     * @param   ArrayObject<string, mixed>   $main_items
+     * @param   ArrayObject<string, mixed>   $sidebar_items
+     */
     public static function adminPostFormItems(ArrayObject $main_items, ArrayObject $sidebar_items, ?MetaRecord $post): void
     {
         $s = My::settings();
 
         if (!$s->get('active')
-            || !$s->get('active')
             || null === ($kut = Utils::quickPlace('admin'))
         ) {
             return;
@@ -114,7 +123,7 @@ class BackendBehaviors
                         ->for('kutrl_create'),
                 ]);
 
-            if ($kut->allow_custom_hash) {
+            if ($kut->get('allow_custom_hash')) {
                 $items[] = (new Para())
                     ->class('classic')
                     ->items([
@@ -136,7 +145,7 @@ class BackendBehaviors
             } else {
                 $title = sprintf(__('followed %s times'), $count);
             }
-            $href = $kut->url_base . $rs->hash;
+            $href = $kut->get('url_base') . $rs->hash;
 
             $items[] = (new Para())
                 ->items([
@@ -199,11 +208,15 @@ class BackendBehaviors
 
             $kut->remove($old_post_url);
 
-            $rs  = $kut->hash($new_post_url, '');//$custom); // better to update (not yet implemented)
-            $url = $kut->url_base . $rs->hash;
+            if (false === ($rs = $kut->hash($new_post_url, ''))) {
+                ;//$custom); // better to update (not yet implemented)
+
+                return;
+            }
+            $url = $kut->get('url_base') . $rs->hash;
 
             # ex: Send new url to messengers
-            if (!empty($rs)) {
+            if (!$rs->isEmpty()) {
                 App::behavior()->callBehavior('adminAfterKutrlCreate', $rs, $title);
             }
         }
@@ -224,14 +237,16 @@ class BackendBehaviors
         }
         $title = Html::escapeHTML($rs->post_title);
 
-        $custom = !empty($_POST['kutrl_create_custom']) && $kut->allow_custom_hash ?
+        $custom = !empty($_POST['kutrl_create_custom']) && $kut->get('allow_custom_hash') ?
             $_POST['kutrl_create_custom'] : null;
 
-        $rs  = $kut->hash($rs->getURL(), $custom);
-        $url = $kut->url_base . $rs->hash;
+        if (false === ($rs = $kut->hash($rs->getURL(), $custom))) {
+            return;
+        }
+        $url = $kut->get('url_base') . $rs->hash;
 
         # ex: Send new url to messengers
-        if (!empty($rs)) {
+        if (!$rs->isEmpty()) {
             App::behavior()->callBehavior('adminAfterKutrlCreate', $rs, $title);
         }
     }
@@ -269,6 +284,9 @@ class BackendBehaviors
         );
     }
 
+    /**
+     * @param   ArrayObject<int|string, int|string>   $post
+     */
     public static function callbackCreate(ActionsPosts $pa, ArrayObject $post): void
     {
         # No entry
@@ -296,6 +314,9 @@ class BackendBehaviors
         $pa->redirect(true);
     }
 
+    /**
+     * @param   ArrayObject<int|string, int|string>   $post
+     */
     public static function callbackDelete(ActionsPosts $pa, ArrayObject $post): void
     {
         # No entry

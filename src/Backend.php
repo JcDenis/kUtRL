@@ -39,11 +39,12 @@ class Backend extends Process
                 'adminPostHeaders'          => BackendBehaviors::adminPostHeaders(...),
                 'adminPostFormItems'        => BackendBehaviors::adminPostFormItems(...),
                 'adminAfterPostUpdate'      => BackendBehaviors::adminAfterPostUpdate(...), // update existing short url
-                'adminAfterPostUpdate'      => BackendBehaviors::adminAfterPostCreate(...), // create new short url
                 'adminAfterPostCreate'      => BackendBehaviors::adminAfterPostCreate(...),
                 'adminBeforePostDelete'     => BackendBehaviors::adminBeforePostDelete(...),
                 'adminPostsActions'         => BackendBehaviors::adminPostsActions(...),
             ]);
+            // hate duplicate key!
+            App::behavior()->addBehavior('adminAfterPostUpdate', BackendBehaviors::adminAfterPostCreate(...)); // create new short url
         }
 
         App::behavior()->addBehaviors([

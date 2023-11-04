@@ -60,7 +60,7 @@ class Install extends Process
                 );
                 while ($record->fetch()) {
                     if (preg_match('/^kutrl_(.*?)$/', $record->setting_id, $match)) {
-                        $cur = App::blogWorkspace()->openBlogWorkspace();
+                        $cur = App::blogWorkspace()->openBlogWorkspaceCursor();
                         // avoid the use of serialize function
                         if (in_array($record->setting_id, ['kutrl_srv_custom'])) {
                             $cur->setting_value = json_encode(@unserialize(base64_decode((string) $record->setting_value)));

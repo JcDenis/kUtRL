@@ -17,7 +17,11 @@ use Dotclear\Helper\Html\Html;
  */
 class FrontendBehaviors
 {
-    # Disable URL shoretning on filtered tag
+    /**
+     * Disable URL shoretning on filtered tag.
+     *
+     * @param   ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function templateBeforeValueV2(string $tag, ArrayObject $attr): ?string
     {
         if (!empty($attr['disable_kutrl']) && in_array($tag, My::USED_TAGS)) {
@@ -27,7 +31,11 @@ class FrontendBehaviors
         return null;
     }
 
-    # Re unable it after tag
+    /**
+     * Re unable it after tag.
+     *
+     * @param   ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function templateAfterValueV2(string $tag, ArrayObject $attr): ?string
     {
         if (!empty($attr['disable_kutrl']) && in_array($tag, My::USED_TAGS)) {
@@ -37,7 +45,11 @@ class FrontendBehaviors
         return null;
     }
 
-    # Replace long urls on the fly (on filter) for default tags
+    /**
+     * Replace long urls on the fly (on filter) for default tags.
+     *
+     * @param   array<int|string, mixed>  $args   The attributes
+     */
     public static function publicBeforeContentFilterV2(string $tag, array $args): ?string
     {
         # Unknow tag
@@ -66,6 +78,8 @@ class FrontendBehaviors
                 }
             }
         }
+
+        return null;
     }
 
     public static function publicBeforeDocumentV2(): void
@@ -85,7 +99,7 @@ class FrontendBehaviors
         App::frontend()->context()->kutrl = $kut;
     }
 
-    public static function publicHeadContent($_): void
+    public static function publicHeadContent(): void
     {
         $css = My::settings()->get('srv_local_css');
         if (!empty($css)) {

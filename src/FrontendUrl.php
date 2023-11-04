@@ -24,11 +24,9 @@ class FrontendUrl extends Url
         # Not active, go to default 404
         if (!My::settings()->get('active')) {
             self::p404();
-
-            return;
         }
         # Not a valid url, go to kutrl 404
-        if (!preg_match('#^(|(/(.*?)))$#', $args, $m)) {
+        if (!preg_match('#^(|(/(.*?)))$#', (string) $args, $m)) {
             self::kutrl404();
 
             return;
@@ -83,8 +81,6 @@ class FrontendUrl extends Url
         # Not active, go to default 404
         if (!$s->get('active')) {
             self::p404();
-
-            return;
         }
         # Public page not active, go to kutrl 404
         if (!$s->get('srv_local_public')) {
@@ -99,11 +95,9 @@ class FrontendUrl extends Url
             $hmfu = !empty($_POST['hmfp']) ? FrontendUtils::unprotect($_POST['hmfp']) : '?';
 
             $err = false;
-            if (!$err) {
-                if ($hmf != $hmfu) {
-                    $err                                  = true;
-                    App::frontend()->context()->kutrl_msg = __('Failed to verify protected field.');
-                }
+            if ($hmf != $hmfu) {
+                $err                                  = true;
+                App::frontend()->context()->kutrl_msg = __('Failed to verify protected field.');
             }
             if (!$err) {
                 if (!$kut->testService()) {
@@ -131,7 +125,7 @@ class FrontendUrl extends Url
             }
 
             if (!$err) {
-                if (!$kut->allow_external_url && !$kut->isBlogUrl($url)) {
+                if (!$kut->get('allow_external_url') && !$kut->isBlogUrl($url)) {
                     $err                                  = true;
                     App::frontend()->context()->kutrl_msg = __('Short links are limited to this blog URL.');
                 }
@@ -147,7 +141,7 @@ class FrontendUrl extends Url
                     $err = true;
 
                     $url     = $rs->url;
-                    $new_url = $kut->url_base . $rs->hash;
+                    $new_url = $kut->get('url_base') . $rs->hash;
 
                     App::frontend()->context()->kutrl_msg = sprintf(
                         __('Short link for %s is %s'),
@@ -162,7 +156,7 @@ class FrontendUrl extends Url
                     App::frontend()->context()->kutrl_msg = __('Failed to create short link.');
                 } else {
                     $url     = $rs->url;
-                    $new_url = $kut->url_base . $rs->hash;
+                    $new_url = $kut->get('url_base') . $rs->hash;
 
                     App::frontend()->context()->kutrl_msg = sprintf(
                         __('Short link for %s is %s'),
@@ -172,7 +166,7 @@ class FrontendUrl extends Url
                     App::blog()->triggerBlog();
 
                     # ex: Send new url to messengers
-                    if (!empty($rs)) {
+                    if (!$rs->isEmpty()) {
                         App::behavior()->callBehavior('publicAfterKutrlCreate', $rs, __('New public short URL'));
                     }
                 }
@@ -185,10 +179,8 @@ class FrontendUrl extends Url
 
     protected static function kutrl404(): void
     {
-        if (!My::settigns()->get('srv_local_404_active')) {
+        if (!My::settings()->get('srv_local_404_active')) {
             self::p404();
-
-            return;
         }
 
         App::frontend()->template()->appendPath(My::path() . '/default-templates');

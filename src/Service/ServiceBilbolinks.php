@@ -7,7 +7,7 @@ namespace Dotclear\Plugin\kUtRL\Service;
 use Dotclear\Helper\Html\Form\{
     Div,
     Input,
-    label,
+    Label,
     Note,
     Para
 };
@@ -22,21 +22,22 @@ use Dotclear\Plugin\kUtRL\Service;
  */
 class ServiceBilbolinks extends Service
 {
-    protected $config = [
-        'id'   => 'bilbolinks',
-        'name' => 'BilboLinks',
-        'home' => 'http://www.tux-planet.fr/bilbobox/',
-    ];
-
     protected function init(): void
     {
         $base = (string) $this->settings->get('srv_bilbolinks_base');
         if (!empty($base) && substr($base, -1, 1) != '/') {
             $base .= '/';
         }
-        $this->config['url_api']     = $base . 'api.php';
-        $this->config['url_base']    = $base;
-        $this->config['url_min_len'] = 25;
+
+        $this->config = [
+            'id'   => 'bilbolinks',
+            'name' => 'BilboLinks',
+            'home' => 'http://www.tux-planet.fr/bilbobox/',
+
+            'url_api'     => $base . 'api.php',
+            'url_base'    => $base,
+            'url_min_len' => 25,
+        ];
     }
 
     public function saveSettings(): void
@@ -72,14 +73,14 @@ class ServiceBilbolinks extends Service
 
     public function testService(): bool
     {
-        if (empty($this->url_base)) {
+        if (empty($this->get('url_base'))) {
             $this->error->add(__('Service is not well configured.'));
 
             return false;
         }
 
-        $arg = ['longurl' => urlencode($this->url_test)];
-        if (!self::post($this->url_api, $arg, true, true)) {
+        $arg = ['longurl' => urlencode($this->get('url_test'))];
+        if (!self::post($this->get('url_api'), $arg, true, true)) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -92,7 +93,7 @@ class ServiceBilbolinks extends Service
     {
         $arg = ['longurl' => $url];
 
-        if (!($response = self::post($this->url_api, $arg, true, true))) {
+        if (!($response = self::post($this->get('url_api'), $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -102,10 +103,11 @@ class ServiceBilbolinks extends Service
 
             return false;
         }
+
         return $this->fromValue(
-            str_replace($this->url_base, '', $response),
+            (string) str_replace($this->get('url_base'), '', $response),
             $url,
-            $this->id
+            $this->get('id')
         );
     }
 }

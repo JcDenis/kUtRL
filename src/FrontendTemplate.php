@@ -16,6 +16,9 @@ use Dotclear\App;
  */
 class FrontendTemplate
 {
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function pageURL(ArrayObject$attr): string
     {
         $f = App::frontend()->template()->getFilters($attr);
@@ -23,6 +26,9 @@ class FrontendTemplate
         return '<?php echo ' . sprintf($f, 'App::blog()->url().App::url()->getBase("kutrl")') . '; ?>';
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function pageIf(ArrayObject $attr, string $content): string
     {
         $operator = isset($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
@@ -41,6 +47,9 @@ class FrontendTemplate
         "<?php endif; unset(\$s);?>\n";
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function pageMsgIf(ArrayObject$attr, string $content): string
     {
         $operator = isset($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
@@ -59,16 +68,25 @@ class FrontendTemplate
         "<?php endif; ?>\n";
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function pageMsg(ArrayObject$attr): string
     {
         return '<?php echo App::frontend()->context()->kutrl_msg; ?>';
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function humanField(ArrayObject $attr): string
     {
         return "<?php echo sprintf(__('Confirm by writing \"%s\" in next field:'),App::frontend()->context()->kutrl_hmf); ?>";
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function humanFieldProtect(ArrayObject $attr): string
     {
         return
@@ -76,69 +94,107 @@ class FrontendTemplate
         '<?php echo App::nonce()->getFormNonce(); ?>';
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function AttachmentKutrlIf(ArrayObject$attr, string $content): string
     {
         return self::genericKutrlIf('$attach_f->file_url', $attr, $content);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function AttachmentKutrl(ArrayObject $attr): string
     {
         return self::genericKutrl('$attach_f->file_url', $attr);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function MediaKutrlIf(ArrayObject$attr, string $content): string
     {
         return self::genericKutrlIf('App::frontend()->context()->file_url', $attr, $content);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function MediaKutrl(ArrayObject $attr): string
     {
         return self::genericKutrl('App::frontend()->context()->file_url', $attr);
     }
-
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function EntryAuthorKutrlIf(ArrayObject$attr, string $content): string
     {
         return self::genericKutrlIf('App::frontend()->context()->posts->user_url', $attr, $content);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function EntryAuthorKutrl(ArrayObject $attr): string
     {
         return self::genericKutrl('App::frontend()->context()->posts->user_url', $attr);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function EntryKutrlIf(ArrayObject $attr, string $content): string
     {
         return self::genericKutrlIf('App::frontend()->context()->posts->getURL()', $attr, $content);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function EntryKutrl(ArrayObject $attr): string
     {
         return self::genericKutrl('App::frontend()->context()->posts->getURL()', $attr);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function CommentAuthorKutrlIf(ArrayObject $attr, string $content): string
     {
         return self::genericKutrlIf('App::frontend()->context()->comments->getAuthorURL()', $attr, $content);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function CommentAuthorKutrl(ArrayObject $attr): string
     {
         return self::genericKutrl('App::frontend()->context()->comments->getAuthorURL()', $attr);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function CommentPostKutrlIf(ArrayObject $attr, string $content): string
     {
         return self::genericKutrlIf('App::frontend()->context()->comments->getPostURL()', $attr, $content);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     public static function CommentPostKutrl(ArrayObject $attr): string
     {
         return self::genericKutrl('App::frontend()->context()->comments->getPostURL()', $attr);
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     protected static function genericKutrlIf(string $str, ArrayObject $attr, string $content): string
     {
-        $operator = isset($attr['operator']) ? App::fontend()->template()->getOperator($attr['operator']) : '&&';
+        $operator = isset($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
 
         if (isset($attr['is_active'])) {
             $sign = (bool) $attr['is_active'] ? '' : '!';
@@ -162,6 +218,9 @@ class FrontendTemplate
         "<?php endif; ?>\n";
     }
 
+    /**
+     * @param      ArrayObject<string, mixed>  $attr   The attributes
+     */
     protected static function genericKutrl(string $str, ArrayObject $attr): string
     {
         $f = App::frontend()->template()->getFilters($attr);

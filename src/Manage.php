@@ -21,6 +21,7 @@ use Dotclear\Helper\Html\Form\{
     Text,
 };
 use Dotclear\Helper\Html\Html;
+use Exception;
 
 /**
  * @brief       kUtRL manage class.
@@ -65,7 +66,7 @@ class Manage extends Process
             if (!$kut->testService()) {
                 throw new Exception(__('Service is not well configured.'));
             }
-            if (null !== $hash && !$kut->allow_custom_hash) {
+            if (null !== $hash && !$kut->get('allow_custom_hash')) {
                 throw new Exception(__('This service does not allowed custom hash.'));
             }
             if (!$kut->isValidUrl($url)) {
@@ -77,7 +78,7 @@ class Manage extends Process
             if (!$kut->isProtocolUrl($url)) {
                 throw new Exception(__('This type of link is not allowed.'));
             }
-            if (!$kut->allow_external_url && !$kut->isBlogUrl($url)) {
+            if (!$kut->get('allow_external_url') && !$kut->isBlogUrl($url)) {
                 throw new Exception(__('Short links are limited to this blog URL.'));
             }
             if ($kut->isServiceUrl($url)) {
@@ -88,7 +89,7 @@ class Manage extends Process
             }
             if (false !== ($rs = $kut->isKnowUrl($url))) {
                 $url     = $rs->url;
-                $new_url = $kut->url_base . $rs->hash;
+                $new_url = $kut->get('url_base') . $rs->hash;
 
                 Notices::addSuccessNotice(sprintf(
                     __('Short link for %s is %s'),
@@ -104,7 +105,7 @@ class Manage extends Process
                     throw new Exception(__('Failed to create short link. This could be caused by a service failure.'));
                 } else {
                     $url     = $rs->url;
-                    $new_url = $kut->url_base . $rs->hash;
+                    $new_url = $kut->get('url_base') . $rs->hash;
 
                     Notices::addSuccessNotice(sprintf(
                         __('Short link for %s is %s'),
@@ -113,7 +114,7 @@ class Manage extends Process
                     ));
 
                     # ex: Send new url to messengers
-                    if (!empty($rs)) {
+                    if (!$rs->isEmpty()) {
                         App::behavior()->callBehavior('adminAfterKutrlCreate', $rs, __('New short URL'));
                     }
                 }
@@ -149,14 +150,13 @@ class Manage extends Process
         ]) .
         Notices::getNotices();
 
-        if (!isset($kut) || null === $kut) {
-            echo (new Para())
-                ->text(__('You must set an admin service.'))
+        if (null === $kut) {
+            echo (new Text('p', __('You must set an admin service.')))
                 ->render();
         } else {
             $fields = [];
 
-            if ($kut->allow_custom_hash) {
+            if ($kut->get('allow_custom_hash')) {
                 $fields[] = (new Para())
                     ->items([
                         (new Label(__('Custom short link:'), Label::OUTSIDE_LABEL_BEFORE))
@@ -170,7 +170,7 @@ class Manage extends Process
                     ->class('form-note')
                     ->text(__('Only if you want a custom short link.'));
 
-                if ($kut->admin_service == 'local') {
+                if ($kut->get('admin_service') == 'local') {
                     $fields[] = (new Note())
                         ->class('form-note')
                         ->text(__('You can use "bob!!" if you want a semi-custom link, it starts with "bob" and "!!" will be replaced by an increment value.'));
@@ -179,7 +179,7 @@ class Manage extends Process
 
             echo (new Div())
                 ->items([
-                    (new Text('h4', sprintf(__('Shorten link using service "%s"'), $kut->name))),
+                    (new Text('h4', sprintf(__('Shorten link using service "%s"'), $kut->get('name')))),
                     (new Form('create-link'))
                         ->method('post')
                         ->action(My::manageUrl())

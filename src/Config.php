@@ -82,8 +82,10 @@ class Config extends Process
 
                 # services
                 foreach (Utils::getServices() as $service_id => $service) {
-                    $o = new $service();
-                    $o->saveSettings();
+                    if (is_subclass_of($service, Service::class)) {
+                        $o = new $service();
+                        $o->saveSettings();
+                    }
                 }
 
                 App::blog()->triggerBlog();
@@ -148,37 +150,40 @@ class Config extends Process
 
         $i_config = [];
         foreach (Utils::getServices() as $service_id => $service) {
+            if (!is_subclass_of($service, Service::class)) {
+                continue;
+            }
             $o = new $service();
 
             $s_items = [];
 
             if (!empty($_REQUEST['chk'])) {
-                $img_chk = $img_red . ' ' . sprintf(__('Failed to test %s API.'), $o->name);
+                $img_chk = $img_red . ' ' . sprintf(__('Failed to test %s API.'), $o->get('name'));
 
                 try {
                     if ($o->testService()) {
-                        $img_chk = $img_green . ' ' . sprintf(__('%s API is well configured and runing.'), $o->name);
+                        $img_chk = $img_green . ' ' . sprintf(__('%s API is well configured and runing.'), $o->get('name'));
                     }
                 } catch (Exception $e) {
-                    App::error()->add(sprintf(__('Failed to test service %s: %s'), $o->name, $e->getMessage()));
+                    App::error()->add(sprintf(__('Failed to test service %s: %s'), $o->get('name'), $e->getMessage()));
                 }
                 $s_items[] = (new Text(null, sprintf('<p><em>%s</em></p>', $img_chk) . $o->error->toHTML()));
             }
 
-            if ($o->home != '') {
+            if ($o->get('home') != '') {
                 $s_items[] = (new Para())
                     ->items([
                         (new Link())
-                            ->href($o->home)
+                            ->href($o->get('home'))
                             ->title(__('homepage'))
-                            ->text(sprintf(__('Learn more about %s.'), $o->name)),
+                            ->text(sprintf(__('Learn more about %s.'), $o->get('name'))),
                     ]);
             }
 
             $i_config[] = (new Text('hr'));
             $i_config[] = (new Div('settings-' . $service_id))
                 ->items([
-                    (new Text('h5', $o->name)),
+                    (new Text('h5', $o->get('name'))),
                     ... $s_items,
                     $o->settingsForm(),
                 ]);

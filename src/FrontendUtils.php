@@ -13,9 +13,9 @@ namespace Dotclear\Plugin\kUtRL;
  */
 class FrontendUtils
 {
-    public static $chars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    public static string $chars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
-    public static function create($len = 6)
+    public static function create(int $len = 6): string
     {
         $res   = '';
         $chars = self::$chars;
@@ -26,7 +26,7 @@ class FrontendUtils
         return $res;
     }
 
-    public static function protect($str)
+    public static function protect(string $str): string
     {
         $res   = '';
         $chars = self::$chars;
@@ -37,7 +37,7 @@ class FrontendUtils
         return $res;
     }
 
-    public static function unprotect($str)
+    public static function unprotect(string $str): string
     {
         $res = '';
         for ($i = 0; $i < strlen($str); $i++) {

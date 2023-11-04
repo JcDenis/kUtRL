@@ -10,7 +10,8 @@ use Dotclear\Helper\Html\Form\{
     Input,
     Label,
     Note,
-    Para
+    Para,
+    Text
 };
 use Dotclear\Plugin\kUtRL\Service;
 
@@ -23,11 +24,6 @@ use Dotclear\Plugin\kUtRL\Service;
  */
 class ServiceCustom extends Service
 {
-    protected $config = [
-        'id'   => 'custom',
-        'name' => 'Custom',
-    ];
-
     protected function init(): void
     {
         $config = json_decode((string) $this->settings->get('srv_custom'), true);
@@ -35,12 +31,17 @@ class ServiceCustom extends Service
             $config = [];
         }
 
-        $this->config['url_api']    = $config['url_api']   ?? '';
-        $this->config['url_base']   = $config['url_base']  ?? '';
-        $this->config['url_param']  = $config['url_param'] ?? '';
-        $this->config['url_encode'] = !empty($config['url_api']);
+        $this->config = [
+            'id'   => 'custom',
+            'name' => 'Custom',
 
-        $this->config['url_min_length'] = strlen($this->url_base) + 2;
+            'url_api'    => $config['url_api']   ?? '',
+            'url_base'   => $config['url_base']  ?? '',
+            'url_param'  => $config['url_param'] ?? '',
+            'url_encode' => !empty($config['url_api']),
+
+            'url_min_length' => strlen($config['url_base'] ?? '') + 2,
+        ];
     }
 
     public function saveSettings(): void
@@ -70,13 +71,13 @@ class ServiceCustom extends Service
 
         return (new Div())
             ->items([
-                (new Para())
-                    ->text(
-                        __('You can set a configurable service.') . '<br />' .
-                        __('It consists on a simple query to an URL with only one param.') . '<br />' .
-                        __('It must respond with a http code 200 on success.') . '<br />' .
-                        __('It must returned the short URL (or only hash) in clear text.')
-                    ),
+                (new Text(
+                    'p',
+                    __('You can set a configurable service.') . '<br />' .
+                    __('It consists on a simple query to an URL with only one param.') . '<br />' .
+                    __('It must respond with a http code 200 on success.') . '<br />' .
+                    __('It must returned the short URL (or only hash) in clear text.')
+                )),
                 (new Para())
                     ->items([
                         (new Label(__('API URL:'), Label::OUTSIDE_LABEL_BEFORE))
@@ -126,12 +127,12 @@ class ServiceCustom extends Service
 
     public function testService(): bool
     {
-        if (empty($this->url_api)) {
+        if (empty($this->get('url_api'))) {
             return false;
         }
-        $url = $this->url_encode ? urlencode($this->url_test) : $this->url_test;
-        $arg = [$this->url_param => $url];
-        if (!self::post($this->url_api, $arg, true, true)) {
+        $url = $this->get('url_encode') ? urlencode($this->get('url_test')) : $this->get('url_test');
+        $arg = [$this->get('url_param') => $url];
+        if (!self::post($this->get('url_api'), $arg, true, true)) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -142,19 +143,19 @@ class ServiceCustom extends Service
 
     public function createHash(string $url, ?string $hash = null)
     {
-        $enc = $this->url_encode ? urlencode($url) : $url;
-        $arg = [$this->url_param => $enc];
+        $enc = $this->get('url_encode') ? urlencode($url) : $url;
+        $arg = [$this->get('url_param') => $enc];
 
-        if (!($response = self::post($this->url_api, $arg, true, true))) {
+        if (!($response = self::post($this->get('url_api'), $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
         }
-        
+
         return $this->fromValue(
-            str_replace($this->url_base, '', $response),
+            (string) str_replace($this->get('url_base'), '', $response),
             $url,
-            $this->id
+            $this->get('id')
         );
     }
 }

@@ -49,7 +49,7 @@ class LinksListing extends Listing
             }
         }
 
-        $pager = new Pager((int) $filter->value('page'), $this->rs_count, (int) $filter->nb, 10);
+        $pager = new Pager((int) $filter->value('page'), (int) $this->rs_count, (int) $filter->value('nb'), 10);
 
         $cols = new ArrayObject([
             'kut_url' => (new Text('th', __('Link')))
@@ -67,7 +67,7 @@ class LinksListing extends Listing
 
         $lines = [];
         while ($this->rs->fetch()) {
-            $lines[] = $this->linkLine(isset($links[$this->rs->kut_id]));
+            $lines[] = $this->linkLine(isset($links[$this->rs->f('kut_id')]));
         }
 
         echo
@@ -103,13 +103,13 @@ class LinksListing extends Listing
 
         if (null !== ($o = Utils::quickService($type))) {
             $type = (new Link())
-                ->href($o->home)
-                ->title($o->name)
-                ->text($o->name)
+                ->href($o->get('home'))
+                ->title($o->get('name'))
+                ->text($o->get('name'))
                 ->render();
             $hash = (new Link())
-                ->href($o->url_base . $hash)
-                ->title($o->url_base . $hash)
+                ->href($o->get('url_base') . $hash)
+                ->title($o->get('url_base') . $hash)
                 ->text($hash)
                 ->render();
         }
@@ -125,7 +125,7 @@ class LinksListing extends Listing
                 ->class('maximal')
                 ->items([
                     (new Link())
-                        ->href($o->home)
+                        ->href((string) $o?->get('home'))
                         ->title($this->rs->kut_url)
                         ->text($this->rs->kut_url),
                 ]),

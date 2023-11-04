@@ -21,14 +21,14 @@ class Wiki
         # Do nothing on comment preview and post preview
         if (!empty($_POST['preview'])
             || (App::task()->checkContext('FRONTEND') && App::frontend()->context()->preview)
-            || !My::settings()?->get('active')
+            || !My::settings()->get('active')
         ) {
             return;
         }
         if (null === ($kut = Utils::quickPlace('wiki'))) {
             return;
         }
-        foreach ($kut->allow_protocols as $protocol) {
+        foreach ($kut->get('allow_protocols') as $protocol) {
             $wiki2xhtml->registerFunction(
                 'url:' . $protocol,
                 self::transform(...)
@@ -41,7 +41,7 @@ class Wiki
      */
     public static function transform(string $url, string $content): ?array
     {
-        if (!My::settings()?->get('active')) {
+        if (!My::settings()->get('active')) {
             return null;
         }
         if (null === ($kut = Utils::quickPlace('wiki'))) {
@@ -59,8 +59,8 @@ class Wiki
         }
         $res          = [];
         $testurl      = strlen($rs->url) > 35 ? substr($rs->url, 0, 35) . '...' : $rs->url;
-        $res['url']   = $kut->url_base . $rs->hash;
-        $res['title'] = sprintf(__('%s (Shorten with %s)'), $rs->url, __($kut->name));
+        $res['url']   = $kut->get('url_base') . $rs->hash;
+        $res['title'] = sprintf(__('%s (Shorten with %s)'), $rs->url, __($kut->get('name')));
         if ($testurl == $content) {
             $res['content'] = $res['url'];
         }

@@ -17,6 +17,7 @@ use Dotclear\Helper\Html\Form\{
 };
 use Dotclear\Helper\Html\Html;
 use Dotclear\Plugin\kUtRL\Service;
+use Exception;
 
 /**
  * @brief       kUtRL local service class.
@@ -27,21 +28,21 @@ use Dotclear\Plugin\kUtRL\Service;
  */
 class ServiceLocal extends Service
 {
-    protected $config = [
-        'id'   => 'local',
-        'name' => 'kUtRL',
-        'home' => 'https://github.com/JcDenis/kUtRL',
-
-        'allow_custom_hash' => true,
-    ];
-
     protected function init(): void
     {
-        $protocols                       = (string) $this->settings->get('srv_local_protocols');
-        $this->config['allow_protocols'] = empty($protocols) ? [] : explode(',', $protocols);
+        $protocols = (string) $this->settings->get('srv_local_protocols');
 
-        $this->config['url_base']    = App::blog()->url() . App::url()->getBase('kutrl') . '/';
-        $this->config['url_min_len'] = strlen($this->url_base) + 2;
+        $this->config = [
+            'id'   => 'local',
+            'name' => 'kUtRL',
+            'home' => 'https://github.com/JcDenis/kUtRL',
+
+            'allow_custom_hash' => true,
+            'allow_protocols'   => empty($protocols) ? [] : explode(',', $protocols),
+
+            'url_base'    => App::blog()->url() . App::url()->getBase('kutrl') . '/',
+            'url_min_len' => strlen(App::blog()->url() . App::url()->getBase('kutrl') . '/') + 2,
+        ];
     }
 
     public function saveSettings(): void
@@ -115,13 +116,13 @@ class ServiceLocal extends Service
                                 (new Text(
                                     'p',
                                     __('This service use your own Blog to shorten and serve URL.') . '<br />' .
-                                    sprintf(__('This means that with this service short links start with "%s".'), $this->url_base)
+                                    sprintf(__('This means that with this service short links start with "%s".'), $this->get('url_base'))
                                 )),
                                 (new Text(
                                     'p',
                                     __("You can use Dotclear's plugin called myUrlHandlers to change short links prefix on your blog.") .
                                     (
-                                        preg_match('/index\.php/', $this->url_base) ?
+                                        preg_match('/index\.php/', $this->get('url_base')) ?
                                         ' ' .
                                         __("We recommand that you use a rewrite engine in order to remove 'index.php' from your blog's URL.") .
                                         '<br /><a href="http://fr.dotclear.org/documentation/2.0/usage/blog-parameters">' .
@@ -143,7 +144,7 @@ class ServiceLocal extends Service
 
     public function testService(): bool
     {
-        $ap = $this->allow_protocols;
+        $ap = $this->get('allow_protocols');
         if (!empty($ap)) {
             return true;
         }
@@ -161,13 +162,13 @@ class ServiceLocal extends Service
 
         # Normal link
         if ($hash === null) {
-            $type     = 'localnormal';
+            $type    = 'localnormal';
             $rs_hash = $this->next($this->last('localnormal'));
 
             # Mixed custom link
         } elseif (preg_match('/^([A-Za-z0-9]{2,})\!\!$/', $hash, $m)) {
-            $type     = 'localmix';
-            $rs_hash = $m[1] . $this->next(-1, $m[1]);
+            $type    = 'localmix';
+            $rs_hash = $m[1] . $this->next('-1', $m[1]);
 
             # Custom link
         } elseif (preg_match('/^[A-Za-z0-9\.\-\_]{2,}$/', $hash)) {
@@ -176,7 +177,7 @@ class ServiceLocal extends Service
 
                 return false;
             }
-            $type     = 'localcustom';
+            $type    = 'localcustom';
             $rs_hash = $hash;
 
             # Wrong char in custom hash
@@ -195,23 +196,23 @@ class ServiceLocal extends Service
                 $rs_url,
                 $rs_type
             );
-        } catch (Exception $e) {
+        } catch (Exception) {
             $this->error->add(__('Failed to save link.'));
         }
 
         return false;
     }
 
-    protected function last($type)
+    protected function last(string $type): string
     {
         return false === ($rs = $this->log->select(null, null, $type, 'local')) ?
-            -1 : $rs->hash;
+            '-1' : $rs->hash;
     }
 
-    protected function next($last_id, $prefix = '')
+    protected function next(string $last_id, string $prefix = ''): string
     {
-        if ($last_id == -1) {
-            $next_id = 0;
+        if ($last_id == '-1') {
+            $next_id = '0';
         } else {
             for ($x = 1; $x <= strlen($last_id); $x++) {
                 $pos = strlen($last_id) - $x;
@@ -231,7 +232,7 @@ class ServiceLocal extends Service
             $next_id : $this->next($next_id, $prefix);
     }
 
-    protected function append($id)
+    protected function append(string $id): string
     {
         $id = str_split($id);
         for ($x = 0; $x < count($id); $x++) {
@@ -241,7 +242,7 @@ class ServiceLocal extends Service
         return implode($id) . '0';
     }
 
-    protected function increment($id, $pos)
+    protected function increment(string $id, int $pos): string
     {
         $id   = str_split($id);
         $char = $id[$pos];
@@ -262,7 +263,7 @@ class ServiceLocal extends Service
         return implode($id);
     }
 
-    public function getUrl(string $hash)
+    public function getUrl(string $hash): bool|string
     {
         if (false === ($rs = $this->log->select(null, $hash, null, 'local'))) {
             return false;

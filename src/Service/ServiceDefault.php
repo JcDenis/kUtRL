@@ -7,7 +7,6 @@ namespace Dotclear\Plugin\kUtRL\Service;
 use Dotclear\Helper\Html\Form\{
     Div,
     Note,
-    Para,
     Text
 };
 use Dotclear\Plugin\kUtRL\Service;
@@ -49,8 +48,7 @@ class ServiceDefault extends Service
                 (new Note())
                     ->class('form-note')
                     ->text(__('There is nothing to configure for this service.')),
-                (new Para())
-                    ->text(__('There is nothing to configure for this service.')),
+                (new Text('p', __('There is nothing to configure for this service.'))),
                 (new Text(
                     '',
                     '<dl>' .
@@ -71,10 +69,10 @@ class ServiceDefault extends Service
 
     public function testService(): bool
     {
-        $url = $this->url_encode ? urlencode($this->url_test) : $this->url_test;
-        $arg = [$this->url_param => urlencode($this->url_test)];
+        $url = $this->get('url_encode') ? urlencode($this->get('url_test')) : $this->get('url_test');
+        $arg = [$this->get('url_param') => urlencode($this->get('url_test'))];
 
-        if (!self::post($this->url_api, $arg, true, true)) {
+        if (!self::post($this->get('url_api'), $arg, true, true)) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -85,19 +83,19 @@ class ServiceDefault extends Service
 
     public function createHash(string $url, ?string $hash = null)
     {
-        $enc = $this->url_encode ? urlencode($url) : $url;
-        $arg = [$this->url_param => $url];
+        $enc = $this->get('url_encode') ? urlencode($url) : $url;
+        $arg = [$this->get('url_param') => $url];
 
-        if (!($response = self::post($this->url_api, $arg, true, true))) {
+        if (!($response = self::post($this->get('url_api'), $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
         }
 
         return $this->fromValue(
-            str_replace($this->url_base, '', $response),
+            (string) str_replace($this->get('url_base'), '', $response),
             $url,
-            $this->id
+            $this->get('id')
         );
     }
 }

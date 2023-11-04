@@ -23,6 +23,7 @@ use Dotclear\Helper\Html\Form\{
     Submit,
     Text
 };
+use Exception;
 
 /**
  * @brief       kUtRL manage links class.
@@ -34,7 +35,7 @@ use Dotclear\Helper\Html\Form\{
 class ManageLinks extends Process
 {
     private static Filters $kutrl_filter;
-    private static Linkslisting $kutrl_listing;
+    private static LinksListing $kutrl_listing;
 
     public static function init(): bool
     {

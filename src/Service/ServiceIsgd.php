@@ -15,20 +15,23 @@ use Dotclear\Plugin\kUtRL\Service;
  */
 class ServiceIsgd extends Service
 {
-    protected $config = [
-        'id'   => 'isgd',
-        'name' => 'is.gd',
-        'home' => 'http://is.gd/',
+    protected function init(): void
+    {
+        $this->config = [
+            'id'   => 'isgd',
+            'name' => 'is.gd',
+            'home' => 'http://is.gd/',
 
-        'url_api'        => 'http://is.gd/api.php',
-        'url_base'       => 'http://is.gd/',
-        'url_min_length' => 25,
-    ];
+            'url_api'        => 'http://is.gd/api.php',
+            'url_base'       => 'http://is.gd/',
+            'url_min_length' => 25,
+        ];
+    }
 
     public function testService(): bool
     {
-        $arg = ['longurl' => urlencode($this->url_test)];
-        if (!self::post($this->url_api, $arg, true, true)) {
+        $arg = ['longurl' => urlencode($this->get('url_test'))];
+        if (!self::post($this->get('url_api'), $arg, true, true)) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -41,16 +44,16 @@ class ServiceIsgd extends Service
     {
         $arg = ['longurl' => $url];
 
-        if (!($response = self::post($this->url_api, $arg, true, true))) {
+        if (!($response = self::post($this->get('url_api'), $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
         }
 
         return $this->fromValue(
-            str_replace($this->url_base, '', $response),
+            (string) str_replace($this->get('url_base'), '', $response),
             $url,
-            $this->id
+            $this->get('id')
         );
     }
 }
