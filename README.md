@@ -1,10 +1,10 @@
 # README
 
-[![Release](https://img.shields.io/badge/release-2023.11.04-a2cbe9.svg)](https://git.dotclear.watch/JcDenis/kUtRL/releases)
-![Date](https://img.shields.io/badge/date-2023.11.04-c44d58.svg)
-[![Dotclear](https://img.shields.io/badge/dotclear-v2.28-137bbb.svg)](https://fr.dotclear.org/download)
+[![Release](https://img.shields.io/github/v/release/jcdenis/kUtRL?color=lightblue)](https://github.com/JcDenis/kUtRL/releases)
+![Date](https://img.shields.io/github/release-date/jcdenis/kUtRL?color=red)
+[![Dotclear](https://img.shields.io/badge/dotclear-v2.33-137bbb.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-9ac123.svg)](https://plugins.dotaddict.org/dc2/details/kUtRL)
-[![License](https://img.shields.io/badge/license-GPL--2.0-ececec.svg)](https://git.dotclear.watch/JcDenis/kUtRL/src/branch/master/LICENSE)
+[![License](https://img.shields.io/github/license/jcdenis/kUtRL?color=white)](https://github.com/JcDenis/kUtRL/src/branch/master/LICENSE)
 
 ## ABOUT
 
@@ -29,10 +29,10 @@ You can also add widgets, template block and values.
 
 ## LINKS
 
-* [License](https://git.dotclear.watch/JcDenis/kUtRL/src/branch/master/LICENSE)
-* [Packages & details](https://git.dotclear.watch/JcDenis/kUtRL/releases) (or on [Dotaddict](https://plugins.dotaddict.org/dc2/details/kUtRL))
-* [Sources & contributions](https://git.dotclear.watch/JcDenis/kUtRL) (or on [GitHub](https://github.com/JcDenis/kUtRL))
-* [Issues & security](https://git.dotclear.watch/JcDenis/kUtRL/issues) (or on [GitHub](https://github.com/JcDenis/kUtRL/issues))
+* [License](https://github.com/JcDenis/kUtRL/src/branch/master/LICENSE)
+* [Packages & details](https://github.com/JcDenis/kUtRL/releases) (or on [Dotaddict](https://plugins.dotaddict.org/dc2/details/kUtRL))
+* [Sources & contributions](https://github.com/JcDenis/kUtRL)
+* [Issues & security](https://github.com/JcDenis/kUtRL/issues)
 * [Discussion & Help](http://forum.dotclear.org/viewtopic.php?pid=331158)
 
 ## CONTRIBUTORS

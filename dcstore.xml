@@ -7,7 +7,7 @@
     <desc>Use, create and serve short url on your blog</desc>
     <file>https://github.com/JcDenis/kUtRL/releases/download/v2023.11.04/plugin-kUtRL.zip</file>
     <da:dcmin>2.28</da:dcmin>
-    <da:details>https://git.dotclear.watch/JcDenis/kUtRL/src/branch/master/README.md</da:details>
-    <da:support>https://git.dotclear.watch/JcDenis/kUtRL/issues</da:support>
+    <da:details>https://github.com/JcDenis/kUtRL/src/branch/master/README.md</da:details>
+    <da:support>https://github.com/JcDenis/kUtRL/issues</da:support>
   </module>
 </modules>
