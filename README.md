@@ -4,7 +4,7 @@
 ![Date](https://img.shields.io/github/release-date/jcdenis/kUtRL?color=red)
 [![Dotclear](https://img.shields.io/badge/dotclear-v2.33-137bbb.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-9ac123.svg)](https://plugins.dotaddict.org/dc2/details/kUtRL)
-[![License](https://img.shields.io/github/license/jcdenis/kUtRL?color=white)](https://github.com/JcDenis/kUtRL/src/branch/master/LICENSE)
+[![License](https://img.shields.io/github/license/jcdenis/kUtRL?color=white)](https://github.com/JcDenis/kUtRL/blob/master/LICENSE)
 
 ## ABOUT
 
@@ -29,7 +29,7 @@ You can also add widgets, template block and values.
 
 ## LINKS
 
-* [License](https://github.com/JcDenis/kUtRL/src/branch/master/LICENSE)
+* [License](https://github.com/JcDenis/kUtRL/blob/master/LICENSE)
 * [Packages & details](https://github.com/JcDenis/kUtRL/releases) (or on [Dotaddict](https://plugins.dotaddict.org/dc2/details/kUtRL))
 * [Sources & contributions](https://github.com/JcDenis/kUtRL)
 * [Issues & security](https://github.com/JcDenis/kUtRL/issues)
