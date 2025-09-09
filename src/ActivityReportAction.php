@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\kUtRL;
 
-use Dotclear\Core\Process;
+use Dotclear\Helper\Process\TraitProcess;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Plugin\activityReport\{
     Action,
@@ -21,8 +21,10 @@ use Dotclear\Plugin\activityReport\{
  * @author      Jean-Christian Denis
  * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-class ActivityReportAction extends Process
+class ActivityReportAction
 {
+    use TraitProcess;
+
     public static function init(): bool
     {
         return self::status(true);

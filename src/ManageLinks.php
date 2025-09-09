@@ -13,7 +13,7 @@ use Dotclear\Core\Backend\{
     Notices,
     Page
 };
-use Dotclear\Core\Process;
+use Dotclear\Helper\Process\TraitProcess;
 use Dotclear\Helper\Html\Form\{
     Div,
     Form,
@@ -32,8 +32,10 @@ use Exception;
  * @author      Jean-Christian Denis (author)
  * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-class ManageLinks extends Process
+class ManageLinks
 {
+    use TraitProcess;
+
     private static Filters $kutrl_filter;
     private static LinksListing $kutrl_listing;
 
