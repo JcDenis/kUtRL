@@ -59,7 +59,7 @@ class Manage
             if (null === $kut) {
                 throw new Exception('Unknow service');
             }
-            $url  = trim(App::con()->escapeStr((string) $_POST['str']));
+            $url  = trim(App::db()->con()->escapeStr((string) $_POST['str']));
             $hash = empty($_POST['custom']) ? null : $_POST['custom'];
 
             if (empty($url)) {

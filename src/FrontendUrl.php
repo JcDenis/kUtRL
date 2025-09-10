@@ -89,7 +89,7 @@ class FrontendUrl extends Url
             return;
         }
         # Validation form
-        $url = !empty($_POST['longurl']) ? trim(App::con()->escapeStr((string) $_POST['longurl'])) : '';
+        $url = !empty($_POST['longurl']) ? trim(App::db()->con()->escapeStr((string) $_POST['longurl'])) : '';
         if (!empty($url)) {
             $hmf  = !empty($_POST['hmf']) ? $_POST['hmf'] : '!';
             $hmfu = !empty($_POST['hmfp']) ? FrontendUtils::unprotect($_POST['hmfp']) : '?';

@@ -12,7 +12,7 @@ use Dotclear\Database\Statement\{
     SelectStatement,
     UpdateStatement
 };
-use Dotclear\Interface\Core\ConnectionInterface;
+use Dotclear\Interface\Database\ConnectionInterface;
 use Exception;
 
 /**
@@ -29,8 +29,8 @@ class Logs
 
     public function __construct()
     {
-        $this->table = App::con()->prefix() . My::TABLE_NAME;
-        $this->con   = App::con();
+        $this->table = App::db()->con()->prefix() . My::TABLE_NAME;
+        $this->con   = App::db()->con();
     }
 
     public function nextId(): int

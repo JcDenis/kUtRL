@@ -179,13 +179,13 @@ class Widgets
 
         $type = in_array($w->get('type'), ['localnormal', 'localmix', 'localcustom']) ?
             "AND kut_type ='" . $w->get('type') . "' " :
-            'AND kut_type ' . App::con()->in(['localnormal', 'localmix', 'localcustom']) . ' ';
+            'AND kut_type ' . App::db()->con()->in(['localnormal', 'localmix', 'localcustom']) . ' ';
 
         $hide = (bool) $w->get('hideempty') ? 'AND kut_counter > 0 ' : '';
 
         $more = '';
         if ($w->get('type') == 'localmix' && '' != $w->get('mixprefix')) {
-            $more = "AND kut_hash LIKE '" . App::con()->escapeStr((string) $w->get('mixprefix')) . "%' ";
+            $more = "AND kut_hash LIKE '" . App::db()->con()->escapeStr((string) $w->get('mixprefix')) . "%' ";
         }
 
         $order = ($w->get('sortby') && in_array($w->get('sortby'), ['kut_dt', 'kut_counter', 'kut_hash'])) ?
@@ -193,12 +193,12 @@ class Widgets
 
         $order .= $w->get('sort') == 'desc' ? ' DESC' : ' ASC';
 
-        $limit = App::con()->limit(abs((int) $w->get('limit')));
+        $limit = App::db()->con()->limit(abs((int) $w->get('limit')));
 
-        $rs = App::con()->select(
+        $rs = App::db()->con()->select(
             'SELECT kut_counter, kut_hash ' .
-            'FROM ' . App::con()->prefix() . My::TABLE_NAME . ' ' .
-            "WHERE blog_id='" . App::con()->escapeStr(App::blog()->id()) . "' " .
+            'FROM ' . App::db()->con()->prefix() . My::TABLE_NAME . ' ' .
+            "WHERE blog_id='" . App::db()->con()->escapeStr(App::blog()->id()) . "' " .
             "AND kut_service = 'local' " .
             $type . $hide . $more . 'ORDER BY ' . $order . $limit
         );

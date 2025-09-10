@@ -6,7 +6,6 @@ namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
 use Dotclear\Helper\Process\TraitProcess;
-use Dotclear\Database\Structure;
 use Exception;
 
 /**
@@ -33,7 +32,7 @@ class Install
 
         try {
             // Table
-            $t = new Structure(App::con(), App::con()->prefix());
+            $t = App::db()->structure();
             $t->{My::TABLE_NAME}
                 ->kut_id('bigint', 0, false)
                 ->blog_id('varchar', 32, false)
@@ -51,13 +50,13 @@ class Install
                 ->index('idx_kut_service', 'btree', 'kut_service')
                 ->index('idx_kut_type', 'btree', 'kut_type');
 
-            (new Structure(App::con(), App::con()->prefix()))->synchronize($t);
+            App::db()->structure()->synchronize($t);
 
             // upgrade version < 2022.12.22 : upgrade settings id and ns and array
             $current = App::version()->getVersion(My::id());
             if ($current && version_compare($current, '2022.12.22', '<')) {
-                $record = App::con()->select(
-                    'SELECT * FROM ' . App::con()->prefix() . App::blogWorkspace()::NS_TABLE_NAME . ' ' .
+                $record = App::db()->con()->select(
+                    'SELECT * FROM ' . App::db()->con()->prefix() . App::blogWorkspace()::NS_TABLE_NAME . ' ' .
                     "WHERE setting_ns = 'kUtRL' "
                 );
                 while ($record->fetch()) {
@@ -71,7 +70,7 @@ class Install
                         $cur->setting_ns = basename(__DIR__);
                         $cur->update(
                             "WHERE setting_id = '" . $record->setting_id . "' and setting_ns = 'kUtRL' " .
-                            'AND blog_id ' . (null === $record->blog_id ? 'IS NULL ' : ("= '" . App::con()->escapeStr((string) $record->blog_id) . "' "))
+                            'AND blog_id ' . (null === $record->blog_id ? 'IS NULL ' : ("= '" . App::db()->con()->escapeStr((string) $record->blog_id) . "' "))
                         );
                     }
                 }

@@ -21,7 +21,7 @@ class ImportExportBehaviors
             My::TABLE_NAME,
             'SELECT kut_id, blog_id, kut_service, kut_type, ' .
             'kut_hash, kut_url, kut_dt, kut_password, kut_counter ' .
-            'FROM ' . App::con()->prefix() . My::TABLE_NAME . ' ' .
+            'FROM ' . App::db()->con()->prefix() . My::TABLE_NAME . ' ' .
             "WHERE blog_id = '" . $blog_id . "' "
         );
     }
@@ -33,7 +33,7 @@ class ImportExportBehaviors
 
     public static function importInitV2($bk)
     {
-        $bk->cur_kutrl = App::con()->openCursor(App::con()->prefix() . My::TABLE_NAME);
+        $bk->cur_kutrl = App::db()->con()->openCursor(App::db()->con()->prefix() . My::TABLE_NAME);
         $bk->kutrl     = new Logs();
     }
 

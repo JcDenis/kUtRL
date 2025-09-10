@@ -192,7 +192,7 @@ class Service
      */
     public function hash(string $url, ?string $hash = null)
     {
-        $url = trim(App::con()->escapeStr((string) $url));
+        $url = trim(App::db()->con()->escapeStr((string) $url));
         if ('undefined' === $this->get('id')) {
             return false;
         }
