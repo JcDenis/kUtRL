@@ -6,12 +6,10 @@ namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
 use Dotclear\Database\MetaRecord;
-use Dotclear\Database\Statement\{
-    DeleteStatement,
-    JoinStatement,
-    SelectStatement,
-    UpdateStatement
-};
+use Dotclear\Database\Statement\DeleteStatement;
+use Dotclear\Database\Statement\JoinStatement;
+use Dotclear\Database\Statement\SelectStatement;
+use Dotclear\Database\Statement\UpdateStatement;
 use Dotclear\Interface\Database\ConnectionInterface;
 use Exception;
 

@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
-use Dotclear\Helper\Html\Form\{
-    Form,
-    Hidden,
-    Input,
-    Label,
-    Para,
-    Submit
-};
+use Dotclear\Helper\Html\Form\Form;
+use Dotclear\Helper\Html\Form\Hidden;
+use Dotclear\Helper\Html\Form\Input;
+use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Plugin\widgets\WidgetsStack;
 use Dotclear\Plugin\widgets\WidgetsElement;

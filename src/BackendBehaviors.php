@@ -6,25 +6,19 @@ namespace Dotclear\Plugin\kUtRL;
 
 use ArrayObject;
 use Dotclear\App;
-use Dotclear\Core\Backend\{
-    Action\ActionsPosts,
-    Favorites,
-    Notices
-};
-use Dotclear\Database\{
-    Cursor,
-    MetaRecord
-};
-use Dotclear\Helper\Html\Form\{
-    Checkbox,
-    Div,
-    Hidden,
-    Input,
-    Label,
-    Link,
-    Para,
-    Text
-};
+use Dotclear\Core\Backend\Action\ActionsPosts;
+use Dotclear\Core\Backend\Favorites;
+use Dotclear\Core\Backend\Notices;
+use Dotclear\Database\Cursor;
+use Dotclear\Database\MetaRecord;
+use Dotclear\Helper\Html\Form\Checkbox;
+use Dotclear\Helper\Html\Form\Div;
+use Dotclear\Helper\Html\Form\Hidden;
+use Dotclear\Helper\Html\Form\Input;
+use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Link;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Html\Html;
 use Exception;
 

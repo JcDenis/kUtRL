@@ -29,7 +29,7 @@ class Combo
     /**
      * @return  array<string,string>
      */
-    public static function ServicesCombo(bool $with_none = false): array
+    public static function servicesCombo(bool $with_none = false): array
     {
         $services_combo = [];
         foreach (Utils::getServices() as $service_id => $service) {

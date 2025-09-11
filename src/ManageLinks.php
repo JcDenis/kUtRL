@@ -5,24 +5,18 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
-use Dotclear\Core\Backend\Filter\{
-    Filters,
-    FiltersLibrary
-};
-use Dotclear\Core\Backend\{
-    Notices,
-    Page
-};
+use Dotclear\Core\Backend\Filter\Filters;
+use Dotclear\Core\Backend\Filter\FiltersLibrary;
+use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Process\TraitProcess;
-use Dotclear\Helper\Html\Form\{
-    Div,
-    Form,
-    Hidden,
-    Link,
-    Para,
-    Submit,
-    Text
-};
+use Dotclear\Helper\Html\Form\Div;
+use Dotclear\Helper\Html\Form\Form;
+use Dotclear\Helper\Html\Form\Hidden;
+use Dotclear\Helper\Html\Form\Link;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Submit;
+use Dotclear\Helper\Html\Form\Text;
 use Exception;
 
 /**

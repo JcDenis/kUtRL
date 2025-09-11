@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
-use Dotclear\Core\Url;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\Network\Http;
 
@@ -16,14 +15,14 @@ use Dotclear\Helper\Network\Http;
  * @author      Jean-Christian Denis (author)
  * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-class FrontendUrl extends Url
+class FrontendUrl
 {
     # Redirect !!! local !!! service only
     public static function redirectUrl(?string $args): void
     {
         # Not active, go to default 404
         if (!My::settings()->get('active')) {
-            self::p404();
+            App::url()::p404();
         }
         # Not a valid url, go to kutrl 404
         if (!preg_match('#^(|(/(.*?)))$#', (string) $args, $m)) {
@@ -80,7 +79,7 @@ class FrontendUrl extends Url
 
         # Not active, go to default 404
         if (!$s->get('active')) {
-            self::p404();
+            App::url()::p404();
         }
         # Public page not active, go to kutrl 404
         if (!$s->get('srv_local_public')) {
@@ -174,13 +173,13 @@ class FrontendUrl extends Url
         }
 
         App::frontend()->template()->appendPath(My::path() . '/default-templates');
-        self::serveDocument('kutrl.html');
+        App::url()::serveDocument('kutrl.html');
     }
 
     protected static function kutrl404(): void
     {
         if (!My::settings()->get('srv_local_404_active')) {
-            self::p404();
+            App::url()::p404();
         }
 
         App::frontend()->template()->appendPath(My::path() . '/default-templates');

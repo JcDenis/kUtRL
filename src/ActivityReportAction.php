@@ -6,11 +6,9 @@ namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\Helper\Process\TraitProcess;
 use Dotclear\Database\MetaRecord;
-use Dotclear\Plugin\activityReport\{
-    Action,
-    ActivityReport,
-    Group
-};
+use Dotclear\Plugin\activityReport\Action;
+use Dotclear\Plugin\activityReport\ActivityReport;
+use Dotclear\Plugin\activityReport\Group;
 
 /**
  * @brief       kUtRL plugin activityReport class.

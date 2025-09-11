@@ -6,10 +6,8 @@ namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
 use Dotclear\Database\MetaRecord;
-use Dotclear\Helper\Html\Form\{
-    Div,
-    Note
-};
+use Dotclear\Helper\Html\Form\Div;
+use Dotclear\Helper\Html\Form\Note;
 use Dotclear\Helper\Network\HttpClient;
 
 /**

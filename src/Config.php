@@ -7,16 +7,14 @@ namespace Dotclear\Plugin\kUtRL;
 use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Helper\Process\TraitProcess;
-use Dotclear\Helper\Html\Form\{
-    Checkbox,
-    Div,
-    Label,
-    Link,
-    Note,
-    Para,
-    Select,
-    Text
-};
+use Dotclear\Helper\Html\Form\Checkbox;
+use Dotclear\Helper\Html\Form\Div;
+use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Link;
+use Dotclear\Helper\Html\Form\Note;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Select;
+use Dotclear\Helper\Html\Form\Text;
 use Exception;
 
 /**

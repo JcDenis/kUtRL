@@ -33,16 +33,16 @@ class Install
         try {
             // Table
             $t = App::db()->structure();
-            $t->{My::TABLE_NAME}
-                ->kut_id('bigint', 0, false)
-                ->blog_id('varchar', 32, false)
-                ->kut_service('varchar', 32, false, "'kUtRL'")
-                ->kut_type('varchar', 32, false)
-                ->kut_hash('varchar', 32, false)
-                ->kut_url('text', 0, false)
-                ->kut_dt('timestamp', 0, false, 'now()')
-                ->kut_password('varchar', 32, true)
-                ->kut_counter('bigint', 0, false, 0)
+            $t->table(My::TABLE_NAME)
+                ->field('kut_id', 'bigint', 0, false)
+                ->field('blog_id', 'varchar', 32, false)
+                ->field('kut_service', 'varchar', 32, false, "'kUtRL'")
+                ->field('kut_type', 'varchar', 32, false)
+                ->field('kut_hash', 'varchar', 32, false)
+                ->field('kut_url', 'text', 0, false)
+                ->field('kut_dt', 'timestamp', 0, false, 'now()')
+                ->field('kut_password', 'varchar', 32, true)
+                ->field('kut_counter', 'bigint', 0, false, 0)
 
                 ->primary('pk_kutrl', 'kut_id')
                 ->index('idx_kut_blog_id', 'btree', 'blog_id')
