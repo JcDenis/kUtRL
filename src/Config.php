@@ -57,50 +57,48 @@ class Config
         $s_tpl_active          = (bool) $s->get('tpl_active');
         $s_admin_entry_default = (string) $s->get('admin_entry_default');
 
-        if (!empty($_POST['save'])) {
-            try {
-                # settings
-                $s_active              = !empty($_POST['s_active']);
-                $s_admin_service       = (string) $_POST['s_admin_service'];
-                $s_plugin_service      = (string) $_POST['s_plugin_service'];
-                $s_tpl_service         = (string) $_POST['s_tpl_service'];
-                $s_wiki_service        = (string) $_POST['s_wiki_service'];
-                $s_allow_external_url  = !empty($_POST['s_allow_external_url']);
-                $s_tpl_passive         = !empty($_POST['s_tpl_passive']);
-                $s_tpl_active          = !empty($_POST['s_tpl_active']);
-                $s_admin_entry_default = !empty($_POST['s_admin_entry_default']);
+        try {
+            # settings
+            $s_active              = !empty($_POST['s_active']);
+            $s_admin_service       = (string) $_POST['s_admin_service'];
+            $s_plugin_service      = (string) $_POST['s_plugin_service'];
+            $s_tpl_service         = (string) $_POST['s_tpl_service'];
+            $s_wiki_service        = (string) $_POST['s_wiki_service'];
+            $s_allow_external_url  = !empty($_POST['s_allow_external_url']);
+            $s_tpl_passive         = !empty($_POST['s_tpl_passive']);
+            $s_tpl_active          = !empty($_POST['s_tpl_active']);
+            $s_admin_entry_default = !empty($_POST['s_admin_entry_default']);
 
-                $s->put('active', $s_active);
-                $s->put('plugin_service', $s_plugin_service);
-                $s->put('admin_service', $s_admin_service);
-                $s->put('tpl_service', $s_tpl_service);
-                $s->put('wiki_service', $s_wiki_service);
-                $s->put('allow_external_url', $s_allow_external_url);
-                $s->put('tpl_passive', $s_tpl_passive);
-                $s->put('tpl_active', $s_tpl_active);
-                $s->put('admin_entry_default', $s_admin_entry_default);
+            $s->put('active', $s_active);
+            $s->put('plugin_service', $s_plugin_service);
+            $s->put('admin_service', $s_admin_service);
+            $s->put('tpl_service', $s_tpl_service);
+            $s->put('wiki_service', $s_wiki_service);
+            $s->put('allow_external_url', $s_allow_external_url);
+            $s->put('tpl_passive', $s_tpl_passive);
+            $s->put('tpl_active', $s_tpl_active);
+            $s->put('admin_entry_default', $s_admin_entry_default);
 
-                # services
-                foreach (Utils::getServices() as $service_id => $service) {
-                    if (is_subclass_of($service, Service::class)) {
-                        $o = new $service();
-                        $o->saveSettings();
-                    }
+            # services
+            foreach (Utils::getServices() as $service_id => $service) {
+                if (is_subclass_of($service, Service::class)) {
+                    $o = new $service();
+                    $o->saveSettings();
                 }
-
-                App::blog()->triggerBlog();
-
-                Notices::addSuccessNotice(
-                    __('Configuration successfully updated.')
-                );
-
-                App::backend()->url()->redirect(
-                    'admin.plugins',
-                    ['module' => My::id(), 'conf' => 1, 'chk' => 1, 'redir' => App::backend()->__get('list')->getRedir()]
-                );
-            } catch (Exception $e) {
-                App::error()->add($e->getMessage());
             }
+
+            App::blog()->triggerBlog();
+
+            Notices::addSuccessNotice(
+                __('Configuration successfully updated.')
+            );
+
+            App::backend()->url()->redirect(
+                'admin.plugins',
+                ['module' => My::id(), 'conf' => 1, 'chk' => 1, 'redir' => App::backend()->__get('list')->getRedir()]
+            );
+        } catch (Exception $e) {
+            App::error()->add($e->getMessage());
         }
 
         return true;

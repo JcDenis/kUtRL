@@ -32,12 +32,12 @@ class ServiceDefault extends Service
             'name' => 'Default',
             'home' => '',
 
-            'url_api'     => SHORTEN_SERVICE_API,
-            'url_base'    => SHORTEN_SERVICE_BASE,
-            'url_min_len' => strlen(SHORTEN_SERVICE_BASE) + 2,
+            'url_api'     => $this->getConstant('SHORTEN_SERVICE_API'),
+            'url_base'    => $this->getConstant('SHORTEN_SERVICE_BASE'),
+            'url_min_len' => strlen((string) $this->getConstant('SHORTEN_SERVICE_BASE')) + 2,
 
-            'url_param'  => SHORTEN_SERVICE_PARAM,
-            'url_encode' => SHORTEN_SERVICE_ENCODE,
+            'url_param'  => $this->getConstant('SHORTEN_SERVICE_PARAM'),
+            'url_encode' => $this->getConstant('SHORTEN_SERVICE_ENCODE'),
         ];
     }
 
@@ -53,15 +53,15 @@ class ServiceDefault extends Service
                     '',
                     '<dl>' .
                     '<dt>' . __('Service name:') . '</dt>' .
-                    '<dd>' . SHORTEN_SERVICE_NAME . '</dd>' .
+                    '<dd>' . $this->getConstant('SHORTEN_SERVICE_NAME') . '</dd>' .
                     '<dt>' . __('Full API URL:') . '</dt>' .
-                    '<dd>' . SHORTEN_SERVICE_API . '</dd>' .
+                    '<dd>' . $this->getConstant('SHORTEN_SERVICE_API') . '</dd>' .
                     '<dt>' . __('Query param:') . '</dt>' .
-                    '<dd>' . SHORTEN_SERVICE_PARAM . '</dd>' .
+                    '<dd>' . $this->getConstant('SHORTEN_SERVICE_PARAM') . '</dd>' .
                     '<dt>' . __('Short URL domain:') . '</dt>' .
-                    '<dd>' . SHORTEN_SERVICE_BASE . '</dd>' .
+                    '<dd>' . $this->getConstant('SHORTEN_SERVICE_BASE') . '</dd>' .
                     '<dt>' . __('Encode URL:') . '</dt>' .
-                    '<dd>' . (SHORTEN_SERVICE_ENCODE ? __('yes') : __('no')) . '</dd>' .
+                    '<dd>' . ($this->getConstant('SHORTEN_SERVICE_ENCODE') ? __('yes') : __('no')) . '</dd>' .
                     '</dl>'
                 )),
             ]);
@@ -93,9 +93,14 @@ class ServiceDefault extends Service
         }
 
         return $this->fromValue(
-            (string) str_replace($this->get('url_base'), '', $response),
+            $this->strReplace($this->get('url_base'), '', $response),
             $url,
             $this->get('id')
         );
+    }
+
+    private function getConstant(string $c): string|bool
+    {
+        return defined($c) ? constant($c) : '';
     }
 }

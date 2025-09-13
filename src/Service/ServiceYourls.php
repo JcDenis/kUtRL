@@ -104,7 +104,7 @@ class ServiceYourls extends Service
 
     public function testService(): bool
     {
-        if (empty($this->url_api)) {
+        if (empty($this->get('url_api'))) {
             $this->error->add(__('Service is not well configured.'));
 
             return false;
@@ -142,7 +142,7 @@ class ServiceYourls extends Service
 
         if ($rsp && $rsp->status == 'success') {
             return $this->fromValue(
-                $rsp->url[0]->keyword,
+                (string) (isset($rsp->url[0]) ? $rsp->url[0]->keyword : ''),
                 $url,
                 $this->get('id')
             );

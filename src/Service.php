@@ -315,4 +315,9 @@ class Service
 
         return true;
     }
+
+    public function strReplace(string $from, string $to, string $str): string
+    {
+        return str_replace($from, $to, $str);
+    }
 }

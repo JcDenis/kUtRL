@@ -153,7 +153,7 @@ class ServiceCustom extends Service
         }
 
         return $this->fromValue(
-            (string) str_replace($this->get('url_base'), '', $response),
+            $this->strReplace($this->get('url_base'), '', $response),
             $url,
             $this->get('id')
         );

@@ -129,10 +129,10 @@ class Widgets
         $hmfp = FrontendUtils::protect($hmf);
 
         return $w->renderDiv(
-            (bool) $w->content_only,
-            'shortenkutrlwidget ' . $w->class,
+            (bool) $w->get('content_only'),
+            'shortenkutrlwidget ' . $w->get('class'),
             '',
-            ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) : '') .
+            ($w->get('title') ? $w->renderTitle(Html::escapeHTML($w->get('title'))) : '') .
             (new Form(['shortenkutrlwidget']))
                 ->method('post')
                 ->action(App::blog()->url() . App::url()->getBase('kutrl'))
@@ -211,7 +211,7 @@ class Widgets
             $i++;
             $rank = '<span class="rankkutrl-rank">' . $i . '</span>';
 
-            $hash    = $rs->kut_hash;
+            $hash    = $rs->f('kut_hash');
             $url     = App::blog()->url() . App::url()->getBase('kutrl') . '/' . $hash;
             $cut_len = abs((int) $w->get('urllen'));
 
@@ -219,21 +219,21 @@ class Widgets
                 $url = '...' . substr($url, 0, $cut_len);
             }
 
-            if ($rs->kut_counter == 0) {
+            if ($rs->f('kut_counter') == 0) {
                 $counttext = __('never followed');
-            } elseif ($rs->kut_counter == 1) {
+            } elseif ($rs->f('kut_counter') == 1) {
                 $counttext = __('followed one time');
             } else {
-                $counttext = sprintf(__('followed %s times'), $rs->kut_counter);
+                $counttext = sprintf(__('followed %s times'), $rs->f('kut_counter'));
             }
 
             $content .= '<li><a href="' .
-                App::blog()->url() . App::url()->getBase('kutrl') . '/' . $rs->kut_hash .
+                App::blog()->url() . App::url()->getBase('kutrl') . '/' . $rs->f('kut_hash') .
                 '">' .
                 str_replace(
                     ['%rank%', '%hash%', '%url%', '%count%', '%counttext%'],
-                    [$rank, $hash, $url, $rs->kut_counter, $counttext],
-                    $w->get('text')
+                    [$rank, $hash, $url, $rs->f('kut_counter'), $counttext],
+                    (string) $w->get('text')
                 ) .
                 '</a></li>';
         }
@@ -243,10 +243,10 @@ class Widgets
         }
 
         return $w->renderDiv(
-            (bool) $w->content_only,
-            'lastblogupdate ' . $w->class,
+            (bool) $w->get('content_only'),
+            'lastblogupdate ' . $w->get('class'),
             '',
-            ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) : '') .
+            ($w->get('title') ? $w->renderTitle(Html::escapeHTML($w->get('title'))) : '') .
                 sprintf('<ul>%s</ul>', $content)
         );
     }
