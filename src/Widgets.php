@@ -211,7 +211,7 @@ class Widgets
             $i++;
             $rank = '<span class="rankkutrl-rank">' . $i . '</span>';
 
-            $hash    = $rs->f('kut_hash');
+            $hash    = $rs->strField('kut_hash');
             $url     = App::blog()->url() . App::url()->getBase('kutrl') . '/' . $hash;
             $cut_len = abs((int) $w->get('urllen'));
 
@@ -219,20 +219,20 @@ class Widgets
                 $url = '...' . substr($url, 0, $cut_len);
             }
 
-            if ($rs->f('kut_counter') == 0) {
+            if ($rs->intField('kut_counter') == 0) {
                 $counttext = __('never followed');
-            } elseif ($rs->f('kut_counter') == 1) {
+            } elseif ($rs->intField('kut_counter') == 1) {
                 $counttext = __('followed one time');
             } else {
-                $counttext = sprintf(__('followed %s times'), $rs->f('kut_counter'));
+                $counttext = sprintf(__('followed %s times'), $rs->intField('kut_counter'));
             }
 
             $content .= '<li><a href="' .
-                App::blog()->url() . App::url()->getBase('kutrl') . '/' . $rs->f('kut_hash') .
+                App::blog()->url() . App::url()->getBase('kutrl') . '/' . $rs->strField('kut_hash') .
                 '">' .
                 str_replace(
                     ['%rank%', '%hash%', '%url%', '%count%', '%counttext%'],
-                    [$rank, $hash, $url, $rs->f('kut_counter'), $counttext],
+                    [$rank, $hash, $url, $rs->strField('kut_counter'), $counttext],
                     (string) $w->get('text')
                 ) .
                 '</a></li>';

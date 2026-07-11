@@ -60,7 +60,7 @@ class ManageLinks
 
         try {
             $list_all            = $log->getLogs($params);
-            $list_counter        = $log->getLogs($params, true)->f(0);
+            $list_counter        = $log->getLogs($params, true)->cardinal();
             self::$kutrl_listing = new LinksListing($list_all, $list_counter);
         } catch (Exception $e) {
             App::error()->add($e->getMessage());
@@ -73,10 +73,10 @@ class ManageLinks
                     if ($rs->isEmpty()) {
                         continue;
                     }
-                    if (null === ($o = Utils::quickService($rs->kut_type))) {
+                    if (null === ($o = Utils::quickService($rs->strField('kut_type')))) {
                         continue;
                     }
-                    $o->remove($rs->kut_url);
+                    $o->remove($rs->strField('kut_url'));
                 }
 
                 App::blog()->triggerBlog();

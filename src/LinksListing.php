@@ -63,7 +63,7 @@ class LinksListing extends Listing
 
         $lines = [];
         while ($this->rs->fetch()) {
-            $lines[] = $this->linkLine(isset($links[$this->rs->f('kut_id')]));
+            $lines[] = $this->linkLine(isset($links[$this->rs->intField('kut_id')]));
         }
 
         echo
@@ -94,8 +94,8 @@ class LinksListing extends Listing
 
     private function linkLine(bool $checked): Para
     {
-        $type = $this->rs->kut_type;
-        $hash = $this->rs->kut_hash;
+        $type = $this->rs->strField('kut_type');
+        $hash = $this->rs->strField('kut_hash');
 
         if (null !== ($o = Utils::quickService($type))) {
             $type = (new Link())
@@ -115,19 +115,19 @@ class LinksListing extends Listing
                 ->class('nowrap minimal')
                 ->items([
                     (new Checkbox(['entries[]'], $checked))
-                        ->value($this->rs->kut_id),
+                        ->value($this->rs->strField('kut_id')),
                 ]),
             'kut_url' => (new Para(null, 'td'))
                 ->class('maximal')
                 ->items([
                     (new Link())
-                        ->href((string) $o?->get('home'))
-                        ->title($this->rs->kut_url)
-                        ->text($this->rs->kut_url),
+                        ->href($this->rs->strField('kut_url'))
+                        ->title($this->rs->strField('kut_url'))
+                        ->text($this->rs->strField('kut_url')),
                 ]),
             'kut_hash' => (new Text('td', $hash))
                 ->class('nowrap'),
-            'kut_dt' => (new Text('td', Html::escapeHTML(Date::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->kut_dt, App::auth()->getInfo('user_tz')))))
+            'kut_dt' => (new Text('td', Html::escapeHTML(Date::dt2str(__('%Y-%m-%d %H:%M'), $this->rs->strField('kut_dt'), App::auth()->getInfo('user_tz')))))
                 ->class('nowrap'),
             'kut_service' => (new Text('td', $type))
                 ->class('nowrap'),
@@ -136,7 +136,7 @@ class LinksListing extends Listing
         $this->userColumns(My::id(), $cols);
 
         return
-        (new Para('p' . $this->rs->kut_id, 'tr'))
+        (new Para('p' . $this->rs->strField('kut_id'), 'tr'))
             ->class('line')
             ->items(iterator_to_array($cols));
     }

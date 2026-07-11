@@ -40,7 +40,7 @@ class Logs
             ->from($this->table)
             ->select();
 
-        return is_null($rs) || $rs->isEmpty() ? 1 : (int) $rs->f(0) + 1;
+        return is_null($rs) || $rs->isEmpty() ? 1 : (int) $rs->cardinal() + 1;
     }
 
     /**
@@ -163,7 +163,7 @@ class Logs
             ->and('kut_id = ' . $id)
             ->select();
 
-        $counter = is_null($rs) || $rs->isEmpty() ? 0 : (int) $rs->kut_counter;
+        $counter = is_null($rs) || $rs->isEmpty() ? 0 : $rs->intField('kut_counter');
 
         if ('get' == $do) {
             return $counter;
