@@ -19,7 +19,7 @@ $this->registerModule(
     'Jean-Christian Denis and contributors',
     '2025.09.13',
     [
-        'requires'    => [['core', '2.36']],
+        'requires'    => [['core', '2.39']],
         'permissions' => 'My',
         'type'        => 'plugin',
         'support'     => 'https://github.com/JcDenis/' . $this->id . '/issues',
