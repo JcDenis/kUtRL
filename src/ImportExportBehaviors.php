@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
+use Dotclear\Database\Cursor;
+use Dotclear\Plugin\importExport\FlatExport;
+use Dotclear\Plugin\importExport\FlatBackup;
+use Dotclear\Plugin\importExport\FlatBackupItem;
+use Dotclear\Plugin\importExport\FlatImportV2;
 
 /**
  * @brief       kUtRL importExport stuff.
@@ -15,7 +20,7 @@ use Dotclear\App;
  */
 class ImportExportBehaviors
 {
-    public static function exportSingleV2($exp, $blog_id)
+    public static function exportSingleV2(FlatExport $exp, string $blog_id): void
     {
         $exp->export(
             My::TABLE_NAME,
@@ -26,41 +31,41 @@ class ImportExportBehaviors
         );
     }
 
-    public static function exportFullV2($exp)
+    public static function exportFullV2(FlatExport $exp): void
     {
         $exp->exportTable(My::TABLE_NAME);
     }
 
-    public static function importInitV2($bk)
+    public static function importInitV2(FlatBackup $bk): void
     {
-        $bk->cur_kutrl = App::db()->con()->openCursor(App::db()->con()->prefix() . My::TABLE_NAME);
-        $bk->kutrl     = new Logs();
+        $bk->__set('cur_kutrl', App::db()->con()->openCursor(App::db()->con()->prefix() . My::TABLE_NAME));
+        $bk->__set('kutrl', new Logs());
     }
 
-    public static function importSingleV2($line, $bk)
+    public static function importSingleV2(FlatBackupItem $line, FlatImportV2 $bk): void
     {
         if ($line->__name == My::TABLE_NAME) {
             # Do nothing if str/type exists !
-            if (false === $bk->kutrl->select($line->kut_url, $line->kut_hash, $line->kut_type, $line->kut_service)) {
-                $bk->kutrl->insert($line->kut_url, $line->kut_hash, $line->kut_type, $line->kut_service);
+            if (($bk->__get('kutrl') instanceof Logs) && false === $bk->__get('kutrl')->select($line->f('kut_url'), $line->f('kut_hash'), $line->f('kut_type'), $line->f('kut_service'))) {
+                $bk->__get('kutrl')->insert($line->f('kut_url'), $line->f('kut_hash'), $line->f('kut_type'), $line->f('kut_service'));
             }
         }
     }
 
-    public static function importFullV2($line, $bk)
+    public static function importFullV2(FlatBackupItem $line, FlatImportV2 $bk): void
     {
-        if ($line->__name == My::TABLE_NAME) {
-            $bk->cur_kutrl->clean();
-            $bk->cur_kutrl->kut_id       = (int) $line->kut_id;
-            $bk->cur_kutrl->blog_id      = (string) $line->blog_id;
-            $bk->cur_kutrl->kut_service  = (string) $line->kut_service;
-            $bk->cur_kutrl->kut_type     = (string) $line->kut_type;
-            $bk->cur_kutrl->kut_hash     = (string) $line->kut_hash;
-            $bk->cur_kutrl->kut_url      = (string) $line->kut_url;
-            $bk->cur_kutrl->kut_dt       = (string) $line->miniurl_dt;
-            $bk->cur_kutrl->kut_counter  = (int) $line->kut_counter;
-            $bk->cur_kutrl->kut_password = (string) $line->kut_password;
-            $bk->cur_kutrl->insert();
+        if ($line->__name == My::TABLE_NAME && is_numeric($line->f('kut_id')) && ($bk->__get('cur_kutrl') instanceof Cursor)) {
+            $bk->__get('cur_kutrl')->clean();
+            $bk->__get('cur_kutrl')->setField('kut_id', (int) $line->f('kut_id'));
+            $bk->__get('cur_kutrl')->setField('blog_id', $line->f('blog_id'));
+            $bk->__get('cur_kutrl')->setField('kut_service', $line->f('kut_service'));
+            $bk->__get('cur_kutrl')->setField('kut_type', $line->f('kut_type'));
+            $bk->__get('cur_kutrl')->setField('kut_hash', $line->f('kut_hash'));
+            $bk->__get('cur_kutrl')->setField('kut_url', $line->f('kut_url'));
+            $bk->__get('cur_kutrl')->setField('kut_dt', $line->f('miniurl_dt'));
+            $bk->__get('cur_kutrl')->setField('kut_counter', is_numeric($line->f('kut_counter')) ? (int) $line->f('kut_counter') : 0);
+            $bk->__get('cur_kutrl')->setField('kut_password', $line->f('kut_password'));
+            $bk->__get('cur_kutrl')->insert();
         }
     }
 }

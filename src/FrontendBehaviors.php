@@ -59,23 +59,25 @@ class FrontendBehaviors
         # URL shortening is disabled by tag attribute
         if (true !== App::frontend()->context()->__get('disable_kutrl')) {
             # plugin is not activated
-            if (!My::settings()->get('active')
-                || !My::settings()->get('tpl_active')
+            if (!My::settings()->getBool('active', false)
+                || !My::settings()->getBool('tpl_active', false)
                 || !App::frontend()->context()->exists('kutrl')
             ) {
                 return null;
             }
             # Existing
-            if (false !== ($kutrl_rs = App::frontend()->context()->kutrl->isKnowUrl($args[0]))) {
-                $args[0] = App::frontend()->context()->kutrl->url_base . $kutrl_rs->hash;
+            $kut = App::frontend()->context()->__get('kutrl');
+            if (!($kut instanceof Service) || !is_string($args[0])) {
+                return null;
+            }
+            if (false !== ($kutrl_rs = $kut->isKnowUrl($args[0]))) {
+                $args[0] = $kut->srvUrlBase() . $kutrl_rs->strField('hash');
                 # New
-            } elseif (false !== ($kutrl_rs = App::frontend()->context()->kutrl->hash($args[0]))) {
-                $args[0] = App::frontend()->context()->kutrl->url_base . $kutrl_rs->hash;
+            } elseif (false !== ($kutrl_rs = $kut->hash($args[0]))) {
+                $args[0] = $kut->srvUrlBase() . $kutrl_rs->strField('hash');
 
                 # ex: Send new url to messengers
-                if (!empty($kutrl_rs)) {
-                    App::behavior()->callBehavior('publicAfterKutrlCreate', $kutrl_rs, __('New public short URL'));
-                }
+                App::behavior()->callBehavior('publicAfterKutrlCreate', $kutrl_rs, __('New public short URL'));
             }
         }
 
@@ -87,21 +89,21 @@ class FrontendBehaviors
         $s = My::settings();
 
         # Passive : all kutrl tag return long url
-        App::frontend()->context()->kutrl_passive = (bool) $s->get('tpl_passive');
+        App::frontend()->context()->__set('kutrl_passive', $s->getBool('tpl_passive', false));
 
-        if (!$s->get('active')
-            || !$s->get('tpl_service')
+        if (!$s->getBool('active', false)
+            || $s->getStr('tpl_service', false) === ''
             || null === ($kut = Utils::quickPlace('tpl'))
         ) {
             return;
         }
 
-        App::frontend()->context()->kutrl = $kut;
+        App::frontend()->context()->__set('kutrl', $kut);
     }
 
     public static function publicHeadContent(): void
     {
-        $css = My::settings()->get('srv_local_css');
+        $css = My::settings()->getStr('srv_local_css', false);
         if (!empty($css)) {
             echo
             "\n<!-- CSS for " . My::id() . " --> \n" .

@@ -43,7 +43,7 @@ class ServiceBitly extends Service
             'allow_protocols' => ['http://', 'https://'],
         ];
 
-        $this->args['apiKey'] = $this->settings->get('srv_bitly_apikey');
+        $this->args['apiKey'] = $this->settings->getStr('srv_bitly_apikey', false);
     }
 
     public function saveSettings(): void
@@ -62,11 +62,11 @@ class ServiceBitly extends Service
                         (new Input('kutrl_srv_bitly_apikey'))
                             ->size(50)
                             ->maxlength(255)
-                            ->value((string) $this->settings->get('srv_bitly_apikey')),
+                            ->value($this->settings->getStr('srv_bitly_apikey', false)),
                     ]),
                 (new Note())
                     ->class('form-note')
-                    ->text(sprintf(__('This is your personnal %s API key. You can find it on your account page.'), $this->config['name'])),
+                    ->text(sprintf(__('This is your personnal %s API key. You can find it on your account page.'), is_string($this->config['name']) ? $this->config['name'] : '')),
             ]);
     }
 
@@ -79,7 +79,7 @@ class ServiceBitly extends Service
         }
 
         $args = json_encode(['domain' => 'bit.ly', 'bitlink_id' => 'bit.ly/WP9vc'], JSON_UNESCAPED_SLASHES);
-        if (!($response = self::post($this->get('url_api') . 'expand', $args, true, false, $this->headers()))) {
+        if (!($response = self::post($this->srvUrlApi() . 'expand', $args, true, false, $this->headers()))) {
             $this->error->add(__('Failed to call service.'));
 
             return false;
@@ -92,19 +92,24 @@ class ServiceBitly extends Service
     {
         $args = json_encode(['domain' => 'bit.ly', 'long_url' => $url]);
 
-        if (!($response = self::post($this->get('url_api') . 'shorten', $args, true, false, $this->headers()))) {
+        if (!($response = self::post($this->srvUrlApi() . 'shorten', $args, true, false, $this->headers()))) {
             $this->error->add(__('Failed to call service.'));
+
+            return false;
+        }
+
+        if (!is_string($response)) {
 
             return false;
         }
 
         $rsp = json_decode($response);
 
-        return $this->fromValue(
-            str_replace($this->get('url_base'), '', (string) $rsp->link),
-            (string) $rsp->long_url,
-            $this->get('id')
-        );
+        return is_object($rsp) && isset($rsp->link) && is_string($rsp->link) && isset($rsp->long_url) && is_string($rsp->long_url) ? $this->fromValue(
+            str_replace($this->srvUrlBase(), '', $rsp->link),
+            $rsp->long_url,
+            $this->srvId()
+        ) : false;
     }
 
     /**
@@ -112,6 +117,6 @@ class ServiceBitly extends Service
      */
     private function headers()
     {
-        return ['Authorization: Bearer ' . $this->args['apiKey'], 'Content-Type: application/json'];
+        return is_string($this->args['apiKey']) ? ['Authorization: Bearer ' . $this->args['apiKey'], 'Content-Type: application/json'] : [];
     }
 }

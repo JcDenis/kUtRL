@@ -13,6 +13,10 @@
  */
 declare(strict_types=1);
 
+if (!isset($this) || !is_object($this) || !method_exists($this, 'registerModule') || !isset($this->id) || !is_string($this->id)) {
+    return;
+}
+
 $this->registerModule(
     'Links shortener',
     'Use, create and serve short url on your blog',

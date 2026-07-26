@@ -36,8 +36,8 @@ class Combo
             if (!is_subclass_of($service, Service::class)) {
                 continue;
             }
-            $o                                   = new $service();
-            $services_combo[__($o->get('name'))] = $o->get('id');
+            $o                                 = new $service();
+            $services_combo[__($o->srvName())] = $o->srvId();
         }
         if ($with_none) {
             $services_combo = array_merge([__('Disabled') => ''], $services_combo);

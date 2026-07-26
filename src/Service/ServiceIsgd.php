@@ -30,8 +30,8 @@ class ServiceIsgd extends Service
 
     public function testService(): bool
     {
-        $arg = ['longurl' => urlencode($this->get('url_test'))];
-        if (!self::post($this->get('url_api'), $arg, true, true)) {
+        $arg  = ['longurl' => urlencode($this->srvUrlTest())];
+        if ($this->srvUrlApi() === '' || !self::post($this->srvUrlApi(), $arg, true, true)) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -44,16 +44,16 @@ class ServiceIsgd extends Service
     {
         $arg = ['longurl' => $url];
 
-        if (!($response = self::post($this->get('url_api'), $arg, true, true))) {
+        if (!($response = self::post($this->srvUrlApi(), $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
         }
 
-        return $this->fromValue(
-            $this->strReplace($this->get('url_base'), '', $response),
+        return is_string($response) ? $this->fromValue(
+            $this->strReplace($this->srvUrlBase(), '', $response),
             $url,
-            $this->get('id')
-        );
+            $this->srvId()
+        ) : false;
     }
 }

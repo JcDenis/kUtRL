@@ -43,7 +43,7 @@ class ActivityReportAction
             __('New short link of type "%s" and hash "%s" was created.'),
             'kutrlAfterCreateShortUrl',
             function (MetaRecord $rs) {
-                ActivityReport::instance()->addLog(My::id(), 'kUtRLcreate', [$rs->type, $rs->hash]);
+                ActivityReport::instance()->addLog(My::id(), 'kUtRLcreate', [$rs->strField('type'), $rs->strField('hash')]);
             }
         ));
 

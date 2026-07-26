@@ -66,9 +66,12 @@ class ManageLinks
             App::error()->add($e->getMessage());
         }
 
-        if (!empty($_POST['deletelinks'])) {
+        if (!empty($_POST['deletelinks']) && is_array($_POST['entries'])) {
             try {
                 foreach ($_POST['entries'] as $id) {
+                    if (!is_numeric($id)) {
+                        continue;
+                    }
                     $rs = $log->getLogs(['kut_id' => $id]);
                     if ($rs->isEmpty()) {
                         continue;
@@ -82,7 +85,7 @@ class ManageLinks
                 App::blog()->triggerBlog();
 
                 Notices::addSuccessNotice(__('Links successfully deleted'));
-                My::redirect(self::$kutrl_filter->values());
+                My::redirect(array_filter(self::$kutrl_filter->values(), fn ($v): bool => (is_int($v) || is_string($v))));
             } catch (Exception $e) {
                 App::error()->add($e->getMessage());
             }
@@ -144,7 +147,7 @@ class ManageLinks
                                     (new Submit('do-action'))
                                         ->class('delete')
                                         ->value(__('Delete selected short links')),
-                                    ... My::hiddenFields(array_merge(['deletelinks' => 1], self::$kutrl_filter->values(true))),
+                                    ... My::hiddenFields(array_filter(array_merge(['deletelinks' => 1], self::$kutrl_filter->values(true)), fn ($v): bool => (is_int($v) || is_string($v)))),
                                 ]),
                         ]),
                 ])->render()

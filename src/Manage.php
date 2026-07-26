@@ -55,7 +55,7 @@ class Manage
             if (null === $kut) {
                 throw new Exception('Unknow service');
             }
-            $url  = trim(App::db()->con()->escapeStr((string) $_POST['str']));
+            $url  = trim(App::db()->con()->escapeStr(is_string($_POST['str']) ? $_POST['str'] : ''));
             $hash = empty($_POST['custom']) ? null : $_POST['custom'];
 
             if (empty($url)) {
@@ -64,7 +64,7 @@ class Manage
             if (!$kut->testService()) {
                 throw new Exception(__('Service is not well configured.'));
             }
-            if (null !== $hash && !$kut->get('allow_custom_hash')) {
+            if (null !== $hash && !$kut->srvAllowCustomHash()) {
                 throw new Exception(__('This service does not allowed custom hash.'));
             }
             if (!$kut->isValidUrl($url)) {
@@ -82,12 +82,12 @@ class Manage
             if ($kut->isServiceUrl($url)) {
                 throw new Exception(__('This link is already a short link.'));
             }
-            if (null !== $hash && false !== ($rs = $kut->isKnowHash($hash))) {
+            if (is_string($hash) && false !== ($rs = $kut->isKnowHash($hash))) {
                 throw new Exception(__('This custom short url is already taken.'));
             }
             if (false !== ($rs = $kut->isKnowUrl($url))) {
-                $url     = $rs->url;
-                $new_url = $kut->get('url_base') . $rs->hash;
+                $url     = $rs->strField('url');
+                $new_url = $kut->srvUrlBase() . $rs->strField('hash');
 
                 Notices::addSuccessNotice(sprintf(
                     __('Short link for %s is %s'),
@@ -97,13 +97,13 @@ class Manage
             } else {
                 if (false === ($rs = $kut->hash($url, $hash))) {
                     if ($kut->error->flag()) {
-                        throw new Exception($kut->error->toHTML());
+                        throw new Exception(implode(', ', $kut->error->dump()));
                     }
 
                     throw new Exception(__('Failed to create short link. This could be caused by a service failure.'));
                 } else {
-                    $url     = $rs->url;
-                    $new_url = $kut->get('url_base') . $rs->hash;
+                    $url     = $rs->strField('url');
+                    $new_url = $kut->srvUrlBase() . $rs->strField('hash');
 
                     Notices::addSuccessNotice(sprintf(
                         __('Short link for %s is %s'),
@@ -154,7 +154,7 @@ class Manage
         } else {
             $fields = [];
 
-            if ($kut->get('allow_custom_hash')) {
+            if ($kut->srvAllowCustomHash()) {
                 $fields[] = (new Para())
                     ->items([
                         (new Label(__('Custom short link:'), Label::OUTSIDE_LABEL_BEFORE))
@@ -168,7 +168,7 @@ class Manage
                     ->class('form-note')
                     ->text(__('Only if you want a custom short link.'));
 
-                if ($kut->get('admin_service') == 'local') {
+                if ($kut->get('admin_service') === 'local') {
                     $fields[] = (new Note())
                         ->class('form-note')
                         ->text(__('You can use "bob!!" if you want a semi-custom link, it starts with "bob" and "!!" will be replaced by an increment value.'));
@@ -177,7 +177,7 @@ class Manage
 
             echo (new Div())
                 ->items([
-                    (new Text('h4', sprintf(__('Shorten link using service "%s"'), $kut->get('name')))),
+                    (new Text('h4', sprintf(__('Shorten link using service "%s"'), $kut->srvName()))),
                     (new Form('create-link'))
                         ->method('post')
                         ->action(My::manageUrl())

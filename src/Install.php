@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
+use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Process\TraitProcess;
 use Exception;
 
@@ -59,18 +60,19 @@ class Install
                     'SELECT * FROM ' . App::db()->con()->prefix() . App::blogWorkspace()::NS_TABLE_NAME . ' ' .
                     "WHERE setting_ns = 'kUtRL' "
                 );
+                $record = new MetaRecord($record);
                 while ($record->fetch()) {
-                    if (preg_match('/^kutrl_(.*?)$/', $record->setting_id, $match)) {
+                    if (preg_match('/^kutrl_(.*?)$/', $record->strField('setting_id'), $match)) {
                         $cur = App::blogWorkspace()->openBlogWorkspaceCursor();
                         // avoid the use of serialize function
-                        if (in_array($record->setting_id, ['kutrl_srv_custom'])) {
-                            $cur->setting_value = json_encode(@unserialize(base64_decode((string) $record->setting_value)));
+                        if (in_array($record->strField('setting_id'), ['kutrl_srv_custom'])) {
+                            $cur->setting_value = json_encode(@unserialize(base64_decode($record->strField('setting_value'))));
                         }
                         $cur->setting_id = $match[1];
                         $cur->setting_ns = basename(__DIR__);
                         $cur->update(
-                            "WHERE setting_id = '" . $record->setting_id . "' and setting_ns = 'kUtRL' " .
-                            'AND blog_id ' . (null === $record->blog_id ? 'IS NULL ' : ("= '" . App::db()->con()->escapeStr((string) $record->blog_id) . "' "))
+                            "WHERE setting_id = '" . $record->strField('setting_id') . "' and setting_ns = 'kUtRL' " .
+                            'AND blog_id ' . (null === $record->f('blog_id') ? 'IS NULL ' : ("= '" . App::db()->con()->escapeStr($record->strField('blog_id')) . "' "))
                         );
                     }
                 }

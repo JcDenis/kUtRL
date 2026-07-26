@@ -34,10 +34,10 @@ class ServiceYourls extends Service
 
     protected function init(): void
     {
-        $this->args['username'] = $this->settings->get('srv_yourls_username');
-        $this->args['password'] = $this->settings->get('srv_yourls_password');
+        $this->args['username'] = $this->settings->getStr('srv_yourls_username', false);
+        $this->args['password'] = $this->settings->getStr('srv_yourls_password', false);
 
-        $base = (string) $this->settings->get('srv_yourls_base');
+        $base = $this->settings->getStr('srv_yourls_base', false);
         //if (!empty($base) && substr($base,-1,1) != '/') $base .= '/';
 
         $this->config = [
@@ -69,7 +69,7 @@ class ServiceYourls extends Service
                         (new Input('kutrl_srv_yourls_base'))
                             ->size(50)
                             ->maxlength(255)
-                            ->value((string) $this->settings->get('srv_yourls_base')),
+                            ->value($this->settings->getStr('srv_yourls_base', false)),
                         (new Note())
                             ->class('form-note')
                             ->text(__('This is the URL of the YOURLS service you want to use. Ex: "http://www.smaller.org/api.php".')),
@@ -81,7 +81,7 @@ class ServiceYourls extends Service
                         (new Input('kutrl_srv_yourls_username'))
                             ->size(50)
                             ->maxlength(255)
-                            ->value((string) $this->settings->get('srv_yourls_username')),
+                            ->value($this->settings->getStr('srv_yourls_username', false)),
                         (new Note())
                             ->class('form-note')
                             ->text(__('This is your user name to sign up to this YOURLS service.')),
@@ -93,7 +93,7 @@ class ServiceYourls extends Service
                         (new Input('kutrl_srv_yourls_password'))
                             ->size(50)
                             ->maxlength(255)
-                            ->value((string) $this->settings->get('srv_yourls_password')),
+                            ->value($this->settings->getStr('srv_yourls_password', false)),
                         (new Note())
                             ->class('form-note')
                             ->text(__('This is your password to sign up to this YOURLS service.')),
@@ -104,24 +104,26 @@ class ServiceYourls extends Service
 
     public function testService(): bool
     {
-        if (empty($this->get('url_api'))) {
+        if ($this->srvUrlApi() === '') {
             $this->error->add(__('Service is not well configured.'));
 
             return false;
         }
 
         $args        = $this->args;
-        $args['url'] = $this->get('url_test');
+        $args['url'] = $this->srvUrlTest();
 
-        if (!($response = self::post($this->get('url_api'), $this->args, true))) {
+        if (!($response = self::post($this->srvUrlApi(), $this->args, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
         }
-        $rsp = @simplexml_load_string($response);
+        if (is_string($response)) {
+            $rsp = @simplexml_load_string($response);
 
-        if ($rsp && $rsp->status == 'success') {
-            return true;
+            if ($rsp && $rsp->status == 'success') {
+                return true;
+            }
         }
         $this->error->add(__('Authentication to service failed.'));
 
@@ -130,22 +132,30 @@ class ServiceYourls extends Service
 
     public function createHash(string $url, ?string $hash = null)
     {
+        if ($this->srvUrlApi() === '') {
+            $this->error->add(__('Service is not well configured.'));
+
+            return false;
+        }
+
         $args = array_merge($this->args, ['url' => $url]);
 
-        if (!($response = self::post($this->get('url_api'), $args, true))) {
+        if (!($response = self::post($this->srvUrlApi(), $args, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
         }
 
-        $rsp = @simplexml_load_string($response);
+        if (is_string($response)) {
+            $rsp = @simplexml_load_string($response);
 
-        if ($rsp && $rsp->status == 'success') {
-            return $this->fromValue(
-                (string) (isset($rsp->url[0]) ? $rsp->url[0]->keyword : ''),
-                $url,
-                $this->get('id')
-            );
+            if ($rsp && $rsp->status == 'success') {
+                return $this->fromValue(
+                    (string) (isset($rsp->url[0]) ? $rsp->url[0]->keyword : ''),
+                    $url,
+                    $this->srvId()
+                );
+            }
         }
         $this->error->add(__('Unreadable service response.'));
 

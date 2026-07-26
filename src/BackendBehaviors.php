@@ -87,7 +87,7 @@ class BackendBehaviors
     {
         $s = My::settings();
 
-        if (!$s->get('active')
+        if (!$s->getBool('active', false)
             || null === ($kut = Utils::quickPlace('admin'))
         ) {
             return;
@@ -104,7 +104,7 @@ class BackendBehaviors
 
         if (!$rs) {
             $chk = !empty($_POST['kutrl_create']);
-            if (empty($_POST['kutrl_old_post_url']) && $s->get('admin_entry_default')) {
+            if (empty($_POST['kutrl_old_post_url']) && $s->getBool('admin_entry_default', false)) {
                 $chk = true;
             }
 
@@ -117,7 +117,7 @@ class BackendBehaviors
                         ->for('kutrl_create'),
                 ]);
 
-            if ($kut->get('allow_custom_hash')) {
+            if ($kut->srvAllowCustomHash()) {
                 $items[] = (new Para())
                     ->class('classic')
                     ->items([
@@ -131,7 +131,7 @@ class BackendBehaviors
                     ]);
             }
         } else {
-            $count = $rs->counter;
+            $count = $rs->intField('counter');
             if ($count == 0) {
                 $title = __('never followed');
             } elseif ($count == 1) {
@@ -139,7 +139,7 @@ class BackendBehaviors
             } else {
                 $title = sprintf(__('followed %s times'), $count);
             }
-            $href = $kut->get('url_base') . $rs->hash;
+            $href = $kut->srvUrlBase() . $rs->strField('hash');
 
             $items[] = (new Para())
                 ->items([
@@ -159,6 +159,13 @@ class BackendBehaviors
                 ]);
         }
 
+        if (!is_array($sidebar_items['options-box'])) {
+            $sidebar_items['options-box'] = [];
+        }
+        if (!is_array($sidebar_items['options-box']['items'])) {
+            $sidebar_items['options-box']['items'] = [];
+        }
+
         $sidebar_items['options-box']['items'][My::id()] = (new Div(My::id()))
             ->items([
                 (new Text('h5', __('Short link'))),
@@ -175,6 +182,7 @@ class BackendBehaviors
             || !My::settings()->get('active')
             || null === ($kut = Utils::quickPlace('admin'))
             || empty($_POST['kutrl_old_post_url'])
+            || !is_string($_POST['kutrl_old_post_url'])
         ) {
             return;
         }
@@ -188,7 +196,7 @@ class BackendBehaviors
         if ($rs->isEmpty()) {
             return;
         }
-        $title        = Html::escapeHTML($rs->post_title);
+        $title        = Html::escapeHTML($rs->strField('post_title'));
         $new_post_url = $rs->getURL();
 
         # Delete
@@ -207,7 +215,7 @@ class BackendBehaviors
 
                 return;
             }
-            $url = $kut->get('url_base') . $rs->hash;
+            $url = $kut->srvUrlBase() . $rs->strField('hash');
 
             # ex: Send new url to messengers
             if (!$rs->isEmpty()) {
@@ -229,15 +237,15 @@ class BackendBehaviors
         if ($rs->isEmpty()) {
             return;
         }
-        $title = Html::escapeHTML($rs->post_title);
+        $title = Html::escapeHTML($rs->strField('post_title'));
 
-        $custom = !empty($_POST['kutrl_create_custom']) && $kut->get('allow_custom_hash') ?
-            $_POST['kutrl_create_custom'] : null;
+        $custom = !empty($_POST['kutrl_create_custom']) && $kut->srvAllowCustomHash() ?
+            $_POST['kutrl_create_custom'] : '';
 
-        if (false === ($rs = $kut->hash($rs->getURL(), $custom))) {
+        if (!is_string($custom) || false === ($rs = $kut->hash($rs->getURL(), $custom))) {
             return;
         }
-        $url = $kut->get('url_base') . $rs->hash;
+        $url = $kut->srvUrlBase() . $rs->strField('hash');
 
         # ex: Send new url to messengers
         if (!$rs->isEmpty()) {

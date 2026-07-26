@@ -33,7 +33,7 @@ class Backend
         My::addBackendMenuItem();
 
         # Admin behaviors
-        if (My::settings()->get('active')) {
+        if (My::settings()->getBool('active', false)) {
             App::behavior()->addBehaviors([
                 'adminDashboardFavoritesV2' => BackendBehaviors::antispamDashboardFavoritesV2(...),
                 'adminColumnsListsV2'       => BackendBehaviors::adminColumnsListsV2(...),

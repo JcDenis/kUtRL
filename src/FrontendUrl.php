@@ -21,7 +21,7 @@ class FrontendUrl
     public static function redirectUrl(?string $args): void
     {
         # Not active, go to default 404
-        if (!My::settings()->get('active')) {
+        if (!My::settings()->getBool('active', false)) {
             App::url()::p404();
         }
         # Not a valid url, go to kutrl 404
@@ -78,20 +78,20 @@ class FrontendUrl
         $s = My::settings();
 
         # Not active, go to default 404
-        if (!$s->get('active')) {
+        if (!$s->getBool('active', false)) {
             App::url()::p404();
         }
         # Public page not active, go to kutrl 404
-        if (!$s->get('srv_local_public')) {
+        if (!$s->getBool('srv_local_public', false)) {
             self::kutrl404();
 
             return;
         }
         # Validation form
-        $url = !empty($_POST['longurl']) ? trim(App::db()->con()->escapeStr((string) $_POST['longurl'])) : '';
+        $url = trim(App::db()->con()->escapeStr(isset($_POST['longurl']) && is_string($_POST['longurl']) ? $_POST['longurl'] : ''));
         if (!empty($url)) {
             $hmf  = !empty($_POST['hmf']) ? $_POST['hmf'] : '!';
-            $hmfu = !empty($_POST['hmfp']) ? FrontendUtils::unprotect($_POST['hmfp']) : '?';
+            $hmfu = !empty($_POST['hmfp']) && is_string($_POST['hmfp']) ? FrontendUtils::unprotect($_POST['hmfp']) : '?';
 
             $err = false;
             if ($hmf != $hmfu) {
@@ -139,29 +139,29 @@ class FrontendUrl
                 if (false !== ($rs = $kut->isKnowUrl($url))) {
                     $err = true;
 
-                    $url     = $rs->url;
-                    $new_url = $kut->get('url_base') . $rs->hash;
+                    $url     = $rs->strField('url');
+                    $new_url = $kut->srvUrlBase() . $rs->strField('hash');
 
-                    App::frontend()->context()->kutrl_msg = sprintf(
+                    App::frontend()->context()->__set('kutrl_msg', sprintf(
                         __('Short link for %s is %s'),
                         Html::escapeHTML($url),
                         '<a href="' . $new_url . '">' . $new_url . '</a>'
-                    );
+                    ));
                 }
             }
             if (!$err) {
                 if (false === ($rs = $kut->hash($url))) {
                     $err                                  = true;
-                    App::frontend()->context()->kutrl_msg = __('Failed to create short link.');
+                    App::frontend()->context()->__set('kutrl_msg', __('Failed to create short link.'));
                 } else {
-                    $url     = $rs->url;
-                    $new_url = $kut->get('url_base') . $rs->hash;
+                    $url     = $rs->strField('url');
+                    $new_url = $kut->srvUrlBase() . $rs->strField('hash');
 
-                    App::frontend()->context()->kutrl_msg = sprintf(
+                    App::frontend()->context()->__set('kutrl_msg', sprintf(
                         __('Short link for %s is %s'),
                         Html::escapeHTML($url),
                         '<a href="' . $new_url . '">' . $new_url . '</a>'
-                    );
+                    ));
                     App::blog()->triggerBlog();
 
                     # ex: Send new url to messengers
@@ -178,7 +178,7 @@ class FrontendUrl
 
     protected static function kutrl404(): void
     {
-        if (!My::settings()->get('srv_local_404_active')) {
+        if (!My::settings()->getBool('srv_local_404_active', false)) {
             App::url()::p404();
         }
 
@@ -186,11 +186,11 @@ class FrontendUrl
 
         header('Content-Type: text/html; charset=UTF-8');
         Http::head(404, 'Not Found');
-        App::url()->type                         = '404';
-        App::frontend()->context()->current_tpl  = 'kutrl404.html';
-        App::frontend()->context()->content_type = 'text/html';
+        App::url()->setType('404');
+        App::frontend()->context()->__set('current_tpl', 'kutrl404.html');
+        App::frontend()->context()->__set('content_type', 'text/html');
 
-        echo App::frontend()->template()->getData(App::frontend()->context()->current_tpl);
+        echo App::frontend()->template()->getData('kutrl404.html');
 
         # --BEHAVIOR-- publicAfterDocumentV2
         App::behavior()->callBehavior('publicAfterDocumentV2');

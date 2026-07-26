@@ -21,18 +21,23 @@ class Wiki
         # Do nothing on comment preview and post preview
         if (!empty($_POST['preview'])
             || (App::task()->checkContext('FRONTEND') && App::frontend()->context()->preview)
-            || !My::settings()->get('active')
+            || !My::settings()->getBool('active', false)
         ) {
             return;
         }
         if (null === ($kut = Utils::quickPlace('wiki'))) {
             return;
         }
-        foreach ($kut->get('allow_protocols') as $protocol) {
-            $wiki2xhtml->registerFunction(
-                'url:' . $protocol,
-                self::transform(...)
-            );
+        $protocols = $kut->get('allow_protocols');
+        if (is_array($protocols)) {
+            foreach ($protocols as $protocol) {
+                if (is_string($protocol)) {
+                    $wiki2xhtml->registerFunction(
+                        'url:' . $protocol,
+                        self::transform(...)
+                    );
+                }
+            }
         }
     }
 
@@ -41,7 +46,7 @@ class Wiki
      */
     public static function transform(string $url, string $content): ?array
     {
-        if (!My::settings()->get('active')) {
+        if (!My::settings()->getBool('active', false)) {
             return null;
         }
         if (null === ($kut = Utils::quickPlace('wiki'))) {
@@ -58,9 +63,9 @@ class Wiki
             return [];
         }
         $res          = [];
-        $testurl      = strlen($rs->url) > 35 ? substr($rs->url, 0, 35) . '...' : $rs->url;
-        $res['url']   = $kut->get('url_base') . $rs->hash;
-        $res['title'] = sprintf(__('%s (Shorten with %s)'), $rs->url, __($kut->get('name')));
+        $testurl      = strlen($rs->strField('url')) > 35 ? substr($rs->strField('url'), 0, 35) . '...' : $rs->strField('url');
+        $res['url']   = (is_string($kut->get('url_base')) ? $kut->get('url_base') : '') . $rs->strField('hash');
+        $res['title'] = sprintf(__('%s (Shorten with %s)'), $rs->strField('url'), __(is_string($kut->get('name')) ? $kut->get('name') : ''));
         if ($testurl == $content) {
             $res['content'] = $res['url'];
         }

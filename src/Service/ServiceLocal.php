@@ -30,7 +30,7 @@ class ServiceLocal extends Service
 {
     protected function init(): void
     {
-        $protocols = (string) $this->settings->get('srv_local_protocols');
+        $protocols = $this->settings->getStr('srv_local_protocols', false);
 
         $this->config = [
             'id'   => 'local',
@@ -71,7 +71,7 @@ class ServiceLocal extends Service
                                         (new Input('kutrl_srv_local_protocols'))
                                             ->size(50)
                                             ->maxlength(255)
-                                            ->value((string) $this->settings->get('srv_local_protocols')),
+                                            ->value($this->settings->getStr('srv_local_protocols', false)),
                                     ]),
                                 (new Note())
                                     ->class('form-note')
@@ -89,7 +89,7 @@ class ServiceLocal extends Service
                                     ->items([
                                         (new Label(__('CSS:'), Label::OUTSIDE_LABEL_BEFORE))
                                             ->for('kutrl_srv_local_css'),
-                                        (new Textarea('kutrl_srv_local_css', Html::escapeHTML($this->settings->get('srv_local_css'))))
+                                        (new Textarea('kutrl_srv_local_css', Html::escapeHTML($this->settings->getStr('srv_local_css', false))))
                                             ->cols(50)
                                             ->rows(3),
                                     ]),
@@ -98,7 +98,7 @@ class ServiceLocal extends Service
                                     ->text(__('You can add here special cascading style sheet. Body of page has class "dc-kutrl" and widgets have class "shortenkutrlwidget" and "rankkutrlwidget".')),
                                 (new Para())
                                     ->items([
-                                        (new Checkbox('kutrl_srv_local_404_active', (bool) $this->settings->get('srv_local_404_active')))
+                                        (new Checkbox('kutrl_srv_local_404_active', $this->settings->getBool('srv_local_404_active', false)))
                                             ->value(1),
                                         (new Label(__('Enable special 404 error public page for unknow urls'), Label::OUTSIDE_LABEL_AFTER))
                                             ->class('classic')
@@ -116,13 +116,13 @@ class ServiceLocal extends Service
                                 (new Text(
                                     'p',
                                     __('This service use your own Blog to shorten and serve URL.') . '<br />' .
-                                    sprintf(__('This means that with this service short links start with "%s".'), $this->get('url_base'))
+                                    sprintf(__('This means that with this service short links start with "%s".'), $this->srvUrlBase())
                                 )),
                                 (new Text(
                                     'p',
                                     __("You can use Dotclear's plugin called myUrlHandlers to change short links prefix on your blog.") .
                                     (
-                                        preg_match('/index\.php/', $this->get('url_base')) ?
+                                        preg_match('/index\.php/', $this->srvUrlBase()) ?
                                         ' ' .
                                         __("We recommand that you use a rewrite engine in order to remove 'index.php' from your blog's URL.") .
                                         '<br /><a href="http://fr.dotclear.org/documentation/2.0/usage/blog-parameters">' .
@@ -144,8 +144,7 @@ class ServiceLocal extends Service
 
     public function testService(): bool
     {
-        $ap = $this->get('allow_protocols');
-        if (!empty($ap)) {
+        if (!empty($this->srvAllowProtocols())) {
             return true;
         }
         $this->error->add(__('Service is not well configured.'));
@@ -206,7 +205,7 @@ class ServiceLocal extends Service
     protected function last(string $type): string
     {
         return false === ($rs = $this->log->select(null, null, $type, 'local')) ?
-            '-1' : $rs->hash;
+            '-1' : $rs->strField('hash');
     }
 
     protected function next(string $last_id, string $prefix = ''): string
@@ -268,12 +267,12 @@ class ServiceLocal extends Service
         if (false === ($rs = $this->log->select(null, $hash, null, 'local'))) {
             return false;
         }
-        if (!$rs->url) { //previously removed url
+        if (!$rs->strField('url')) { //previously removed url
             return false;
         }
-        $this->log->counter((int) $rs->id, 'up');
+        $this->log->counter($rs->intField('id'), 'up');
 
-        return $rs->url;
+        return $rs->strField('url');
     }
 
     public function deleteUrl(string $url, bool $delete = false): bool
@@ -282,9 +281,9 @@ class ServiceLocal extends Service
             return false;
         }
         if ($delete) {
-            $this->log->delete((int) $rs->id);
+            $this->log->delete($rs->intField('id'));
         } else {
-            $this->log->clear((int) $rs->id);
+            $this->log->clear($rs->intField('id'));
         }
 
         return true;

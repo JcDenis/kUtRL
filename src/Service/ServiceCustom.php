@@ -26,7 +26,7 @@ class ServiceCustom extends Service
 {
     protected function init(): void
     {
-        $config = json_decode((string) $this->settings->get('srv_custom'), true);
+        $config = json_decode((string) $this->settings->getStr('srv_custom', false), true);
         if (!is_array($config)) {
             $config = [];
         }
@@ -35,12 +35,11 @@ class ServiceCustom extends Service
             'id'   => 'custom',
             'name' => 'Custom',
 
-            'url_api'    => $config['url_api']   ?? '',
-            'url_base'   => $config['url_base']  ?? '',
-            'url_param'  => $config['url_param'] ?? '',
-            'url_encode' => !empty($config['url_api']),
-
-            'url_min_length' => strlen($config['url_base'] ?? '') + 2,
+            'url_api'     => $config['url_api']   ?? '',
+            'url_base'    => $config['url_base']  ?? '',
+            'url_param'   => $config['url_param'] ?? '',
+            'url_encode'  => !empty($config['url_api']),
+            'url_min_len' => strlen(is_string($config['url_base']) ? $config['url_base'] : '') + 2,
         ];
     }
 
@@ -63,7 +62,7 @@ class ServiceCustom extends Service
             'url_param'  => '',
             'url_encode' => true,
         ];
-        $config = json_decode((string) $this->settings->get('srv_custom'), true);
+        $config = json_decode($this->settings->getStr('srv_custom', false), true);
         if (!is_array($config)) {
             $config = [];
         }
@@ -85,7 +84,7 @@ class ServiceCustom extends Service
                         (new Input('kutrl_srv_custom_url_api'))
                             ->size(50)
                             ->maxlength(255)
-                            ->value((string) $config['url_api']),
+                            ->value(is_string($config['url_api']) ? $config['url_api'] : ''),
                     ]),
                 (new Note())
                     ->class('form-note')
@@ -97,7 +96,7 @@ class ServiceCustom extends Service
                         (new Input('kutrl_srv_custom_url_base'))
                             ->size(50)
                             ->maxlength(255)
-                            ->value((string) $config['url_base']),
+                            ->value(is_string($config['url_base']) ? $config['url_base'] : ''),
                     ]),
                 (new Note())
                     ->class('form-note')
@@ -109,7 +108,7 @@ class ServiceCustom extends Service
                         (new Input('kutrl_srv_custom_url_param'))
                             ->size(50)
                             ->maxlength(255)
-                            ->value((string) $config['url_param']),
+                            ->value(is_string($config['url_param']) ? $config['url_param'] : ''),
                     ]),
                 (new Note())
                     ->class('form-note')
@@ -127,12 +126,14 @@ class ServiceCustom extends Service
 
     public function testService(): bool
     {
-        if (empty($this->get('url_api'))) {
+        if ($this->srvUrlApi() === '') {
             return false;
         }
-        $url = $this->get('url_encode') ? urlencode($this->get('url_test')) : $this->get('url_test');
-        $arg = [$this->get('url_param') => $url];
-        if (!self::post($this->get('url_api'), $arg, true, true)) {
+        $arg = [];
+        if ($this->srvUrlParam() !== '') {
+            $arg = [$this->srvUrlParam() => $this->srvUrlEncode() ? urlencode($this->srvUrlTest()) : $this->srvUrlTest()];
+        }
+        if (!self::post($this->srvUrlApi(), $arg, true, true)) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -143,19 +144,21 @@ class ServiceCustom extends Service
 
     public function createHash(string $url, ?string $hash = null)
     {
-        $enc = $this->get('url_encode') ? urlencode($url) : $url;
-        $arg = [$this->get('url_param') => $enc];
+        $arg = [];
+        if ($this->srvUrlParam() !== '') {
+            $arg = [$this->srvUrlParam() => $this->srvUrlEncode() ? urlencode($url) : $url];
+        }
 
-        if (!($response = self::post($this->get('url_api'), $arg, true, true))) {
+        if (!($response = self::post($this->srvUrlApi(), $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
         }
 
-        return $this->fromValue(
-            $this->strReplace($this->get('url_base'), '', $response),
+        return is_string($response) ? $this->fromValue(
+            $this->strReplace($this->srvUrlBase(), '', $response),
             $url,
-            $this->get('id')
-        );
+            $this->srvId()
+        ) : false;
     }
 }

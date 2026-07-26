@@ -69,10 +69,13 @@ class ServiceDefault extends Service
 
     public function testService(): bool
     {
-        $url = $this->get('url_encode') ? urlencode($this->get('url_test')) : $this->get('url_test');
-        $arg = [$this->get('url_param') => urlencode($this->get('url_test'))];
+        //$url = $this->get('url_encode') ? urlencode($this->get('url_test')) : $this->get('url_test');
+        $arg = [];
+        if ($this->srvUrlParam() !== '') {
+            $arg = [$this->srvUrlParam() => urlencode($this->srvUrlTest())];
+        }
 
-        if (!self::post($this->get('url_api'), $arg, true, true)) {
+        if (!self::post($this->srvUrlApi(), $arg, true, true)) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -83,24 +86,29 @@ class ServiceDefault extends Service
 
     public function createHash(string $url, ?string $hash = null)
     {
-        $enc = $this->get('url_encode') ? urlencode($url) : $url;
-        $arg = [$this->get('url_param') => $url];
+        //$enc = $this->get('url_encode') ? urlencode($url) : $url;
+        $arg = [];
+        if ($this->srvUrlParam() !== '') {
+            $arg = [$this->srvUrlParam() => $url];
+        }
 
-        if (!($response = self::post($this->get('url_api'), $arg, true, true))) {
+        if (!($response = self::post($this->srvUrlApi(), $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
         }
 
-        return $this->fromValue(
-            $this->strReplace($this->get('url_base'), '', $response),
+        return is_string($response) ? $this->fromValue(
+            $this->strReplace($this->srvUrlBase(), '', $response),
             $url,
-            $this->get('id')
-        );
+            $this->srvId()
+        ) : false;
     }
 
     private function getConstant(string $c): string|bool
     {
-        return defined($c) ? constant($c) : '';
+        $c = defined($c) ? constant($c) : '';
+
+        return is_string($c) || is_bool($c) ? $c : '';
     }
 }

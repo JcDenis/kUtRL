@@ -49,9 +49,7 @@ class Service
         $this->init();
 
         // Force setting
-        $allow_external_url                 = $this->settings->get('allow_external_url');
-        $this->config['allow_external_url'] = null === $allow_external_url ?
-            true : $allow_external_url;
+        $this->config['allow_external_url'] = $this->settings->getBool('allow_external_url', false);
 
         $this->config = array_merge(
             [
@@ -67,9 +65,74 @@ class Service
                 'url_api'     => '',
                 'url_base'    => '',
                 'url_min_len' => 0,
+                'url_param'   => '',
+                'url_encode'  => false,
             ],
             $this->config
         );
+    }
+
+    public function srvId(): string
+    {
+        return is_string($this->get('id')) ? $this->get('id') : 'undefined';
+    }
+
+    public function srvName(): string
+    {
+        return is_string($this->get('name')) ? $this->get('name') : 'undefined';
+    }
+
+    public function srvHome(): string
+    {
+        return is_string($this->get('home')) ? $this->get('home') : '';
+    }
+
+    public function srvAllowExternalUrl(): bool
+    {
+        return !empty($this->get('allow_external_url'));
+    }
+
+    public function srvAllowCustomHash(): bool
+    {
+        return !empty($this->get('allow_custom_hash'));
+    }
+
+    /**
+     * @return  array<int, string>
+     */
+    public function srvAllowProtocols(): array
+    {
+        return is_array($this->get('allow_protocols')) ? array_values(array_filter($this->get('allow_protocols'), is_string(...))) : ['http://'];
+    }
+
+    public function srvUrlTest(): string
+    {
+        return is_string($this->get('url_test')) ? $this->get('url_test') : 'http://github.com/JcDenis/kUtRL/releases';
+    }
+
+    public function srvUrlApi(): string
+    {
+        return is_string($this->get('url_api')) ? $this->get('url_api') : '';
+    }
+
+    public function srvUrlBase(): string
+    {
+        return is_string($this->get('url_base')) ? $this->get('url_base') : '';
+    }
+
+    public function srvUrlMinLen(): int
+    {
+        return is_numeric($this->get('url_min_len')) ? abs((int) $this->get('url_min_len')) : 0;
+    }
+
+    public function srvUrlParam(): string
+    {
+        return is_string($this->get('url_param')) ? $this->get('url_param') : '';
+    }
+
+    public function srvUrlEncode(): bool
+    {
+        return !empty($this->get('url_encode'));
     }
 
     /**
@@ -130,19 +193,19 @@ class Service
     # Test if an url contents know prefix
     public function isServiceUrl(string $url): bool
     {
-        return strpos($url, $this->get('url_base')) === 0;
+        return strpos($url, $this->srvUrlBase()) === 0;
     }
 
     # Test if an url is long enoutgh
     public function isLongerUrl(string $url): bool
     {
-        return (strlen($url) >= (int) $this->get('url_min_len'));
+        return strlen($url) >= $this->srvUrlMinLen();
     }
 
     # Test if an url protocol (eg: http://) is allowed
     public function isProtocolUrl(string $url): bool
     {
-        foreach ($this->get('allow_protocols') as $protocol) {
+        foreach ($this->srvAllowProtocols() as $protocol) {
             if (empty($protocol)) {
                 continue;
             }
@@ -170,7 +233,7 @@ class Service
      */
     public function isKnowUrl(string $url)
     {
-        return $this->log->select($url, null, $this->get('id'), 'kutrl');
+        return $this->log->select($url, null, $this->srvId(), 'kutrl');
     }
 
     /**
@@ -180,7 +243,7 @@ class Service
      */
     public function isKnowHash(string $hash)
     {
-        return $this->log->select(null, $hash, $this->get('id'), 'kutrl');
+        return $this->log->select(null, $hash, $this->srvId(), 'kutrl');
     }
 
     /**
@@ -191,10 +254,10 @@ class Service
     public function hash(string $url, ?string $hash = null)
     {
         $url = trim(App::db()->con()->escapeStr((string) $url));
-        if ('undefined' === $this->get('id')) {
+        if ('undefined' === $this->srvId()) {
             return false;
         }
-        if ($hash && !$this->get('allow_custom_hash')) {
+        if ($hash && !$this->srvAllowCustomHash()) {
             return false;
         }
         if ($this->isServiceUrl($url)) {
@@ -203,7 +266,7 @@ class Service
         if (!$this->isLongerUrl($url)) {
             return false;
         }
-        if (!$this->get('allow_external_url') && $this->isBlogUrl($url)) {
+        if (!$this->srvAllowExternalUrl() && $this->isBlogUrl($url)) {
             return false;
         }
         if ($hash && false !== ($rs = $this->isKnowHash($hash))) {
@@ -214,7 +277,7 @@ class Service
                 return false;
             }
 
-            $this->log->insert($rs->url, $rs->hash, $rs->type, 'kutrl');
+            $this->log->insert($rs->strField('url'), $rs->strField('hash'), $rs->strField('type'), 'kutrl');
             App::blog()->triggerBlog();
 
             # --BEHAVIOR-- kutrlAfterCreateShortUrl
@@ -257,7 +320,7 @@ class Service
             return false;
         }
         $this->deleteUrl($url);
-        $this->log->delete((int) $rs->id);
+        $this->log->delete($rs->intField('id'));
 
         return true;
     }
@@ -300,6 +363,12 @@ class Service
             foreach ($headers as $header) {
                 $client->setMoreHeader($header);
             }
+        }
+        if (!is_array($data) && !is_string($data)) {
+            return false;
+        }
+        if (is_array($data)) {
+            $data = array_filter($data, is_string(...), ARRAY_FILTER_USE_KEY);
         }
         if ($get) {
             $client->get($url, $data);

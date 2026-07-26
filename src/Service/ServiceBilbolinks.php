@@ -24,7 +24,7 @@ class ServiceBilbolinks extends Service
 {
     protected function init(): void
     {
-        $base = (string) $this->settings->get('srv_bilbolinks_base');
+        $base = $this->settings->getStr('srv_bilbolinks_base', false);
         if (!empty($base) && substr($base, -1, 1) != '/') {
             $base .= '/';
         }
@@ -43,7 +43,7 @@ class ServiceBilbolinks extends Service
     public function saveSettings(): void
     {
         $base = '';
-        if (!empty($_POST['kutrl_srv_bilbolinks_base'])) {
+        if (!empty($_POST['kutrl_srv_bilbolinks_base']) && is_string($_POST['kutrl_srv_bilbolinks_base'])) {
             $base = $_POST['kutrl_srv_bilbolinks_base'];
             if (substr($base, -1, 1) != '/') {
                 $base .= '/';
@@ -63,7 +63,7 @@ class ServiceBilbolinks extends Service
                         (new Input('kutrl_srv_bilbolinks_base'))
                             ->size(50)
                             ->maxlength(255)
-                            ->value((string) $this->settings->get('srv_bilbolinks_base')),
+                            ->value($this->settings->getStr('srv_bilbolinks_base', false)),
                     ]),
                 (new Note())
                     ->class('form-note')
@@ -73,14 +73,14 @@ class ServiceBilbolinks extends Service
 
     public function testService(): bool
     {
-        if (empty($this->get('url_base'))) {
+        if ($this->srvUrlBase() === '') {
             $this->error->add(__('Service is not well configured.'));
 
             return false;
         }
 
-        $arg = ['longurl' => urlencode($this->get('url_test'))];
-        if (!self::post($this->get('url_api'), $arg, true, true)) {
+        $arg = ['longurl' => urlencode($this->srvUrlTest())];
+        if (!self::post($this->srvUrlApi(), $arg, true, true)) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
@@ -93,21 +93,21 @@ class ServiceBilbolinks extends Service
     {
         $arg = ['longurl' => $url];
 
-        if (!($response = self::post($this->get('url_api'), $arg, true, true))) {
+        if (!($response = self::post($this->srvUrlApi(), $arg, true, true))) {
             $this->error->add(__('Service is unavailable.'));
 
             return false;
         }
-        if ($response == 'You are too speed!') {
+        if ($response === 'You are too speed!') {
             $this->error->add(__('Service rate limit exceeded.'));
 
             return false;
         }
 
-        return $this->fromValue(
-            $this->strReplace($this->get('url_base'), '', $response),
+        return is_string($response) ? $this->fromValue(
+            $this->strReplace($this->srvUrlBase(), '', $response),
             $url,
-            $this->get('id')
-        );
+            $this->srvId()
+        ) : false;
     }
 }

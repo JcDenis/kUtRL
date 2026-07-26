@@ -31,8 +31,13 @@ class Utils
         $services = [];
         foreach ($list as $k => $callback) {
             try {
-                [$service_id, $service_class]   = call_user_func($callback);
-                $services[(string) $service_id] = (string) $service_class;
+                $res = call_user_func($callback);
+                if (is_array($res)) {
+                    [$service_id, $service_class]   = $res;
+                    if (is_string($service_id) && is_string($service_class)) {
+                        $services[$service_id] = $service_class;
+                    }
+                }
             } catch (Exception $e) {
             }
         }
@@ -76,7 +81,7 @@ class Utils
             if (!in_array($place, ['tpl', 'wiki', 'admin', 'plugin'])) {
                 return null;
             }
-            $id = My::settings()->get($place . '_service');
+            $id = My::settings()->getStr($place . '_service', false);
             if (!empty($id)) {
                 return self::quickService($id);
             }
@@ -99,7 +104,7 @@ class Utils
     {
         try {
             $srv = self::quickPlace($place);
-            if (empty($srv)) {
+            if (empty($srv) || !is_string($srv->get('url_base'))) {
                 return $url;
             }
             $rs = $srv->hash($url, $custom);
@@ -107,7 +112,7 @@ class Utils
                 return $url;
             }
 
-            return $srv->get('url_base') . $rs->hash;
+            return $srv->get('url_base') . $rs->strField('hash');
         } catch (Exception $e) {
         }
 

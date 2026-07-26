@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
+use Dotclear\Core\Backend\ModulesList;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Helper\Process\TraitProcess;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -47,23 +48,23 @@ class Config
         # Settings
         $s = My::settings();
 
-        $s_active              = (bool) $s->get('active');
-        $s_plugin_service      = (string) $s->get('plugin_service');
-        $s_admin_service       = (string) $s->get('admin_service');
-        $s_tpl_service         = (string) $s->get('tpl_service');
-        $s_wiki_service        = (string) $s->get('wiki_service');
-        $s_allow_external_url  = (bool) $s->get('allow_external_url');
-        $s_tpl_passive         = (bool) $s->get('tpl_passive');
-        $s_tpl_active          = (bool) $s->get('tpl_active');
-        $s_admin_entry_default = (string) $s->get('admin_entry_default');
+        $s_active              = $s->getBool('active', false);
+        $s_plugin_service      = $s->getStr('plugin_service', false);
+        $s_admin_service       = $s->getStr('admin_service', false);
+        $s_tpl_service         = $s->getStr('tpl_service', false);
+        $s_wiki_service        = $s->getStr('wiki_service', false);
+        $s_allow_external_url  = $s->getBool('allow_external_url', false);
+        $s_tpl_passive         = $s->getBool('tpl_passive', false);
+        $s_tpl_active          = $s->getBool('tpl_active', false);
+        $s_admin_entry_default = $s->getBool('admin_entry_default', false);
 
         try {
             # settings
             $s_active              = !empty($_POST['s_active']);
-            $s_admin_service       = (string) $_POST['s_admin_service'];
-            $s_plugin_service      = (string) $_POST['s_plugin_service'];
-            $s_tpl_service         = (string) $_POST['s_tpl_service'];
-            $s_wiki_service        = (string) $_POST['s_wiki_service'];
+            $s_admin_service       = isset($_POST['s_admin_service']) && is_string($_POST['s_admin_service']) ? $_POST['s_admin_service'] : '';
+            $s_plugin_service      = isset($_POST['s_plugin_service']) && is_string($_POST['s_plugin_service']) ? $_POST['s_plugin_service'] : '';
+            $s_tpl_service         = isset($_POST['s_tpl_service']) && is_string($_POST['s_tpl_service']) ? $_POST['s_tpl_service'] : '';
+            $s_wiki_service        = isset($_POST['s_wiki_service']) && is_string($_POST['s_wiki_service']) ? $_POST['s_wiki_service'] : '';
             $s_allow_external_url  = !empty($_POST['s_allow_external_url']);
             $s_tpl_passive         = !empty($_POST['s_tpl_passive']);
             $s_tpl_active          = !empty($_POST['s_tpl_active']);
@@ -93,10 +94,12 @@ class Config
                 __('Configuration successfully updated.')
             );
 
-            App::backend()->url()->redirect(
-                'admin.plugins',
-                ['module' => My::id(), 'conf' => 1, 'chk' => 1, 'redir' => App::backend()->__get('list')->getRedir()]
-            );
+            if (App::backend()->__get('list') instanceof ModulesList) {
+                App::backend()->url()->redirect(
+                    'admin.plugins',
+                    ['module' => My::id(), 'conf' => 1, 'chk' => 1, 'redir' => App::backend()->__get('list')->getRedir()]
+                );
+            }
         } catch (Exception $e) {
             App::error()->add($e->getMessage());
         }
@@ -117,15 +120,15 @@ class Config
         # Settings
         $s = My::settings();
 
-        $s_active              = (bool) $s->get('active');
-        $s_plugin_service      = (string) $s->get('plugin_service');
-        $s_admin_service       = (string) $s->get('admin_service');
-        $s_tpl_service         = (string) $s->get('tpl_service');
-        $s_wiki_service        = (string) $s->get('wiki_service');
-        $s_allow_external_url  = (bool) $s->get('allow_external_url');
-        $s_tpl_passive         = (bool) $s->get('tpl_passive');
-        $s_tpl_active          = (bool) $s->get('tpl_active');
-        $s_admin_entry_default = (bool) $s->get('admin_entry_default');
+        $s_active              = $s->getBool('active', false);
+        $s_plugin_service      = $s->getStr('plugin_service', false);
+        $s_admin_service       = $s->getStr('admin_service', false);
+        $s_tpl_service         = $s->getStr('tpl_service', false);
+        $s_wiki_service        = $s->getStr('wiki_service', false);
+        $s_allow_external_url  = $s->getBool('allow_external_url', false);
+        $s_tpl_passive         = $s->getBool('tpl_passive', false);
+        $s_tpl_active          = $s->getBool('tpl_active', false);
+        $s_admin_entry_default = $s->getBool('admin_entry_default', false);
 
         $chk_admin_service  = '';
         $chk_plugin_service = '';
@@ -156,32 +159,32 @@ class Config
             $s_items = [];
 
             if (!empty($_REQUEST['chk'])) {
-                $img_chk = $img_red . ' ' . sprintf(__('Failed to test %s API.'), $o->get('name'));
+                $img_chk = $img_red . ' ' . sprintf(__('Failed to test %s API.'), $o->srvName());
 
                 try {
                     if ($o->testService()) {
-                        $img_chk = $img_green . ' ' . sprintf(__('%s API is well configured and runing.'), $o->get('name'));
+                        $img_chk = $img_green . ' ' . sprintf(__('%s API is well configured and runing.'), $o->srvName());
                     }
                 } catch (Exception $e) {
-                    App::error()->add(sprintf(__('Failed to test service %s: %s'), $o->get('name'), $e->getMessage()));
+                    App::error()->add(sprintf(__('Failed to test service %s: %s'), $o->srvName(), $e->getMessage()));
                 }
-                $s_items[] = (new Text(null, sprintf('<p><em>%s</em></p>', $img_chk) . $o->error->toHTML()));
+                $s_items[] = (new Text(null, sprintf('<p><em>%s</em></p>', $img_chk) . implode(', ', $o->error->dump())));
             }
 
-            if ($o->get('home') != '') {
+            if ($o->srvHome() !== '') {
                 $s_items[] = (new Para())
                     ->items([
                         (new Link())
-                            ->href($o->get('home'))
+                            ->href($o->srvHome())
                             ->title(__('homepage'))
-                            ->text(sprintf(__('Learn more about %s.'), $o->get('name'))),
+                            ->text(sprintf(__('Learn more about %s.'), $o->srvName())),
                     ]);
             }
 
             $i_config[] = (new Text('hr'));
             $i_config[] = (new Div('settings-' . $service_id))
                 ->items([
-                    (new Text('h5', $o->get('name'))),
+                    (new Text('h5', $o->srvName())),
                     ... $s_items,
                     $o->settingsForm(),
                 ]);

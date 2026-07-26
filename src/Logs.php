@@ -196,8 +196,11 @@ class Logs
         if ($count_only) {
             $sql->column($sql->count($sql->unique('S.kut_id')));
         } else {
-            if (!empty($params['columns']) && is_array($params['columns'])) {
-                $sql->columns($params['columns']);
+            if (!empty($params['columns'])) {
+                if (!is_array($params['columns'])) {
+                    $params['columns'] = [$params['columns']];
+                }
+                $sql->columns(array_filter($params['columns'], is_string(...)));
             }
             $sql->columns([
                 'S.kut_id',
@@ -212,42 +215,61 @@ class Logs
         $sql->from($sql->as($this->table, 'S'));
 
         if (!empty($params['from'])) {
-            $sql->from($params['from']);
+            if (!is_array($params['from'])) {
+                $params['from'] = [$params['from']];
+            }
+            $sql->from(array_filter($params['from'], is_string(...)));
         }
 
         $sql->where('S.blog_id = ' . $sql->quote(App::blog()->id()));
 
-        if (isset($params['kut_service'])) {
+        if (isset($params['kut_service']) && is_string($params['kut_service'])) {
             $sql->and('kut_service = ' . $sql->quote($params['kut_service']));
         } else {
             $sql->and("kut_service = 'kutrl' ");
         }
         if (isset($params['kut_type'])) {
-            $sql->and('kut_type ' . $sql->in($params['kut_type']));
+            if (!is_array($params['kut_type'])) {
+                $params['kut_type'] = [$params['kut_type']];
+            }
+            $sql->and('kut_type ' . $sql->in(array_filter($params['kut_type'], is_string(...))));
         }
         if (isset($params['kut_id'])) {
-            $sql->and('kut_id ' . $sql->in($params['kut_id']));
+            if (!is_array($params['kut_id'])) {
+                $params['kut_id'] = [$params['kut_id']];
+            }
+            $sql->and('kut_id ' . $sql->in(array_filter($params['kut_id'], fn ($v): bool => (is_int($v) || is_string($v)))));
         }
         if (isset($params['kut_hash'])) {
-            $sql->and('kut_hash ' . $sql->in($params['kut_hash']));
+            if (!is_array($params['kut_hash'])) {
+                $params['kut_hash'] = [$params['kut_hash']];
+            }
+            $sql->and('kut_hash ' . $sql->in(array_filter($params['kut_hash'], is_string(...))));
         }
         if (isset($params['kut_url'])) {
-            $sql->and('kut_url ' . $sql->in($params['kut_url']));
+            if (!is_array($params['kut_url'])) {
+                $params['kut_url'] = [$params['kut_url']];
+            }
+            $sql->and('kut_url ' . $sql->in(array_filter($params['kut_url'], is_string(...))));
         }
-        if (!empty($params['kut_year'])) {
-            $sql->and($sql->dateFormat('kut_dt', '%Y') . ' = ' . $sql->quote(sprintf('%04d', $params['kut_year'])));
+        if (!empty($params['kut_year']) && is_numeric($params['kut_year'])) {
+            $sql->and($sql->dateFormat('kut_dt', '%Y') . ' = ' . $sql->quote(sprintf('%04d', (int) $params['kut_year'])));
         }
-        if (!empty($params['kut_month'])) {
-            $sql->and($sql->dateFormat('kut_dt', '%m') . ' = ' . $sql->quote(sprintf('%02d', $params['kut_month'])));
+        if (!empty($params['kut_month']) && is_numeric($params['kut_month'])) {
+            $sql->and($sql->dateFormat('kut_dt', '%m') . ' = ' . $sql->quote(sprintf('%02d', (int) $params['kut_month'])));
         }
-        if (!empty($params['kut_day'])) {
-            $sql->and($sql->dateFormat('kut_dt', '%d') . ' = ' . $sql->quote(sprintf('%02d', $params['kut_day'])));
+        if (!empty($params['kut_day']) && is_numeric($params['kut_day'])) {
+            $sql->and($sql->dateFormat('kut_dt', '%d') . ' = ' . $sql->quote(sprintf('%02d', (int) $params['kut_day'])));
         }
         if (!empty($params['sql'])) {
-            $sql->sql($params['sql']);
+            if (!is_array($params['sql'])) {
+                $params['sql'] = [$params['sql']];
+            }
+            $sql->sql(array_filter($params['sql'], is_string(...)));
         }
+
         if (!$count_only) {
-            if (!empty($params['order'])) {
+            if (!empty($params['order']) && is_string($params['order'])) {
                 $sql->order($sql->escape($params['order']));
             } else {
                 $sql->order('kut_dt DESC');
@@ -255,7 +277,21 @@ class Logs
         }
 
         if (!$count_only && !empty($params['limit'])) {
-            $sql->limit($params['limit']);
+            $values = is_array($params['limit']) ? array_values($params['limit']) : [$params['limit']];
+            // Make $values an array of integer values
+            $values = array_map(fn (mixed $v): int => is_numeric($v) ? (int) $v : 0, $values);
+
+            /**
+             * @var array{0: int, 1?: int}  $limit
+             */
+            $limit = [
+                $values[0],
+            ];
+            if (isset($values[1])) {
+                $limit[1] = $values[1];
+            }
+
+            $sql->limit($limit);
         }
 
         return $sql->select() ?? MetaRecord::newFromArray([]);

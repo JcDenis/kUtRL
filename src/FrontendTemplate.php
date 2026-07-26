@@ -31,11 +31,11 @@ class FrontendTemplate
      */
     public static function pageIf(ArrayObject $attr, string $content): string
     {
-        $operator = isset($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
+        $operator = isset($attr['operator']) && is_string($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
 
         if (isset($attr['is_active'])) {
             $sign = (bool) $attr['is_active'] ? '' : '!';
-            $if[] = $sign . 'App::blog()->settings()->get("' . My::id() . '")->get("srv_local_public")';
+            $if[] = $sign . 'App::blog()->settings()->get("' . My::id() . '")->getBool("srv_local_public", false)';
         }
         if (empty($if)) {
             return $content;
@@ -52,11 +52,11 @@ class FrontendTemplate
      */
     public static function pageMsgIf(ArrayObject$attr, string $content): string
     {
-        $operator = isset($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
+        $operator = isset($attr['operator']) && is_string($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
 
         if (isset($attr['has_message'])) {
             $sign = (bool) $attr['has_message'] ? '!' : '=';
-            $if[] = '"" ' . $sign . '= App::frontend()->context()->kutrl_msg';
+            $if[] = '"" ' . $sign . '= App::frontend()->context()->get("kutrl_msg")';
         }
         if (empty($if)) {
             return $content;
@@ -73,7 +73,7 @@ class FrontendTemplate
      */
     public static function pageMsg(ArrayObject$attr): string
     {
-        return '<?php echo App::frontend()->context()->kutrl_msg; ?>';
+        return '<?php echo App::frontend()->context()->__get("kutrl_msg"); ?>';
     }
 
     /**
@@ -81,7 +81,7 @@ class FrontendTemplate
      */
     public static function humanField(ArrayObject $attr): string
     {
-        return "<?php echo sprintf(__('Confirm by writing \"%s\" in next field:'),App::frontend()->context()->kutrl_hmf); ?>";
+        return "<?php echo sprintf(__('Confirm by writing \"%s\" in next field:'),App::frontend()->context()->__get('kutrl_hmf')); ?>";
     }
 
     /**
@@ -90,7 +90,7 @@ class FrontendTemplate
     public static function humanFieldProtect(ArrayObject $attr): string
     {
         return
-        '<input type="hidden" name="hmfp" id="hmfp" value="<?php echo App::frontend()->context()->kutrl_hmfp; ?>" />' .
+        '<input type="hidden" name="hmfp" id="hmfp" value="<?php echo App::frontend()->context()->__get("kutrl_hmfp"); ?>" />' .
         '<?php echo App::nonce()->getFormNonce(); ?>';
     }
 
@@ -115,7 +115,7 @@ class FrontendTemplate
      */
     public static function MediaKutrlIf(ArrayObject$attr, string $content): string
     {
-        return self::genericKutrlIf('App::frontend()->context()->file_url', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->__get("file_url")', $attr, $content);
     }
 
     /**
@@ -123,14 +123,14 @@ class FrontendTemplate
      */
     public static function MediaKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('App::frontend()->context()->file_url', $attr);
+        return self::genericKutrl('App::frontend()->context()->__get("file_url")', $attr);
     }
     /**
      * @param      ArrayObject<string, mixed>  $attr   The attributes
      */
     public static function EntryAuthorKutrlIf(ArrayObject$attr, string $content): string
     {
-        return self::genericKutrlIf('App::frontend()->context()->posts->user_url', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->__get("posts")->strField("user_url")', $attr, $content);
     }
 
     /**
@@ -138,7 +138,7 @@ class FrontendTemplate
      */
     public static function EntryAuthorKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('App::frontend()->context()->posts->user_url', $attr);
+        return self::genericKutrl('App::frontend()->context()->__get("posts")->strField("user_url")', $attr);
     }
 
     /**
@@ -146,7 +146,7 @@ class FrontendTemplate
      */
     public static function EntryKutrlIf(ArrayObject $attr, string $content): string
     {
-        return self::genericKutrlIf('App::frontend()->context()->posts->getURL()', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->__get("posts")->getURL()', $attr, $content);
     }
 
     /**
@@ -154,7 +154,7 @@ class FrontendTemplate
      */
     public static function EntryKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('App::frontend()->context()->posts->getURL()', $attr);
+        return self::genericKutrl('App::frontend()->context()->__get("posts")->getURL()', $attr);
     }
 
     /**
@@ -162,7 +162,7 @@ class FrontendTemplate
      */
     public static function CommentAuthorKutrlIf(ArrayObject $attr, string $content): string
     {
-        return self::genericKutrlIf('App::frontend()->context()->comments->getAuthorURL()', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->__get("comments")->getAuthorURL()', $attr, $content);
     }
 
     /**
@@ -170,7 +170,7 @@ class FrontendTemplate
      */
     public static function CommentAuthorKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('App::frontend()->context()->comments->getAuthorURL()', $attr);
+        return self::genericKutrl('App::frontend()->context()->__get("comments")->getAuthorURL()', $attr);
     }
 
     /**
@@ -178,7 +178,7 @@ class FrontendTemplate
      */
     public static function CommentPostKutrlIf(ArrayObject $attr, string $content): string
     {
-        return self::genericKutrlIf('App::frontend()->context()->comments->getPostURL()', $attr, $content);
+        return self::genericKutrlIf('App::frontend()->context()->__get("comments")->getPostURL()', $attr, $content);
     }
 
     /**
@@ -186,7 +186,7 @@ class FrontendTemplate
      */
     public static function CommentPostKutrl(ArrayObject $attr): string
     {
-        return self::genericKutrl('App::frontend()->context()->comments->getPostURL()', $attr);
+        return self::genericKutrl('App::frontend()->context()->__get("comments")->getPostURL()', $attr);
     }
 
     /**
@@ -194,7 +194,7 @@ class FrontendTemplate
      */
     protected static function genericKutrlIf(string $str, ArrayObject $attr, string $content): string
     {
-        $operator = isset($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
+        $operator = isset($attr['operator']) && is_string($attr['operator']) ? App::frontend()->template()->getOperator($attr['operator']) : '&&';
 
         if (isset($attr['is_active'])) {
             $sign = (bool) $attr['is_active'] ? '' : '!';
@@ -202,11 +202,11 @@ class FrontendTemplate
         }
         if (isset($attr['passive_mode'])) {
             $sign = (bool) $attr['passive_mode'] ? '' : '!';
-            $if[] = $sign . 'App::frontend()->context()->kutrl_passive';
+            $if[] = $sign . 'App::frontend()->context()->__get("kutrl_passive")';
         }
         if (isset($attr['has_kutrl'])) {
             $sign = (bool) $attr['has_kutrl'] ? '!' : '=';
-            $if[] = '(App::frontend()->context()->exists("kutrl") && false ' . $sign . '== App::frontend()->context()->kutrl->select(' . $str . ',null,null,"kutrl"))';
+            $if[] = '(App::frontend()->context()->exists("kutrl") && false ' . $sign . '== App::frontend()->context()->__get("kutrl")->select(' . $str . ',null,null,"kutrl"))';
         }
         if (empty($if)) {
             return $content;
@@ -228,23 +228,23 @@ class FrontendTemplate
         return
         "<?php \n" .
         # Preview
-        "if (App::frontend()->context()->preview) { \n" .
+        "if (App::frontend()->context()->__get('preview')) { \n" .
         ' echo ' . sprintf($f, $str) . '; ' .
         "} else { \n" .
         # Disable
         "if (!App::frontend()->context()->exists('kutrl')) { \n" .
         # Passive mode
-        ' if (App::frontend()->context()->kutrl_passive) { ' .
+        ' if (App::frontend()->context()->__get("kutrl_passive")) { ' .
         '  echo ' . sprintf($f, $str) . '; ' .
         " } \n" .
         "} else { \n" .
         # Existing
-        ' if (false !== ($kutrl_rs = App::frontend()->context()->kutrl->isKnowUrl(' . $str . '))) { ' .
-        '  echo ' . sprintf($f, 'App::frontend()->context()->kutrl->url_base.$kutrl_rs->hash') . '; ' .
+        ' if (false !== ($kutrl_rs = App::frontend()->context()->__get("kutrl")->isKnowUrl(' . $str . '))) { ' .
+        '  echo ' . sprintf($f, 'App::frontend()->context()->__get("kutrl")->srvUrlBase().$kutrl_rs->strField("hash")') . '; ' .
         " } \n" .
         # New
-        ' elseif (false !== ($kutrl_rs = App::frontend()->context()->kutrl->hash(' . $str . '))) { ' .
-        '  echo ' . sprintf($f, 'App::frontend()->context()->kutrl->url_base.$kutrl_rs->hash') . '; ' .
+        ' elseif (false !== ($kutrl_rs = App::frontend()->context()->__get("kutrl")->hash(' . $str . '))) { ' .
+        '  echo ' . sprintf($f, 'App::frontend()->context()->__get("kutrl")->srvUrlBase().$kutrl_rs->strField("hash")') . '; ' .
 
         # ex: Send new url to messengers
         ' if (!empty($kutrl_rs)) { ' .

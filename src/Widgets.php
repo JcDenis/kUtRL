@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\kUtRL;
 
 use Dotclear\App;
+use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Form\Input;
@@ -118,10 +119,10 @@ class Widgets
     {
         $s = My::settings();
 
-        if (!$s->get('active')
-         || !$s->get('srv_local_public')
-         || !$w->checkHomeOnly(App::url()->type)
-         || App::url()->type == 'kutrl') {
+        if (!$s->getBool('active', false)
+         || !$s->getBool('srv_local_public', false)
+         || !$w->checkHomeOnly(App::url()->getType())
+         || App::url()->isType('kutrl')) {
             return '';
         }
 
@@ -130,9 +131,9 @@ class Widgets
 
         return $w->renderDiv(
             (bool) $w->get('content_only'),
-            'shortenkutrlwidget ' . $w->get('class'),
+            'shortenkutrlwidget' . (is_string($w->get('class')) ? ' ' . $w->get('class') : ''),
             '',
-            ($w->get('title') ? $w->renderTitle(Html::escapeHTML($w->get('title'))) : '') .
+            (is_string($w->get('title')) && !empty($w->get('title')) ? $w->renderTitle(Html::escapeHTML($w->get('title'))) : '') .
             (new Form(['shortenkutrlwidget']))
                 ->method('post')
                 ->action(App::blog()->url() . App::url()->getBase('kutrl'))
@@ -171,27 +172,27 @@ class Widgets
     {
         $s = My::settings();
 
-        if (!$s->get('active') || !$w->checkHomeOnly(App::url()->type)) {
+        if (!$s->getBool('active', false) || !$w->checkHomeOnly(App::url()->getType())) {
             return '';
         }
 
-        $type = in_array($w->get('type'), ['localnormal', 'localmix', 'localcustom']) ?
+        $type = is_string($w->get('type')) && in_array($w->get('type'), ['localnormal', 'localmix', 'localcustom']) ?
             "AND kut_type ='" . $w->get('type') . "' " :
             'AND kut_type ' . App::db()->con()->in(['localnormal', 'localmix', 'localcustom']) . ' ';
 
         $hide = (bool) $w->get('hideempty') ? 'AND kut_counter > 0 ' : '';
 
         $more = '';
-        if ($w->get('type') == 'localmix' && '' != $w->get('mixprefix')) {
-            $more = "AND kut_hash LIKE '" . App::db()->con()->escapeStr((string) $w->get('mixprefix')) . "%' ";
+        if ($w->get('type') == 'localmix' && is_string($w->get('mixprefix')) && '' != $w->get('mixprefix')) {
+            $more = "AND kut_hash LIKE '" . App::db()->con()->escapeStr($w->get('mixprefix')) . "%' ";
         }
 
-        $order = ($w->get('sortby') && in_array($w->get('sortby'), ['kut_dt', 'kut_counter', 'kut_hash'])) ?
+        $order = (is_string($w->get('sortby')) && in_array($w->get('sortby'), ['kut_dt', 'kut_counter', 'kut_hash'])) ?
             $w->get('sortby') : 'kut_dt';
 
         $order .= $w->get('sort') == 'desc' ? ' DESC' : ' ASC';
 
-        $limit = App::db()->con()->limit(abs((int) $w->get('limit')));
+        $limit = App::db()->con()->limit(is_numeric($w->get('limit')) ? abs((int) $w->get('limit')) : 1);
 
         $rs = App::db()->con()->select(
             'SELECT kut_counter, kut_hash ' .
@@ -200,6 +201,7 @@ class Widgets
             "AND kut_service = 'local' " .
             $type . $hide . $more . 'ORDER BY ' . $order . $limit
         );
+        $rs = new MetaRecord($rs);
 
         if ($rs->isEmpty()) {
             return '';
@@ -213,7 +215,7 @@ class Widgets
 
             $hash    = $rs->strField('kut_hash');
             $url     = App::blog()->url() . App::url()->getBase('kutrl') . '/' . $hash;
-            $cut_len = abs((int) $w->get('urllen'));
+            $cut_len = is_numeric($w->get('urllen')) ? abs((int) $w->get('urllen')) : 35;
 
             if (strlen($url) > $cut_len) {
                 $url = '...' . substr($url, 0, $cut_len);
@@ -233,7 +235,7 @@ class Widgets
                 str_replace(
                     ['%rank%', '%hash%', '%url%', '%count%', '%counttext%'],
                     [$rank, $hash, $url, $rs->strField('kut_counter'), $counttext],
-                    (string) $w->get('text')
+                    is_string($w->get('text')) ? $w->get('text') : ''
                 ) .
                 '</a></li>';
         }
@@ -244,9 +246,9 @@ class Widgets
 
         return $w->renderDiv(
             (bool) $w->get('content_only'),
-            'lastblogupdate ' . $w->get('class'),
+            'lastblogupdate' . (is_string($w->get('class')) ? ' ' . $w->get('class') : ''),
             '',
-            ($w->get('title') ? $w->renderTitle(Html::escapeHTML($w->get('title'))) : '') .
+            (is_string($w->get('title')) && !empty($w->get('title')) ? $w->renderTitle(Html::escapeHTML($w->get('title'))) : '') .
                 sprintf('<ul>%s</ul>', $content)
         );
     }
