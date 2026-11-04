@@ -130,7 +130,7 @@ class LinksListing extends Listing
                 ->class('nowrap minimal')
                 ->items([
                     (new Checkbox(['entries[]'], $checked))
-                        ->value($this->rs->strField('kut_id')),
+                        ->value((string) $this->rs->intField('kut_id')),
                 ]),
             'kut_url' => (new Para(null, 'td'))
                 ->class('maximal')
@@ -151,7 +151,7 @@ class LinksListing extends Listing
         $this->userColumns(My::id(), $cols);
 
         return
-        (new Para('p' . $this->rs->strField('kut_id'), 'tr'))
+        (new Para('p' . $this->rs->intField('kut_id'), 'tr'))
             ->class('line')
             ->items(iterator_to_array($cols));
     }

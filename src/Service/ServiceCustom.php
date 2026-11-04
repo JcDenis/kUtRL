@@ -39,7 +39,7 @@ class ServiceCustom extends Service
             'url_base'    => $config['url_base']  ?? '',
             'url_param'   => $config['url_param'] ?? '',
             'url_encode'  => !empty($config['url_api']),
-            'url_min_len' => strlen(is_string($config['url_base']) ? $config['url_base'] : '') + 2,
+            'url_min_len' => strlen(is_string($config['url_base'] ?? null) ? $config['url_base'] : '') + 2,
         ];
     }
 

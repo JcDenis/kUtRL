@@ -56,7 +56,7 @@ class Manage
                 throw new Exception('Unknow service');
             }
             $url  = trim(App::db()->con()->escapeStr(is_string($_POST['str']) ? $_POST['str'] : ''));
-            $hash = empty($_POST['custom']) ? null : $_POST['custom'];
+            $hash = empty($_POST['custom']) || !is_string($_POST['custom']) ? null : $_POST['custom'];
 
             if (empty($url)) {
                 throw new Exception(__('There is nothing to shorten.'));

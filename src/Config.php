@@ -114,8 +114,8 @@ class Config
         }
 
         # Default values
-        $img_green = '<img src="images/check-on.png" alt="ok" />';
-        $img_red   = '<img src="images/check-off.png" alt="fail" />';
+        $img_green = '<img src="images/check-on.svg" class="mark mark-check-on" alt="ok" />';
+        $img_red   = '<img src="images/check-off.svg" class="mark mark-check-off" alt="fail" />';
 
         # Settings
         $s = My::settings();
@@ -193,7 +193,7 @@ class Config
         echo (new Div())
             ->class('fieldset')
             ->items([
-                (new text('h4', __('Settings'))),
+                (new Text('h4', __('Settings'))),
                 (new Div('setting-plugin'))
                     ->items([
                         (new Text('h5', __('Activation'))),
@@ -318,7 +318,7 @@ class Config
             (new Div())
             ->class('fieldset')
             ->items([
-                (new text('h4', __('Settings'))),
+                (new Text('h4', __('Settings'))),
                 (new Note())
                     ->class('info')
                     ->text(__('List of services you can use to shorten links with pkugin kUtRL.')),

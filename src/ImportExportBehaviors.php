@@ -62,7 +62,7 @@ class ImportExportBehaviors
             $bk->__get('cur_kutrl')->setField('kut_type', $line->f('kut_type'));
             $bk->__get('cur_kutrl')->setField('kut_hash', $line->f('kut_hash'));
             $bk->__get('cur_kutrl')->setField('kut_url', $line->f('kut_url'));
-            $bk->__get('cur_kutrl')->setField('kut_dt', $line->f('miniurl_dt'));
+            $bk->__get('cur_kutrl')->setField('kut_dt', $line->f('kut_dt'));
             $bk->__get('cur_kutrl')->setField('kut_counter', is_numeric($line->f('kut_counter')) ? (int) $line->f('kut_counter') : 0);
             $bk->__get('cur_kutrl')->setField('kut_password', $line->f('kut_password'));
             $bk->__get('cur_kutrl')->insert();
