@@ -39,5 +39,6 @@ You can also add widgets, template block and values.
 
 * Jean-Christian Denis (author)
 * Pierre Van Glabeke
+* Claude (AI assistant by Anthropic)
 
 You are welcome to contribute to this code.
