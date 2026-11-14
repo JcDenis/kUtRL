@@ -7,6 +7,7 @@ namespace Dotclear\Plugin\kUtRL;
 use Dotclear\App;
 use Dotclear\Core\Backend\ModulesList;
 use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Process\TraitProcess;
 use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Div;
@@ -325,5 +326,7 @@ class Config
                 ... $i_config,
             ])
             ->render();
+
+        Page::helpBlock(My::id() . '-config');
     }
 }

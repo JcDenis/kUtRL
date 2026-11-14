@@ -202,7 +202,7 @@ class Manage
                 ->render();
         }
 
-        Page::helpBlock(My::id());
+        Page::helpBlock(My::id() . '-link');
 
         Page::closeModule();
     }

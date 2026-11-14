@@ -7,4 +7,6 @@
  * @author      Jean-Christian Denis (author)
  * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-\Dotclear\App::backend()->resources()->set('help', 'kUtRL', __DIR__ . '/help/help.html');
+\Dotclear\App::backend()->resources()->set('help', 'kUtRL-links', __DIR__ . '/help/links.html');
+\Dotclear\App::backend()->resources()->set('help', 'kUtRL-link', __DIR__ . '/help/link.html');
+\Dotclear\App::backend()->resources()->set('help', 'kUtRL-config', __DIR__ . '/help/config.html');
