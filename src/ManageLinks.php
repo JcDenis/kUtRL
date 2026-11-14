@@ -118,8 +118,8 @@ class ManageLinks
                 (new Link())
                     ->class('button add')
                     ->href(My::manageUrl(['part' => 'link']))
-                    ->title(__('New Link'))
-                    ->text(__('New Link')),
+                    ->title(__('New link'))
+                    ->text(__('New link')),
             ])
             ->render();
 

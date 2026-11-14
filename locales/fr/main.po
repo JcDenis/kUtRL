@@ -71,7 +71,7 @@ msgid "No enough right"
 msgstr "Privilèges insuffisants"
 
 msgid "Posts short links have been created."
-msgstr "Les liens courts des billets ont été créé."
+msgstr "Les liens courts des billets ont été créés."
 
 msgid "Long link"
 msgstr "Lien long"
@@ -116,10 +116,10 @@ msgid "Active mode"
 msgstr "Mode actif"
 
 msgid "If the active mode is enabled, all know default template tags (like EntryURL) will display short urls instead of long ones on templates."
-msgstr "Si le mode actif est acitvé, les balises de thème (comme EntryURL) afficheront les liens court au lieu des longs."
+msgstr "Si le mode actif est activé, les balises de thème (comme EntryURL) afficheront les liens courts au lieu des longs."
 
-msgid "You can disable URL shortening for a specific template tag by adding attribute disable_kutrl=\"1\" to it ."
-msgstr "Vous pouvez désactiver le raccourcissement pour un tag de template spécifique en lui ajoutant l'attribue disable_kutrl=\"1\""
+msgid "You can disable URL shortening for a specific template tag by adding attribute disable_kutrl=\"1\" to it."
+msgstr "Vous pouvez désactiver le raccourcissement pour une balise de thème en lui ajoutant l'attribut disable_kutrl=\"1\"."
 
 msgid "We strongly discourage using active mode as it crashes public post form and complex url if theme is not customize for kUtRL."
 msgstr "Nous décourageons fortement l'utilisation du mode actif car il casse les formulaires en pages publiques et les liens complexe si le thème n'est pas personnalisé pour utiliser kUtRL."
@@ -466,3 +466,5 @@ msgstr "Ceci publie tous vos liens sur votre page public bit.ly"
 msgid "Use, create and serve short url on your blog"
 msgstr "Utiliser, créer et servir des liens court sur votre blog"
 
+msgid "Posts short links have been deleted."
+msgstr "Les liens courts des billets ont été supprimés."

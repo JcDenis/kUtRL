@@ -246,7 +246,7 @@ class Config
                             ->text(__('If the active mode is enabled, all know default template tags (like EntryURL) will display short urls instead of long ones on templates.')),
                         (new Note())
                             ->class('form-note')
-                            ->text(__('You can disable URL shortening for a specific template tag by adding attribute disable_kutrl="1" to it . ')),
+                            ->text(__('You can disable URL shortening for a specific template tag by adding attribute disable_kutrl="1" to it.')),
                         (new Note())
                             ->class('warning')
                             ->text(__('We strongly discourage using active mode as it crashes public post form and complex url if theme is not customize for kUtRL.')),
