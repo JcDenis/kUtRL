@@ -12,6 +12,8 @@ _kUtRL_ is a plugin for the open-source web publishing software called [Dotclear
 
 > Use, create and serve short url on your blog
 
+A [user guide in French](https://github.com/JcDenis/kUtRL/blob/master/docs/fr/utilisation.md) is available.
+
 ## REQUIREMENTS
 
 * Dotclear 2.39
@@ -29,6 +31,7 @@ You can also add widgets, template block and values.
 
 ## LINKS
 
+* [User guide (in French)](https://github.com/JcDenis/kUtRL/blob/master/docs/fr/utilisation.md)
 * [License](https://github.com/JcDenis/kUtRL/blob/master/LICENSE)
 * [Packages & details](https://github.com/JcDenis/kUtRL/releases) (or on [Repository](https://dotclear.org/plugin/detail/kUtRL))
 * [Sources & contributions](https://github.com/JcDenis/kUtRL)
