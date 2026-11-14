@@ -210,7 +210,7 @@ class BackendBehaviors
 
             $kut->remove($old_post_url);
 
-            if (false === ($rs = $kut->hash($new_post_url, ''))) {
+            if (false === ($rs = $kut->hash($new_post_url))) {
                 ;//$custom); // better to update (not yet implemented)
 
                 return;
@@ -240,9 +240,9 @@ class BackendBehaviors
         $title = Html::escapeHTML($rs->strField('post_title'));
 
         $custom = !empty($_POST['kutrl_create_custom']) && $kut->srvAllowCustomHash() ?
-            $_POST['kutrl_create_custom'] : '';
+            $_POST['kutrl_create_custom'] : null;
 
-        if (!is_string($custom) || false === ($rs = $kut->hash($rs->getURL(), $custom))) {
+        if ((!is_null($custom) && !is_string($custom)) || false === ($rs = $kut->hash($rs->getURL(), $custom))) {
             return;
         }
         $url = $kut->srvUrlBase() . $rs->strField('hash');
@@ -342,7 +342,7 @@ class BackendBehaviors
             $kut->remove($posts->getURL());
         }
 
-        Notices::addSuccessNotice(__('Posts short links have been created.'));
+        Notices::addSuccessNotice(__('Posts short links have been deleted.'));
         $pa->redirect(true);
     }
 }
