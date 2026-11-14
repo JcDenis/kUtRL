@@ -56,7 +56,7 @@ class FrontendTemplate
 
         if (isset($attr['has_message'])) {
             $sign = (bool) $attr['has_message'] ? '!' : '=';
-            $if[] = '"" ' . $sign . '= App::frontend()->context()->get("kutrl_msg")';
+            $if[] = '"" ' . $sign . '= App::frontend()->context()->__get("kutrl_msg")';
         }
         if (empty($if)) {
             return $content;
