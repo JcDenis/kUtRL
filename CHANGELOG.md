@@ -1,6 +1,5 @@
 kUtRL 2026.11.14
 ===========================================================
-* Add Claude to contributors
 * Fix public page error and title
 * Fix short link not created for new or updated entries
 * Fix texts and translations
