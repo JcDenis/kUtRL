@@ -21,7 +21,7 @@ $this->registerModule(
     'Links shortener',
     'Use, create and serve short url on your blog',
     'Jean-Christian Denis and contributors',
-    '2026.11.14',
+    '2026.11.15',
     [
         'requires'    => [['core', '2.40']],
         'permissions' => 'My',
@@ -29,6 +29,6 @@ $this->registerModule(
         'support'     => 'https://github.com/JcDenis/' . $this->id . '/issues',
         'details'     => 'https://github.com/JcDenis/' . $this->id . '/',
         'repository'  => 'https://raw.githubusercontent.com/JcDenis/' . $this->id . '/master/dcstore.xml',
-        'date'        => '2026-11-14T12:55:10+00:00',
+        'date'        => '2026-11-15T15:32:33+00:00',
     ]
 );
