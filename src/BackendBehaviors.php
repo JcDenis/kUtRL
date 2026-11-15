@@ -9,6 +9,7 @@ use Dotclear\App;
 use Dotclear\Core\Backend\Action\ActionsPosts;
 use Dotclear\Core\Backend\Favorites;
 use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Backend\UserPrefFilter;
 use Dotclear\Database\Cursor;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -61,17 +62,19 @@ class BackendBehaviors
     }
 
     /**
-     * @param   ArrayObject<string, mixed>   $sorts
+     * @param   ArrayObject<array-key, UserPrefFilter>   $filters
      */
-    public static function adminFiltersListsV2(ArrayObject $sorts): void
+    public static function adminFiltersListsV3(ArrayObject $filters): void
     {
-        $sorts[My::id()] = [
+        $filters->append(new UserPrefFilter(
+            My::id(),
             My::name(),
             Combo::sortbyCombo(),
             'kut_dt',
             'desc',
-            [__('links per page'), 30],
-        ];
+            __('links per page'),
+            30
+        ));
     }
 
     public static function adminPostHeaders(): string

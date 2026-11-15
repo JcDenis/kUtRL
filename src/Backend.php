@@ -37,7 +37,7 @@ class Backend
             App::behavior()->addBehaviors([
                 'adminDashboardFavoritesV2' => BackendBehaviors::antispamDashboardFavoritesV2(...),
                 'adminColumnsListsV2'       => BackendBehaviors::adminColumnsListsV2(...),
-                'adminFiltersListsV2'       => BackendBehaviors::adminFiltersListsV2(...),
+                'adminFiltersListsV3'       => BackendBehaviors::adminFiltersListsV3(...),
                 'adminPostHeaders'          => BackendBehaviors::adminPostHeaders(...),
                 'adminPostFormItems'        => BackendBehaviors::adminPostFormItems(...),
                 'adminAfterPostUpdate'      => BackendBehaviors::adminAfterPostUpdate(...), // update existing short url

@@ -16,7 +16,7 @@ A [user guide in French](https://github.com/JcDenis/kUtRL/blob/master/docs/fr/ut
 
 ## REQUIREMENTS
 
-* Dotclear 2.39
+* Dotclear 2.40
 * PHP 8.1+
 * Dotclear admin permission to configure
 * No specials permissions to shorten links on the fly
