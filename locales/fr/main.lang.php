@@ -5,7 +5,6 @@ declare(strict_types=1);
  * @package Dotclear
  *
  * @copyright Olivier Meunier & Association Dotclear
- * @copyright GPL-2.0-only
  */
 #
 # DOT NOT MODIFY THIS FILE !
@@ -35,7 +34,7 @@ L10n::$locales['Short link'] = 'Lien court';
 L10n::$locales['No enough right'] = 'Privilèges insuffisants';
 L10n::$locales['Posts short links have been created.'] = 'Les liens courts des billets ont été créés.';
 L10n::$locales['Long link'] = 'Lien long';
-L10n::$locales['Disabled'] = 'Désactiver';
+L10n::$locales['Disabled'] = 'Désactivé·e';
 L10n::$locales['Failed to test %s API.'] = 'Impossible de tester l\'API %s.';
 L10n::$locales['%s API is well configured and runing.'] = 'L\'API %s est correctement configurée et est fonctionnelle.';
 L10n::$locales['Failed to test service %s: %s'] = 'Impossible de tester le service %s : %s';

@@ -77,7 +77,7 @@ msgid "Long link"
 msgstr "Lien long"
 
 msgid "Disabled"
-msgstr "Désactiver"
+msgstr "Désactivé·e"
 
 msgid "Failed to test %s API."
 msgstr "Impossible de tester l'API %s."
