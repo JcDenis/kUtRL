@@ -52,7 +52,7 @@ Required Dotclear and PHP versions: see `_define.php`.
 * Database table `kutrl`.
 * URL handlers: `kutrl`.
 * Widgets: `shortenkutrl`, `rankkutrl`.
-* Behaviors used: `adminAfterPostUpdate`, `kutrlService`, `adminDashboardFavoritesV2`, `adminColumnsListsV2`, `adminFiltersListsV2`, `adminPostHeaders`, `adminPostFormItems`, `adminAfterPostCreate`, `adminBeforePostDelete`, `adminPostsActions`, `initWidgets`, `exportFullV2`, `exportSingleV2`, `importInitV2`, `importSingleV2`, `importFullV2`, `publicBeforeDocumentV2`, `publicHeadContent`, `publicBeforeContentFilterV2`, `coreInitWikiPost`, `coreInitWikiComment`, `coreInitWikiSimpleComment`.
+* Behaviors used: `adminAfterPostUpdate`, `kutrlService`, `adminDashboardFavoritesV2`, `adminColumnsListsV2`, `adminFiltersListsV3`, `adminPostHeaders`, `adminPostFormItems`, `adminAfterPostCreate`, `adminBeforePostDelete`, `adminPostsActions`, `initWidgets`, `exportFullV2`, `exportSingleV2`, `importInitV2`, `importSingleV2`, `importFullV2`, `publicBeforeDocumentV2`, `publicHeadContent`, `publicBeforeContentFilterV2`, `coreInitWikiPost`, `coreInitWikiComment`, `coreInitWikiSimpleComment`.
 
 ## Pitfalls
 
