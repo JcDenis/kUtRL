@@ -12,6 +12,7 @@ _kUtRL_ (« Réducteur de liens ») permet de créer des liens courts pour votre
 6. [Page publique et widgets](#page-publique-et-widgets)
 7. [Balises de thème et contenus](#balises-de-thème-et-contenus)
 8. [Préférences](#préférences)
+9. [Avec un assistant IA](#avec-un-assistant-ia)
 
 ## Activer et configurer le plugin
 
@@ -118,3 +119,14 @@ Dans **Préférences › Mes options**, vous pouvez choisir les colonnes affich�
 ![Colonnes](img/preferences-colonnes.png)
 
 ![Tri](img/preferences-tri.png)
+
+## Avec un assistant IA
+
+Avec le plugin [ClaudetteMcp](https://github.com/JcDenis/ClaudetteMcp), un assistant IA connecté au blog peut gérer les liens courts,
+si le plugin est activé et si vous êtes administrateur du blog :
+
+* `list_short_links` : lister les liens courts avec leur adresse longue et leur nombre de visites ;
+* `create_short_link` : créer un lien court, avec le service choisi pour l'administration et les mêmes vérifications que la page de création d'un lien court.
+
+Si l'adresse a déjà un lien court, l'assistant le retrouve au lieu d'en créer un autre. Il ne supprime jamais de lien.
+_ClaudetteMcp_ n'est pas nécessaire au fonctionnement de _kUtRL_.
