@@ -43,7 +43,7 @@ class ListShortLinks extends McpTool
     public function description(): string
     {
         return 'List the short links of the blog (plugin kUtRL), most recent first, with their long address, ' .
-            'the service which made them and their number of visits (counted by the local service only). Create one with create_short_link.';
+            'the service which made them and their number of visits (counted by the local service only).';
     }
 
     public function properties(): array
