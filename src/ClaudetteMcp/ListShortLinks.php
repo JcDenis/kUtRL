@@ -27,6 +27,14 @@ class ListShortLinks extends McpTool
         return 'list_short_links';
     }
 
+    /**
+     * Family of tools for the keys of ClaudetteMcp (string, not constant: older ClaudetteMcp versions have none).
+     */
+    public function family(): string
+    {
+        return 'extras';
+    }
+
     public function title(): string
     {
         return 'List short links';
