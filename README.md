@@ -29,6 +29,10 @@ Dotclear plugins repository. (See Dotclear's documentation to know how do this)
 Manage settings, services and short URLs from sidebar menu "URL shortener".
 You can also add widgets, template block and values.
 
+With the plugin [ClaudetteMcp](https://github.com/JcDenis/ClaudetteMcp), an AI assistant connected to the blog
+can list the short links (`list_short_links`) and create one (`create_short_link`, with the service of the administration),
+with the permissions of a blog administrator. ClaudetteMcp is not required by _kUtRL_.
+
 ## LINKS
 
 * [User guide (in French)](https://github.com/JcDenis/kUtRL/blob/master/docs/fr/utilisation.md)
