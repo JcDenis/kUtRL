@@ -126,7 +126,7 @@ Avec le plugin [ClaudetteMcp](https://github.com/JcDenis/ClaudetteMcp), un assis
 si le plugin est activé et si vous êtes administrateur du blog :
 
 * `list_short_links` : lister les liens courts avec leur adresse longue et leur nombre de visites ;
-* `create_short_link` : créer un lien court, avec le service choisi pour l'administration et les mêmes vérifications que la page « Nouveau lien ».
+* `create_short_link` : créer un lien court, avec le service choisi pour l'administration et les mêmes vérifications que la page de création d'un lien court.
 
 Si l'adresse a déjà un lien court, l'assistant le retrouve au lieu d'en créer un autre. Il ne supprime jamais de lien.
 _ClaudetteMcp_ n'est pas nécessaire au fonctionnement de _kUtRL_.

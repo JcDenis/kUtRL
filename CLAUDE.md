@@ -17,6 +17,8 @@ Required Dotclear and PHP versions: see `_define.php`.
 
 ## Structure
 
+* `src/ClaudetteMcp/`: tools for the plugin ClaudetteMcp (`list_short_links`, `create_short_link`, never required),
+  registered in `src/Frontend.php` with the behavior `ClaudetteMcpAddTool`. Same checks as the admin page `Manage.php`.
 * `src/ActivityReportAction.php`: add links actions to the plugin activity report.
 * `src/Backend.php`: admin side: menu entry, favorites, behaviors registration.
 * `src/BackendBehaviors.php`: admin behaviors.
@@ -52,7 +54,7 @@ Required Dotclear and PHP versions: see `_define.php`.
 * Database table `kutrl`.
 * URL handlers: `kutrl`.
 * Widgets: `shortenkutrl`, `rankkutrl`.
-* Behaviors used: `adminAfterPostUpdate`, `kutrlService`, `adminDashboardFavoritesV2`, `adminColumnsListsV2`, `adminFiltersListsV3`, `adminPostHeaders`, `adminPostFormItems`, `adminAfterPostCreate`, `adminBeforePostDelete`, `adminPostsActions`, `initWidgets`, `exportFullV2`, `exportSingleV2`, `importInitV2`, `importSingleV2`, `importFullV2`, `publicBeforeDocumentV2`, `publicHeadContent`, `publicBeforeContentFilterV2`, `coreInitWikiPost`, `coreInitWikiComment`, `coreInitWikiSimpleComment`.
+* Behaviors used: `ClaudetteMcpAddTool`, `adminAfterPostUpdate`, `kutrlService`, `adminDashboardFavoritesV2`, `adminColumnsListsV2`, `adminFiltersListsV3`, `adminPostHeaders`, `adminPostFormItems`, `adminAfterPostCreate`, `adminBeforePostDelete`, `adminPostsActions`, `initWidgets`, `exportFullV2`, `exportSingleV2`, `importInitV2`, `importSingleV2`, `importFullV2`, `publicBeforeDocumentV2`, `publicHeadContent`, `publicBeforeContentFilterV2`, `coreInitWikiPost`, `coreInitWikiComment`, `coreInitWikiSimpleComment`.
 
 ## Pitfalls
 
