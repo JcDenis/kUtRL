@@ -17,7 +17,7 @@ Required Dotclear and PHP versions: see `_define.php`.
 
 ## Structure
 
-* `src/ClaudetteMcp/`: tools for the plugin ClaudetteMcp (`list_short_links`, `create_short_link`, never required),
+* `src/ClaudetteMcp/`: tools for the plugin ClaudetteMcp (`list_short_links`, `create_short_link`, optional dependency `ClaudetteMcp?` in `requires`),
   registered in `src/Frontend.php` with the behavior `ClaudetteMcpAddTool`. Same checks as the admin page `Manage.php`.
 * `src/ActivityReportAction.php`: add links actions to the plugin activity report.
 * `src/Backend.php`: admin side: menu entry, favorites, behaviors registration.

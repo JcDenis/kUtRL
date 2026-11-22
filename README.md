@@ -31,7 +31,7 @@ You can also add widgets, template block and values.
 
 With the plugin [ClaudetteMcp](https://github.com/JcDenis/ClaudetteMcp), an AI assistant connected to the blog
 can list the short links (`list_short_links`) and create one (`create_short_link`, with the service of the administration),
-with the permissions of a blog administrator. ClaudetteMcp is not required by _kUtRL_.
+with the permissions of a blog administrator. ClaudetteMcp is optional for _kUtRL_ (version 0.5 or later).
 
 ## LINKS
 
