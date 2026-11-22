@@ -1,3 +1,7 @@
+kUtRL 2026.11.22
+===========================================================
+* [compat] Use dotclear.toggleWithLegend() instead of deprecated jQuery plugin
+
 kUtRL 2026.11.15
 ===========================================================
 * [compat] Use adminFiltersListsV3 behavior, require Dotclear 2.40
