@@ -1,3 +1,8 @@
+kUtRL 2026.11.23
+===========================================================
+* [new] Short links for an AI assistant connected with ClaudetteMcp (list_short_links, create_short_link)
+* [new] Family of the ClaudetteMcp tools, for the keys limited to some families
+
 kUtRL 2026.11.22
 ===========================================================
 * [compat] Use dotclear.toggleWithLegend() instead of deprecated jQuery plugin
